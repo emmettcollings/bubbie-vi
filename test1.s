@@ -3,6 +3,10 @@
 */
     processor 6502 ; This informs DASM we are assembling for the 6502 processor.
 
+/*
+    Thanks to Emmett for the following code, as I needed some test code to ensure everything was working!
+ */
+
 /* 
  * Write some BASIC code into memory that will jump to our assembly. User
  * written BASIC gets stored at $1001 so that's where we begin
