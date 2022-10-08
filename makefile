@@ -1,4 +1,9 @@
 DASM = dasm/dasm.exe
 
-test1: test1.s
-	$(DASM) test1.s -obin/test1.prg -lbin/test1.lst
+all:
+	mkdir -p bin
+
+test%: test%.s
+	make all
+	mkdir -p bin/test$*
+	$(DASM) test$*.s -obin/test$*.prg -lbin/test$*.lst
