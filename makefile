@@ -6,4 +6,4 @@ all:
 test%: test%.s
 	make all
 	mkdir -p bin/test$*
-	$(DASM) test$*.s -obin/test$*.prg -lbin/test$*.lst
+	$(DASM) test$*.s -obin/test$*/test$*.prg -lbin/test$*/test$*.lst
