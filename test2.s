@@ -23,6 +23,9 @@ CHROUT = $ffd2              ; KERNAL routine we use for testing
 
 ; Print the alphabet by looping through the characters
 start: 
+    lda     #$3d            ; load the ASCII value for '='
+    sta     $1100           ; store it in memory
+
     ldx     #$41            ; load X with the ASCII code for 'A'
 loop:
     txa                     ; transfer A to X
@@ -30,9 +33,15 @@ loop:
     inx                     ; increment X
     cpx     #$5b            ; compare X with ASCII code for '[' (character after 'Z')
     bne     loop            ; branch if not equal
+
+    lda     $1100           ; load the value we stored in memory
+    jsr     CHROUT          ; print it
+
     rts                     ; return from subroutine
 
     end                     ; end of assembly code
+
+
 
     
 
