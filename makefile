@@ -1,7 +1,7 @@
 DASM = dasm/dasm.exe
 
 all:
-	echo "Compiling... (Will implement this later)"
+	echo "Compiling... (Will implement this later to compile all the files)"
 
 test%: test%.s
 	mkdir -p bin
