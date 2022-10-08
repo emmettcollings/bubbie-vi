@@ -23,14 +23,16 @@ CHROUT = $ffd2              ; KERNAL routine we use for testing
 
 ; Print the alphabet by looping through the characters
 start: 
-    ldx     #$41
+    ldx     #$41            ; load X with the ASCII code for 'A'
 loop:
-    txa
-    jsr     CHROUT
-    inx
-    cpx     #$5b
-    bne     loop
-    rts
+    txa                     ; transfer A to X
+    jsr     CHROUT          ; call KERNAL routine to print character
+    inx                     ; increment X
+    cpx     #$5b            ; compare X with ASCII code for '[' (character after 'Z')
+    bne     loop            ; branch if not equal
+    rts                     ; return from subroutine
+
+    end                     ; end of assembly code
 
     
 
