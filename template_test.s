@@ -14,8 +14,8 @@
 /* 
     Global Definitions
 */
-CHROUT = $ffd2          ; kernal character output routine
-CLS = $e55f             ; kernal clear screen routine
+CHROUT = $ffd2              ; kernal character output routine
+CLS = $e55f                 ; kernal clear screen routine
 
 /*
     Utility Routines
