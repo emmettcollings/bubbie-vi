@@ -14,7 +14,7 @@
     org     $1001           ; mem location assembler assembles to
     dc.w    stubend
     dc.w    1               ; arbitrary line number for BASIC syntax
-    dc.b    $9e, "4109", 0  ; allocate bytes. 4109 = $100d
+    dc.b    $9e, "4353", 0  ; allocate bytes. 4353 = 1101
 
 stubend:    
     dc.w    0               ; insert null byte
@@ -24,9 +24,9 @@ CHROUT  =   $FFD2           ; KERNEL | Output character to channel
 ;RDTIM   =   $FFDE           ; KERNEL | Read system clock (60th of a second)
 
 
-; "PRESS ANY KEY" [broken cus im shit at this assembler and dont know how to store mem at specific address :(]
 l100d   .byte   $50, $52, $45, $53, $53, $20, $41, $4E, $59, $20, $4B, $45, $59
 
+    org     $1101           ; Code region
 start: 
     jsr     $e55f           ; clear screen
     ldx     #$00
@@ -34,7 +34,7 @@ name:
     lda     l100d-1,x       ; reference name of memory <=> reference start of memory
     inx
     jsr     CHROUT
-    cpx     #$00
+    cpx     #$0e
     bne     name
 
 nopress:
@@ -48,7 +48,9 @@ press:
     lda     #$58
     jsr     CHROUT
     rts
-    end                     ; end of assembly code
+
+loop:
+    jmp     loop
 
 
 
