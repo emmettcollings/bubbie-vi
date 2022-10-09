@@ -46,18 +46,23 @@ l100f   .byte   $32, $30, $32, $32 ; 2022 (Length: 4)
 start: 
     jsr     CLS             ; clear screen
 
+    ldx     #$0d            ; load x with length of string 
+    jsr     shiftHorizontallyA ; shift horizontally to center text
     ldx     #$00            ; set x register to 0
     jsr     printGameName   ; print game name
 
     jsr     resetOutput     ; reset output before next line
+    jsr     printNewLine    ; print new line
 
+    ldx     #$11            ; load x with length of string
+    jsr     shiftHorizontallyA ; shift horizontally to center text
     ldx     #$00            ; set x register to 0
     jsr     printTeamName   ; print team name
 
     jsr     resetOutput     ; reset output before next line
 
-    lda     #$0a            ; set a register to 10
-    jsr     shiftHorizontally ; shift horizontally 10 spaces
+    ldx     #$04            ; load x with length of string
+    jsr     shiftHorizontallyA ; shift horizontally to center text
     ldx     #$00            ; set x register to 0
     jsr     printYear       ; print year
 
@@ -74,9 +79,22 @@ shiftVertically:
     ; todo: figure out how to shift up/down
     rts
 
-shiftHorizontally:
-    sta     $00d3           ; set column shift to 1
-    rts
+shiftHorizontallyA: ; shift horizontally by a number of spaces automatically (aka, user provides the length of the string)
+    lda     #$0b            ; floor(23/2)
+    stx     $1099           ; arbitrary storage location
+    lsr     $1099           ; divide by 2
+    sbc     $1099           ; subtract a from x
+    sta     $00d3           ; store column shift
+    rts                     ; return to caller
+
+shiftHorizontallyM: ; shift horizontally by a number of spaces manually (aka, user provides the number of spaces to shift)
+    stx     $00d3           ; set column shift to x register
+    rts                     ; return to caller
+    
+printNewLine:
+    lda     #$11            ; load new line character
+    jsr     CHROUT          ; print a newline
+    rts                     ; return to caller
 
 printGameName:
     lda     l100d,x         ; load byte from game name string
