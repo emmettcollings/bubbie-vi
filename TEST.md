@@ -4,7 +4,10 @@ This test is purely to ensure everything is functioning correctly.
 # Test 2
 
 # Test 3
-I don't know yet, supposed to be sound, but I don't know how to do that yet.
+This test plays a really annoying sound, it's still being worked on, as I don't fully understand how the volume, patch, etc, works.
 
 # Test 4
 This test just changes the background color.
+
+# Test 5
+This test just simply clears the screen and prints to the center of the screen.
