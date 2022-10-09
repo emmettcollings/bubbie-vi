@@ -21,18 +21,35 @@ stubend:
     Global Definitions
 */
 CHROUT = $ffd2              ; The kernel character output routine.
+OSC1 = $900a                ; The first oscillator.
+OSC2 = $900b                ; The second oscillator.
+OSC3 = $900c                ; The third oscillator.
+OSCNS = $900d               ; The noise source oscillator.
+OSCVOL = $900e              ; The volume of the oscillators. (bits 0-3 set the volume of all sound channels, bits 4-7 are auxillary color information.)
+
 
 /*
     Sound Routine
+    - This routine will play a sound on the VIC-20 indefinitely, using the
+      three oscillators.
 */
 playTone:
-    lda     #$0f
-    sta     $900a           ; Set the frequency of oscillator 1.
-    lda     #$0f            
-    sta     $900d           ; Set the frequency of the noise sourc.
-    lda     #$0f    
-    sta     $900e           ; Set the volume to the maximum.
-    jsr     playTone
+    lda     #15
+    sta     OSCVOL
+
+    lda     #$ff ; ff causes the oscillator to play the tone, but anything else is just a blip.
+    sta     OSC1
+    sta     OSC2
+    sta     OSC3
+    sta     OSCNS
+
+    lda     #0
+    sta     OSC1
+    sta     OSC2
+    sta     OSC3
+    sta     OSCNS
+
+    jmp     playTone
 
 /*
     Main Routine
