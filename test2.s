@@ -36,7 +36,6 @@ name:
     jsr     CHROUT
     cpx     #$0e
     bne     name
-
 nopress:
     lda     $cb
     cmp     #$40
@@ -47,10 +46,7 @@ press:
     beq     press
     lda     #$58
     jsr     CHROUT
-    rts
-
-loop:
-    jmp     loop
+    jmp     nopress
 
 
 
