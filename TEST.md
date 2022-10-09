@@ -11,3 +11,6 @@ This test just changes the background color.
 
 # Test 5
 This test just simply clears the screen and prints to the center of the screen.
+
+# Test 6
+This test just simply tests disabling the cursor flash.
