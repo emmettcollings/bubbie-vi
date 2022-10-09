@@ -17,31 +17,20 @@
 stubend:
     dc.w    0               ; insert null byte
 
-/*
-    Global Definitions
+/* 
+    Background Color Change Routine
 */
-CHROUT = $ffd2              ; The kernel character output routine.
-
-/*
-    Sound Routine
-*/
-playTone:
-    lda     #$0f
-    sta     $900a           ; Set the frequency of oscillator 1.
-    lda     #$0f            
-    sta     $900d           ; Set the frequency of the noise sourc.
-    lda     #$0f    
-    sta     $900e           ; Set the volume to the maximum.
-    jsr     playTone
+bgColor:
+    ; bits 0-2 = screen background, bit 3 = inverted or normal, bits 4-7 = background color
+    lda     #$08            ; load accumulator with $08 (leads to black background, blue text)
+    sta     $900f           ; set background color
+    jmp     bgColor         ; loop forever
 
 /*
     Main Routine
 */
 start: 
-    ; print 0 to the screen
     lda     #$30            ; this is the VIC-20 symbol for '0'
-    jsr     CHROUT          ; call CHROUT
-
-    ; call playTone routine
-    jsr     playTone        ; call playTone
+    jsr     $ffd2           ; call CHROUT (The KERNAL routine for printing a character)
+    jsr     bgColor         ; call bgColor subroutine
     rts                     ; return to caller
