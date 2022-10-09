@@ -70,6 +70,10 @@ resetOutput:
     sta     $00d3           ; set column shift to 0
     rts
 
+shiftVertically:
+    ; todo: figure out how to shift up/down
+    rts
+
 shiftHorizontally:
     sta     $00d3           ; set column shift to 1
     rts
