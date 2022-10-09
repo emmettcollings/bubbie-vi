@@ -32,4 +32,16 @@ start:
     ; write the character 'R' to the center of the screen
     lda     #$52            ; load accumulator with 'R'
     jsr     $ffd2           ; write character to screen
+
+    jsr     disableCursor   ; call disableCursor routine
+
     rts                     ; return to caller
+
+/* 
+    Disable Cursor (Flash) Routine
+*/
+disableCursor:
+    ; 0 = flash, 1 = steady
+    lda     #$01            ; load accumulator with $00
+    sta     $00cc           ; store accumulator in $00cc
+    jmp disableCursor
