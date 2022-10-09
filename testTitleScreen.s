@@ -56,6 +56,8 @@ start:
 
     jsr     resetOutput     ; reset output before next line
 
+    lda     #$0a            ; set a register to 10
+    jsr     shiftHorizontally ; shift horizontally 10 spaces
     ldx     #$00            ; set x register to 0
     jsr     printYear       ; print year
 
@@ -66,6 +68,10 @@ resetOutput:
     jsr     CHROUT          ; print a newline
     lda     #$00            ; load 0 to reset column shift
     sta     $00d3           ; set column shift to 0
+    rts
+
+shiftHorizontally:
+    sta     $00d3           ; set column shift to 1
     rts
 
 printGameName:
