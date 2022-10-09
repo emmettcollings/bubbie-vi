@@ -3,7 +3,6 @@
 
     This test will display the title screen to the user.
     Current TODO List:
-        - Check the output, seems as a few characters are wrong.
         - Figure out a good way to horizontally center the text. (We know how to shift left/right, just want to "automate" it if possible, otherwise we can hardcode it easily.)
         - Figure out how to center it vertically. (No clue how to shift up/down yet...)
 */
@@ -36,8 +35,8 @@ stubend:
 /*
     Data
 */
-l100d   .byte   $c2, $55, $42, $42, $49, $45, $20, $54, $48, $45, $20, $d6, $69 ; Bubbie the VI (Length: 13)
-l100e   .byte   $CE, $4f, $54, $20, $c5, $4e, $4f, $55, $47, $48, $20, $cd, $45, $4d, $4f, $52, $59 ; Not Enough Memory (Length: 17)
+l100d   .byte   $42, $55, $42, $42, $49, $45, $20, $54, $48, $45, $20, $56, $49 ; Bubbie the VI (Length: 13)
+l100e   .byte   $4e, $4f, $54, $20, $45, $4e, $4f, $55, $47, $48, $20, $4d, $45, $4d, $4f, $52, $59 ; Not Enough Memory (Length: 17)
 l100f   .byte   $32, $30, $32, $32 ; 2022 (Length: 4)
 
 /*
