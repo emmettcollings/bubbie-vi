@@ -36,14 +36,13 @@ start:
 checkInput:
     ; get num from 00c5, if its 64 then jump to checkInput again. 
     ; otherwise, jump to printChar routine.
-    lda     $00c5
-    cmp     #$40
-    beq     checkInput
-    jsr     printChar
+    lda     $00c5           ; load num from 00c5
+    cmp     #$40            ; 64 dec = 40 hex
+    beq     checkInput      ; if equal, jump to checkInput
+    jsr     printChar       ; jump to printChar routine
     jmp     checkInput      ; jump to checkInput routine
 
 printChar:
-    ; print the character in $00c5
-    lda     $00c5
-    jsr     CHROUT
-    rts
+    lda     $00c5           ; load num from 00c5
+    jsr     CHROUT          ; jump to kernal character output routine
+    rts                     ; return to caller
