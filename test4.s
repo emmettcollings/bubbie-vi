@@ -9,7 +9,7 @@
     org     $1001           ; mem location assembler assembles to
     dc.w    stubend
     dc.w    1               ; arbitrary line number for BASIC syntax
-    dc.b    $9e, "4109", 0  ; allocate bytes. 4109 = $100d
+    dc.b    $9e, "4353", 0  ; allocate bytes. 4353 = 1101
 
 /*
     Utility Routines
@@ -20,6 +20,7 @@ stubend:
 /*
     Main Routine
 */
+    org     $1101           ; Code region
 start: 
     lda     #$30            ; this is the VIC-20 symbol for '0'
     jsr     $ffd2           ; call CHROUT (The KERNAL routine for printing a character)
