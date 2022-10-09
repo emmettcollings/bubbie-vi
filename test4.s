@@ -21,7 +21,7 @@ stubend:
     Background Color Change Routine
 */
 bgColor:
-    ; bits 0-2 = screen background, bit 3 = inverted or normal, bits 4-7 = background color
+    ; bits 0-2 = screen background, bit 3 = inverted or normal, bits 4-7 = background color (BBBISSSS)
     lda     #$08            ; load accumulator with $08 (leads to black background, blue text)
     sta     $900f           ; set background color
     jmp     bgColor         ; loop forever
