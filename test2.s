@@ -23,17 +23,30 @@ stubend:
 CHROUT  =   $FFD2           ; KERNEL | Output character to channel
 ;RDTIM   =   $FFDE           ; KERNEL | Read system clock (60th of a second)
 
-; Store "!NITSUJ" in memory to be read backwards
-l100d   .byte   $21, $4e, $49, $54, $53, $55, $4a
+
+; "PRESS ANY KEY" [broken cus im shit at this assembler and dont know how to store mem at specific address :(]
+l100d   .byte   $50, $52, $45, $53, $53, $20, $41, $4E, $59, $20, $4B, $45, $59
 
 start: 
     jsr     $e55f           ; clear screen
-    ldx     #$07            ; set x to 7 (7 characters in "!NITSUJ")
+    ldx     #$00
 name:
     lda     l100d-1,x       ; reference name of memory <=> reference start of memory
-    dex
+    inx
     jsr     CHROUT
+    cpx     #$00
     bne     name
+
+nopress:
+    lda     $cb
+    cmp     #$40
+    bne     nopress
+press:
+    lda     $cb
+    cmp     #$40
+    beq     press
+    lda     #$58
+    jsr     CHROUT
     rts
     end                     ; end of assembly code
 
