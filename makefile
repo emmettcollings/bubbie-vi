@@ -7,3 +7,7 @@ test%: test%.s
 	mkdir -p bin
 	mkdir -p bin/test$*
 	$(DASM) test$*.s -obin/test$*/test$*.prg -lbin/test$*/test$*.lst
+
+%: %.s
+	mkdir -p bin
+	$(DASM) $*.s -obin/$*.prg -lbin/$*.lst
