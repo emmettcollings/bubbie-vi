@@ -26,12 +26,16 @@ start:
     lda     #$93            ; clear screen code
     jsr     $ffd2           ; write character to screen
 
-    ; moves cursor down 15 lines
-    lda     #$0f            ; load 15 into accumulator
-    sta     $00d6           ; sets where the cursor is on the screen
+    ; columns: bit 0-6 set # of columns, bit 7 is apart of the video matrix
+    ; rows: bits 1-6 set # of rows, bit 0 sets 8x8 or 8x16 font
+    ; little endian, so its read right to left.
 
-    ; write the character 'R' to the center of the screen
-    lda     #$52            ; load accumulator with 'R'
-    jsr     $ffd2           ; write character to screen
+    ; set to 20 columns
+    lda     #$14            ; load 00010100 into accumulator
+    sta     $9002           ; set # of columns on screen
+
+    ; set to 10 rows, and 8x16 font
+    lda     #$15            ; load 00010101 into accumulator
+    sta     $9003           ; set # of rows on screen
 
     rts                     ; return to caller

@@ -14,3 +14,6 @@ This test just simply clears the screen and prints to the center of the screen.
 
 # Test 6
 This test just simply tests disabling the cursor flash.
+
+# Test 7
+This test just simply is attempting to change screen size.
