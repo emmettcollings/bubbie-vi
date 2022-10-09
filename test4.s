@@ -17,15 +17,6 @@
 stubend:
     dc.w    0               ; insert null byte
 
-/* 
-    Background Color Change Routine
-*/
-bgColor:
-    ; bits 0-2 = screen background, bit 3 = inverted or normal, bits 4-7 = background color (BBBISSSS)
-    lda     #$08            ; load accumulator with $08 (leads to black background, blue text)
-    sta     $900f           ; set background color
-    jmp     bgColor         ; loop forever
-
 /*
     Main Routine
 */
@@ -34,3 +25,12 @@ start:
     jsr     $ffd2           ; call CHROUT (The KERNAL routine for printing a character)
     jsr     bgColor         ; call bgColor subroutine
     rts                     ; return to caller
+
+/* 
+    Background Color Change Routine
+*/
+bgColor:
+    ; bits 0-2 = screen background, bit 3 = inverted or normal, bits 4-7 = background color (BBBISSSS)
+    lda     #$08            ; load accumulator with $08 (leads to black background, blue text)
+    sta     $900f           ; set background color
+    jmp     bgColor         ; loop forever

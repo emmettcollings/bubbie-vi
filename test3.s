@@ -27,6 +27,17 @@ OSC3 = $900c                ; The third oscillator.
 OSCNS = $900d               ; The noise source oscillator.
 OSCVOL = $900e              ; The volume of the oscillators. (bits 0-3 set the volume of all sound channels, bits 4-7 are auxillary color information.)
 
+/*
+    Main Routine
+*/
+start: 
+    ; print 0 to the screen
+    lda     #$30            ; this is the VIC-20 symbol for '0'
+    jsr     CHROUT          ; call CHROUT
+
+    ; call playTone routine
+    jsr     playTone        ; call playTone
+    rts                     ; return to caller
 
 /*
     Sound Routine
@@ -50,15 +61,3 @@ playTone:
     sta     OSCNS
 
     jmp     playTone
-
-/*
-    Main Routine
-*/
-start: 
-    ; print 0 to the screen
-    lda     #$30            ; this is the VIC-20 symbol for '0'
-    jsr     CHROUT          ; call CHROUT
-
-    ; call playTone routine
-    jsr     playTone        ; call playTone
-    rts                     ; return to caller
