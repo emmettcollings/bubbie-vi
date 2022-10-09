@@ -28,8 +28,9 @@ start:
 
     ; moves cursor down 12 lines
     lda     #$0c            ; load 12 into accumulator
-    sta     $00d3           ; shifts the character output to the right by 15 columns    
-    sta     $00d6           ; sets where the cursor is on the screen
+    sta     $00d3           ; shifts the character output to the right by 12 columns (aka this mem location moves left/right)
+    ; todo: figure out how to move cursor down 12 lines before printing text
+    sta     $00d6           ; shifts the cursor down by 12 lines (aka this mem location moves down only for some reason... but it does it after the character is output)
 
     ; write the character 'R' to the center of the screen
     lda     #$52            ; load accumulator with 'R'
