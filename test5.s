@@ -26,8 +26,9 @@ start:
     lda     #$93            ; clear screen code
     jsr     $ffd2           ; write character to screen
 
-    ; moves cursor down 15 lines
-    lda     #$0f            ; load 15 into accumulator
+    ; moves cursor down 12 lines
+    lda     #$0c            ; load 12 into accumulator
+    sta     $00d3           ; shifts the character output to the right by 15 columns    
     sta     $00d6           ; sets where the cursor is on the screen
 
     ; write the character 'R' to the center of the screen
