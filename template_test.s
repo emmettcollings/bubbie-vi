@@ -6,10 +6,10 @@
 /*
     Memory Map
 */
-    org     $1101           ; mem location of code region
+    org     $1001           ; mem location of code region
     dc.w    stubend
     dc.w    1               ; arbitrary line number for BASIC syntax
-    dc.b    $9e, "4353", 0  ; allocate bytes. 4353 = 1101
+    dc.b    $9e, "4109", 0  ; allocate bytes. 4109 = $100d
 
 /* 
     Global Definitions
