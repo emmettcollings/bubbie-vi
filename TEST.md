@@ -17,3 +17,6 @@ This test just simply tests disabling the cursor flash.
 
 # Test 7
 This test just simply is attempting to change screen size and font size. (Results in a lot of garbage on the screen, so I'd have to figure out what's going on there, but it does resize and change font size, so that's good.)
+
+# Test 8
+This test simply waits for input from the user, and then prints it to the screen. (I have 0 clue of the mapping from keyboard to VIC-20, so it's kinda funny seeing random garbage being print on the screen lol.)
