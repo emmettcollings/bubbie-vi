@@ -20,7 +20,7 @@ stubend:
 /*
     Main Routine
 */
-    org     $1101           ; Code region
+    org     $1101           
 start: 
     lda     #$30            ; this is the VIC-20 symbol for '0'
     jsr     $ffd2           ; call CHROUT (The KERNAL routine for printing a character)
