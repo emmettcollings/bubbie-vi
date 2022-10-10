@@ -46,8 +46,8 @@ l100f   .byte   $32, $30, $32, $32 ; 2022 (Length: 4)
 start: 
     jsr     CLS             ; clear screen
 
-    ldx     #$06            ; set x to 4
-    jsr     shiftVerticallyM ; shift text down 4 lines
+    ldx     #$04          ; set x to 4
+    jsr     shiftVerticallyA ; shift text down 4 lines
 
     ldx     #$0d            ; load x with length of string 
     jsr     shiftHorizontallyA ; shift horizontally to center text
@@ -86,12 +86,17 @@ shiftVerticallyM:
     bne     shiftVerticallyM ; if x is not 0, branch to shiftVertically
     rts
 
-shiftVerticallyA:
-    ; todo: later
+shiftVerticallyA: ; todo: figure out why this isn't working as expected. (only shifting down like 2 lines when given 4. should shift down 11 - 2 = 9 lines)
+    lda     #$0b            ; floor(22/2), aka half the screen height
+    stx     $1099           ; arbitrary storage location
+    lsr     $1099           ; divide by 2
+    sbc     $1099           ; subtract a from x
+    ldx     $1099           ; set x to value in $1099
+    jsr     shiftVerticallyM
     rts
 
 shiftHorizontallyA: ; shift horizontally by a number of spaces automatically (aka, user provides the length of the string)
-    lda     #$0b            ; floor(23/2)
+    lda     #$0b            ; floor(23/2), aka roughly half the screen width
     stx     $1099           ; arbitrary storage location
     lsr     $1099           ; divide by 2
     sbc     $1099           ; subtract a from x
