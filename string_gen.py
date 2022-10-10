@@ -72,4 +72,4 @@ for char in string:
 hex_string += '$00' # Add null terminator
 
 # Print hex string
-print(hex_string)
+print(hex_string.upper())
