@@ -49,7 +49,7 @@ press:
 rnd_1:
     jsr     $e094
     lda     $8c
-    and     $a2
+    eor     $a2
     rts
 
 
