@@ -1,5 +1,5 @@
 DASM 	= ~aycock/599.82/bin/dasm
-TESTS	= drawLine.prg
+TESTS	= drawLine.prg drawScreen.prg colors.prg
 
 %.prg: 
 	$(DASM) $< -o$@ -l$*.lst
@@ -13,3 +13,5 @@ clean:
 	rm -rf *.lst *.prg
 
 drawLine.prg: test_drawLine.s
+drawScreen.prg: test_drawScreen.s
+colors.prg: test_colors.s
