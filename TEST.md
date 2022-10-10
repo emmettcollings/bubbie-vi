@@ -10,7 +10,7 @@ This test plays a really annoying sound, it's still being worked on, as I don't 
 This test just changes the background color.
 
 # Test 5
-This test just simply clears the screen and prints to the center of the screen.
+This test just simply clears the screen and prints to the center of the screen. (Not actually complete yet, but I sorta moved on to implementing it in the title screen test)
 
 # Test 6
 This test just simply tests disabling the cursor flash.
