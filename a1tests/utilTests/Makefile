@@ -1,5 +1,5 @@
 DASM 	= ~aycock/599.82/bin/dasm
-TESTS	= tempTest.prg 
+TESTS	= test_readKeys.prg
 
 %.prg: 
 	$(DASM) $< -o$@ -l$*.lst
@@ -12,5 +12,5 @@ all: $(BASICTESTS) $(TESTS)
 clean: 
 	rm -rf *.lst *.prg
 
-tempTest.prg: tempTest.s
+test_readKeys.prg: test_readKeys.s
 
