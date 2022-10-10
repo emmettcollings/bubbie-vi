@@ -15,21 +15,17 @@
 stubend:    
     dc.w    0               ; insert null byte
 
-/*
- * KERNAL routines we need for this subroutine
- */
-CHROUT = $ffd2              ; KERNAL output char
-CHRIN = $ffcf               
-CLS = $e55f                 ; KERNAL clear screen
+LOC = $fb                   ; set up indirect addr in free zero page space
+CHROUT = $ffd2
 
 /* 
  * Our main!
  */
 start: 
     lda     #$00            ; set low order index
-    sta     $fb
+    sta     LOC
     lda     #$11            ; set high order index
-    sta     $fc
+    sta     LOC + $01
 
     ldy     #$00
     jsr     printString
@@ -39,7 +35,7 @@ start:
  * Input: loc of string in y
  */
 printString:
-    lda     ($fb),y         ; load string start location
+    lda     (LOC),y         ; load string start location
     cmp     #0
     beq     done
     jsr     CHROUT
@@ -50,6 +46,6 @@ done:
     rts
 
     org     $1100
-    dc.b    $30,0 ; INPUT: 
+    dc.b    72,69,76,76,79,0 ; HELLO
 
 

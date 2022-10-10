@@ -1,6 +1,5 @@
 DASM 	= ~aycock/599.82/bin/dasm
-BASICTESTS	= tempTest.prg 
-TESTS	=  testTitleScreen.prg testMemory.prg test3.prg
+TESTS	= drawLine.prg
 
 %.prg: 
 	$(DASM) $< -o$@ -l$*.lst
@@ -13,8 +12,4 @@ all: $(BASICTESTS) $(TESTS)
 clean: 
 	rm -rf *.lst *.prg
 
-tempTest.prg: tempTest.s
-testTitleScreen.prg: testTitleScreen.s
-testMemory.prg: testMemory.s
-test3.prg: test3.s
-
+drawLine.prg: test_drawLine.s
