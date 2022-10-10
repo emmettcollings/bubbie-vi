@@ -25,13 +25,12 @@ start:
     jsr     $e55f           ; clear screen
     ldx     #$00            ; set x to 0
 print:
-    lda     msg,x         ; load character from message
+    lda     msg,x          ; load character from message
     inx
     jsr     CHROUT          ; output character
     cmp     #$00            ; compare to null byte
     bne     print           ; if not null, print next character
 
-    jsr     rnd_2           ; call random number generator
 nopress:
     lda     $cb
     cmp     #$40
@@ -40,17 +39,17 @@ press:
     lda     $cb
     cmp     #$40
     beq     press
-    jsr     rnd_2
+    jsr     rnd_1
     and     #$07
     adc     #$30
     jsr     CHROUT
     jmp     nopress
 
-;; Stores 2 random bytes in A and X registers
-rnd_2:
+;; Stores 1 random byte in A register
+rnd_1:
     jsr     $e094
-    ldx     $8c
-    lda     $8d
+    lda     $8c
+    and     $a2
     rts
 
 
