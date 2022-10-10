@@ -2,7 +2,7 @@
  * Draw an entire line of the screen
  */
     processor 6502          ; tell dasm we are writing 6502 asm
-
+    incdir "../../lib"
 /* 
  * Write some BASIC code into memory that will jump to our assembly. User
  * written BASIC gets stored at $1001 so that's where we begin
@@ -16,8 +16,6 @@ stubend:
     dc.w    0               ; insert null byte
 
 LOC = $fd
-SM = $fb ; location of screen mem in zero page
-CHROUT = $ffd2
 
 /* 
  * Our main!
@@ -36,25 +34,12 @@ start:
     jsr     drawLine
     rts                     ; return to caller
 
-/*
- * Input: loc in x
- */
-drawLine:
-    ldy     #$00     
-
-loop:
-    lda     #$1110,y        ; load byte
-    sta     (SM),y          ; store byte in screen mem
-    iny                     ; increment y
-    cpy     #$16
-    beq     done
-    jmp     loop
-
-done:
-    jmp     done
-    rts
+    include "globals.s"
+    include "drawLine.s"
 
     org     $1110
     dc.b    $30,$30,$30,$30,$30,$30,$30,$30
     dc.b    $30,$30,$30,$30,$30,$30,$30,$30
     dc.b    $30,$30,$30,$30,$30,$30
+
+

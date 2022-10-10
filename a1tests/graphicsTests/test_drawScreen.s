@@ -1,5 +1,6 @@
 /*  
- * Draw an entire line of the screen
+ * Draw an entire screen. Essentially just copies over a big chunk of memory
+ * directly to the screen mem
  */
     processor 6502          ; tell dasm we are writing 6502 asm
 
@@ -46,7 +47,7 @@ loop:
     lda     #$1110,y        ; load byte
     sta     (SM),y          ; store byte in screen mem
     iny                     ; increment y
-    cpy     #$16
+    cpy     #$1286
     beq     done
     jmp     loop
 
@@ -57,4 +58,5 @@ done:
     org     $1110
     dc.b    $30,$30,$30,$30,$30,$30,$30,$30
     dc.b    $30,$30,$30,$30,$30,$30,$30,$30
+    dc.b    $30,$30,$30,$30,$30,$30
 

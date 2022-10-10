@@ -5,3 +5,4 @@
  */
 
 CHROUT = $ffd2
+SM = $fb
