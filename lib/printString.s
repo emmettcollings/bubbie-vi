@@ -1,6 +1,6 @@
-    processor 6502
-    include "globals.s"
 /*
+ * Prints out a null terminated string
+ *
  * Input: loc of string in y
  */
 printString:
@@ -13,7 +13,7 @@ printString:
     iny
     jmp     printString
 
-done:
+.done:
     rts
 
     org     $1100
