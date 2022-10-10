@@ -46,6 +46,9 @@ l100f   .byte   $32, $30, $32, $32 ; 2022 (Length: 4)
 start: 
     jsr     CLS             ; clear screen
 
+    ldx     #$06            ; set x to 4
+    jsr     shiftVerticallyM ; shift text down 4 lines
+
     ldx     #$0d            ; load x with length of string 
     jsr     shiftHorizontallyA ; shift horizontally to center text
     ldx     #$00            ; set x register to 0
@@ -66,7 +69,8 @@ start:
     ldx     #$00            ; set x register to 0
     jsr     printYear       ; print year
 
-    rts                     ; return to caller
+justinWantsInf:
+    jmp    justinWantsInf
 
 resetOutput:
     lda     #$11            ; load new line character
@@ -75,8 +79,15 @@ resetOutput:
     sta     $00d3           ; set column shift to 0
     rts
 
-shiftVertically:
-    ; todo: figure out how to shift up/down
+shiftVerticallyM:
+    jsr     printNewLine
+    dex                     ; decrement x
+    cpx     #$00            ; compare x to 0
+    bne     shiftVerticallyM ; if x is not 0, branch to shiftVertically
+    rts
+
+shiftVerticallyA:
+    ; todo: later
     rts
 
 shiftHorizontallyA: ; shift horizontally by a number of spaces automatically (aka, user provides the length of the string)
