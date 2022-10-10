@@ -10,4 +10,5 @@ test%: test%.s
 
 %: %.s
 	mkdir -p bin
-	$(DASM) $*.s -obin/$*.prg -lbin/$*.lst
+	mkdir -p bin/$*
+	$(DASM) $*.s -obin/$*/$*.prg -lbin/$*/$*.lst
