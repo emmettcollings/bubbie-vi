@@ -70,21 +70,21 @@ start:
     jsr     printYear       ; print year
 
 justinWantsInf:
-    jmp    justinWantsInf
+    jmp    justinWantsInf   ; yeeehhhhawwwww!
 
 resetOutput:
     lda     #$11            ; load new line character
     jsr     CHROUT          ; print a newline
     lda     #$00            ; load 0 to reset column shift
     sta     $00d3           ; set column shift to 0
-    rts
+    rts                     ; return to caller
 
 shiftVerticallyM:
-    jsr     printNewLine
+    jsr     printNewLine    ; print new line
     dex                     ; decrement x
     cpx     #$00            ; compare x to 0
     bne     shiftVerticallyM ; if x is not 0, branch to shiftVertically
-    rts
+    rts                     ; return to caller
 
 shiftVerticallyA: ; todo: figure out why this isn't working as expected. (only shifting down like 2 lines when given 4. should shift down 11 - 2 = 9 lines)
     lda     #$0b            ; floor(22/2), aka half the screen height
@@ -92,8 +92,8 @@ shiftVerticallyA: ; todo: figure out why this isn't working as expected. (only s
     lsr     $1099           ; divide by 2
     sbc     $1099           ; subtract a from x
     ldx     $1099           ; set x to value in $1099
-    jsr     shiftVerticallyM
-    rts
+    jsr     shiftVerticallyM ; jump to shiftVerticallyM, which will shift down x lines
+    rts                     ; return to caller
 
 shiftHorizontallyA: ; shift horizontally by a number of spaces automatically (aka, user provides the length of the string)
     lda     #$0b            ; floor(23/2), aka roughly half the screen width
