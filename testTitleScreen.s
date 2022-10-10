@@ -46,11 +46,11 @@ l100f   .byte   $32, $30, $32, $32 ; 2022 (Length: 4)
 start: 
     jsr     CLS             ; clear screen
 
-    ldx     #$06            ; set x to 4
-    jsr     shiftVerticallyM ; shift text down 4 lines
+    ldx     #$04            ; set x to 4
+    jsr     shiftVerticalA  ; shift text down 4 lines
 
     ldx     #$0d            ; load x with length of string 
-    jsr     shiftHorizontallyA ; shift horizontally to center text
+    jsr     shiftHorizontalA ; shift horizontally to center text
     ldx     #$00            ; set x register to 0
     jsr     printGameName   ; print game name
 
@@ -58,47 +58,52 @@ start:
     jsr     printNewLine    ; print new line
 
     ldx     #$11            ; load x with length of string
-    jsr     shiftHorizontallyA ; shift horizontally to center text
+    jsr     shiftHorizontalA ; shift horizontally to center text
     ldx     #$00            ; set x register to 0
     jsr     printTeamName   ; print team name
 
     jsr     resetOutput     ; reset output before next line
 
     ldx     #$04            ; load x with length of string
-    jsr     shiftHorizontallyA ; shift horizontally to center text
+    jsr     shiftHorizontalA ; shift horizontally to center text
     ldx     #$00            ; set x register to 0
     jsr     printYear       ; print year
 
 justinWantsInf:
-    jmp    justinWantsInf
+    jmp    justinWantsInf   ; yeeehhhhawwwww!
 
 resetOutput:
     lda     #$11            ; load new line character
     jsr     CHROUT          ; print a newline
     lda     #$00            ; load 0 to reset column shift
     sta     $00d3           ; set column shift to 0
-    rts
+    rts                     ; return to caller
 
-shiftVerticallyM:
-    jsr     printNewLine
+shiftVerticalM:
+    jsr     printNewLine    ; print new line
     dex                     ; decrement x
     cpx     #$00            ; compare x to 0
-    bne     shiftVerticallyM ; if x is not 0, branch to shiftVertically
-    rts
+    bne     shiftVerticalM  ; if x is not 0, branch to shiftVertically
+    rts                     ; return to caller
 
-shiftVerticallyA:
-    ; todo: later
-    rts
+shiftVerticalA: ; todo: figure out why this isn't working as expected. (only shifting down like 2 lines when given 4. should shift down 11 - 2 = 9 lines)
+    lda     #$0b            ; floor(22/2), aka half the screen height
+    stx     $1099           ; arbitrary storage location
+    lsr     $1099           ; divide by 2
+    sbc     $1099           ; subtract a from x
+    ldx     $1099           ; set x to value in $1099
+    jsr     shiftVerticalM  ; jump to shiftVerticalM, which will shift down x lines
+    rts                     ; return to caller
 
-shiftHorizontallyA: ; shift horizontally by a number of spaces automatically (aka, user provides the length of the string)
-    lda     #$0b            ; floor(23/2)
+shiftHorizontalA: ; shift horizontally by a number of spaces automatically (aka, user provides the length of the string)
+    lda     #$0b            ; floor(23/2), aka roughly half the screen width
     stx     $1099           ; arbitrary storage location
     lsr     $1099           ; divide by 2
     sbc     $1099           ; subtract a from x
     sta     $00d3           ; store column shift
     rts                     ; return to caller
 
-shiftHorizontallyM: ; shift horizontally by a number of spaces manually (aka, user provides the number of spaces to shift)
+shiftHorizontalM: ; shift horizontally by a number of spaces manually (aka, user provides the number of spaces to shift)
     stx     $00d3           ; set column shift to x register
     rts                     ; return to caller
     
