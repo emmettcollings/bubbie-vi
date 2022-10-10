@@ -46,8 +46,8 @@ l100f   .byte   $32, $30, $32, $32 ; 2022 (Length: 4)
 start: 
     jsr     CLS             ; clear screen
 
-    ldx     #$04          ; set x to 4
-    jsr     shiftVerticalA ; shift text down 4 lines
+    ldx     #$04            ; set x to 4
+    jsr     shiftVerticalA  ; shift text down 4 lines
 
     ldx     #$0d            ; load x with length of string 
     jsr     shiftHorizontalA ; shift horizontally to center text
