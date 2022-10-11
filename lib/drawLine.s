@@ -2,7 +2,6 @@
  * Input: offset in y
  */
 drawLine:
-    ldy     #$00     
 
 .loop:
     lda     #$1110,y        ; load byte

@@ -31,6 +31,7 @@ start:
     lda     #$1e            
     sta     SM + $01
 
+    ldy     #$00
     jsr     drawLine
     rts                     ; return to caller
 
