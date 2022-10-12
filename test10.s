@@ -32,63 +32,63 @@ start:
     sta    $900c
 
     ldx    #$6f             
-    stx    $1001            ; $1001 is being repurposed to be a timer. #$01 ~= 2ms
+    stx    $100d
     jsr    timer
     
     lda    #$93             ; D
     sta    $900c
             
-    stx    $1001
+    stx    $100d
     jsr    timer
 
     lda    #$9f             ; E
     sta    $900c
            
-    stx    $1001
+    stx    $100d
     jsr    timer
 
     lda    #$00             ; Rest
     sta    $900c
     ldx    #$63             
-    stx    $1001
+    stx    $100d
     jsr    timer
 
     lda    #$87             ; C
     sta    $900c
 
     ldx    #$6f             
-    stx    $1001
+    stx    $100d
     jsr    timer
     
     lda    #$93             ; D
     sta    $900c
             
-    stx    $1001
+    stx    $100d
     jsr    timer
 
     lda    #$9f             ; E
     sta    $900c
            
-    stx    $1001
+    stx    $100d
     jsr    timer
 
     lda    #$00             ; Rest
     sta    $900c
     ldx    #$63             
-    stx    $1001
+    stx    $100d
     jsr    timer
 
     lda    #$87             ; C
     sta    $900c
 
     ldx    #$6f             
-    stx    $1001
+    stx    $100d
     jsr    timer
     
     lda    #$00             ; Sound Rest
     sta    $900e
     ldx    #$06             
-    stx    $1001
+    stx    $100d
     jsr    timer
     lda    #$01       
     sta    $900e
@@ -97,13 +97,13 @@ start:
     sta    $900c
 
     ldx    #$6f             
-    stx    $1001
+    stx    $100d
     jsr    timer
     
     lda    #$00             ; Sound Rest
     sta    $900e
     ldx    #$06             
-    stx    $1001
+    stx    $100d
     jsr    timer
     lda    #$01       
     sta    $900e
@@ -112,13 +112,13 @@ start:
     sta    $900c
 
     ldx    #$6f             
-    stx    $1001
+    stx    $100d
     jsr    timer
     
     lda    #$00             ; Sound Rest
     sta    $900e
     ldx    #$06             
-    stx    $1001
+    stx    $100d
     jsr    timer
     lda    #$01       
     sta    $900e
@@ -127,13 +127,13 @@ start:
     sta    $900c
 
     ldx    #$6f             
-    stx    $1001
+    stx    $100d
     jsr    timer
     
     lda    #$00             ; Sound Rest
     sta    $900e
     ldx    #$06             
-    stx    $1001
+    stx    $100d
     jsr    timer
     lda    #$01       
     sta    $900e
@@ -142,13 +142,13 @@ start:
     sta    $900c
 
     ldx    #$6f             
-    stx    $1001
+    stx    $100d
     jsr    timer
     
     lda    #$00             ; Sound Rest
     sta    $900e
     ldx    #$06             
-    stx    $1001
+    stx    $100d
     jsr    timer
     lda    #$01       
     sta    $900e
@@ -157,18 +157,18 @@ start:
     sta    $900c
 
     ldx    #$6f             
-    stx    $1001
+    stx    $100d
     jsr    timer
     
     lda    #$00             ; Sound Rest
     sta    $900e
     ldx    #$06             
-    stx    $1001
+    stx    $100d
     jsr    timer
     lda    #$01       
     sta    $900e
 
-    stx    $1001
+    stx    $100d
     jsr    timer
 
     lda    #$00             ; Off
@@ -180,11 +180,11 @@ start:
     TODO: Use less total bytes (2+6)
 */
 timer:           
-    dec     $1002           ; Decrement the timer low-bit
+    dec     $100e           ; Decrement the timer low-bit
     bne     timer           ; If it's not zero, keep going
-    jmp     l1001           ; If it's zero, jump to the timer high-bit
-l1001:
-    dec     $1001           ; Decrement the timer high-bit
+    jmp     l100d           ; If it's zero, jump to the timer high-bit
+l100d:
+    dec     $100d           ; Decrement the timer high-bit
     bne     timer           ; If it's not zero, keep going
     rts                     ; If it's zero, return from subroutine
 
