@@ -6,3 +6,4 @@
 
 CHROUT = $ffd2
 SM = $fb
+CLS = $e55f                 ; kernal clear screen routine
