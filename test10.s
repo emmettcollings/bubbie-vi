@@ -33,63 +33,63 @@ start:
 
     ldx    #$6f             
     stx    $1001            ; $1001 is being repurposed to be a timer. #$01 ~= 2ms
-    jsr    count
+    jsr    timer
     
     lda    #$93             ; D
     sta    $900c
             
     stx    $1001
-    jsr    count
+    jsr    timer
 
     lda    #$9f             ; E
     sta    $900c
            
     stx    $1001
-    jsr    count
+    jsr    timer
 
     lda    #$00             ; Rest
     sta    $900c
     ldx    #$63             
     stx    $1001
-    jsr    count
+    jsr    timer
 
     lda    #$87             ; C
     sta    $900c
 
     ldx    #$6f             
     stx    $1001
-    jsr    count
+    jsr    timer
     
     lda    #$93             ; D
     sta    $900c
             
     stx    $1001
-    jsr    count
+    jsr    timer
 
     lda    #$9f             ; E
     sta    $900c
            
     stx    $1001
-    jsr    count
+    jsr    timer
 
     lda    #$00             ; Rest
     sta    $900c
     ldx    #$63             
     stx    $1001
-    jsr    count
+    jsr    timer
 
     lda    #$87             ; C
     sta    $900c
 
     ldx    #$6f             
     stx    $1001
-    jsr    count
+    jsr    timer
     
     lda    #$00             ; Sound Rest
     sta    $900e
     ldx    #$06             
     stx    $1001
-    jsr    count
+    jsr    timer
     lda    #$01       
     sta    $900e
 
@@ -98,13 +98,13 @@ start:
 
     ldx    #$6f             
     stx    $1001
-    jsr    count
+    jsr    timer
     
     lda    #$00             ; Sound Rest
     sta    $900e
     ldx    #$06             
     stx    $1001
-    jsr    count
+    jsr    timer
     lda    #$01       
     sta    $900e
 
@@ -113,13 +113,13 @@ start:
 
     ldx    #$6f             
     stx    $1001
-    jsr    count
+    jsr    timer
     
     lda    #$00             ; Sound Rest
     sta    $900e
     ldx    #$06             
     stx    $1001
-    jsr    count
+    jsr    timer
     lda    #$01       
     sta    $900e
 
@@ -128,13 +128,13 @@ start:
 
     ldx    #$6f             
     stx    $1001
-    jsr    count
+    jsr    timer
     
     lda    #$00             ; Sound Rest
     sta    $900e
     ldx    #$06             
     stx    $1001
-    jsr    count
+    jsr    timer
     lda    #$01       
     sta    $900e
 
@@ -143,13 +143,13 @@ start:
 
     ldx    #$6f             
     stx    $1001
-    jsr    count
+    jsr    timer
     
     lda    #$00             ; Sound Rest
     sta    $900e
     ldx    #$06             
     stx    $1001
-    jsr    count
+    jsr    timer
     lda    #$01       
     sta    $900e
 
@@ -158,35 +158,34 @@ start:
 
     ldx    #$6f             
     stx    $1001
-    jsr    count
+    jsr    timer
     
     lda    #$00             ; Sound Rest
     sta    $900e
     ldx    #$06             
     stx    $1001
-    jsr    count
+    jsr    timer
     lda    #$01       
     sta    $900e
 
     stx    $1001
-    jsr    count
+    jsr    timer
 
     lda    #$00             ; Off
     sta    $900c
 
 /*
-    This is a comment.
+    The best goddamn timer that's ever existed on pure American hardware god damnit
+    @Author Justin Parker
+    TODO: Use less total bytes (2+6)
 */
-count:
-    jsr     l1002
-    rts
-l1002:           
-    dec     $1002
-    bne     l1002
-    jmp     l1001
+timer:           
+    dec     $1002           ; Decrement the timer low-bit
+    bne     timer           ; If it's not zero, keep going
+    jmp     l1001           ; If it's zero, jump to the timer high-bit
 l1001:
-    dec     $1001
-    bne     l1002
-    rts
+    dec     $1001           ; Decrement the timer high-bit
+    bne     timer           ; If it's not zero, keep going
+    rts                     ; If it's zero, return from subroutine
 
     
