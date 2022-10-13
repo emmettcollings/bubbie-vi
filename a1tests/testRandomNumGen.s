@@ -1,5 +1,6 @@
 /*
-    TEST INFORMATION GOES HERE!
+    An initial attempt at a way to generate a random byte.
+    This test will display a 'random' number from 0 to 8 upon a key press.
 */
 
 /*
@@ -66,5 +67,5 @@ press:
 rnd_1:
     jsr     $e094
     lda     $8c
-    eor     $a2
+    eor     $a2           ; terrible way to do it; it isn't even really random.   TODO: xor seed instead of output
     rts

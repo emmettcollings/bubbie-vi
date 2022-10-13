@@ -1,5 +1,6 @@
 /*
-    TEST INFORMATION GOES HERE!
+    This test is for input detection.
+    It will display another X to the screen every time a key is released AND THEN pressed.
 */
 
 /*

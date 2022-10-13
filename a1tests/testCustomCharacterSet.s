@@ -1,5 +1,7 @@
 /*
-    TEST INFORMATION GOES HERE!
+    This test displays a custom character to the screen.
+    For reference on what the character should look like, it is the character for the video game "Among Us".
+    See: https://www.innersloth.com/games/among-us/
 */
 
 /*
@@ -40,7 +42,7 @@ start:
     lda     #$fc            
     sta     $9005           ; load custom character set
     jsr     $e55f           ; clear screen
-    lda     #$42            ; set x to first character in new character set
+    lda     #$42            ; set a to first character in new character set
     jsr     CHROUT
 
 loop:

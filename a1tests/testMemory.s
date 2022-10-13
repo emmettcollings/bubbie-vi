@@ -1,5 +1,6 @@
 /*
-    TEST INFORMATION GOES HERE!
+    An initial, primative test for attempting to store and read byte data.  It is not a high quality test, but it is a test.
+    This test will print the string "JUSTIN!" to the screen.
 */
 
 /*
@@ -29,6 +30,9 @@ stubend:
 /*
     Data
 */
+
+; Yes, this is interpreted and ran as code, it just so happens to do nothing.
+; Thus, this method is not repeatable.  Too bad!
 l100d   .byte   $21, $4e, $49, $54, $53, $55, $4a ; Store "!NITSUJ" in memory to be read backwards
 
 /*

@@ -1,5 +1,6 @@
 /*
-    TEST INFORMATION GOES HERE!
+    Testing ways to play sound.
+    This test will play a tune.  The tune that's played is 'CDE-CDE-CCDDEE' (My old animal crossing town tune!)
 */
 
 /*
@@ -44,63 +45,63 @@ start:
     sta    $900c
 
     ldx    #$6f             
-    stx    $100d
+    stx    $1001
     jsr    timer
     
     lda    #$93             ; D
     sta    $900c
             
-    stx    $100d
+    stx    $1001
     jsr    timer
 
     lda    #$9f             ; E
     sta    $900c
            
-    stx    $100d
+    stx    $1001
     jsr    timer
 
     lda    #$00             ; Rest
     sta    $900c
     ldx    #$63             
-    stx    $100d
+    stx    $1001
     jsr    timer
 
     lda    #$87             ; C
     sta    $900c
 
     ldx    #$6f             
-    stx    $100d
+    stx    $1001
     jsr    timer
     
     lda    #$93             ; D
     sta    $900c
             
-    stx    $100d
+    stx    $1001
     jsr    timer
 
     lda    #$9f             ; E
     sta    $900c
            
-    stx    $100d
+    stx    $1001
     jsr    timer
 
     lda    #$00             ; Rest
     sta    $900c
     ldx    #$63             
-    stx    $100d
+    stx    $1001
     jsr    timer
 
     lda    #$87             ; C
     sta    $900c
 
     ldx    #$6f             
-    stx    $100d
+    stx    $1001
     jsr    timer
     
     lda    #$00             ; Sound Rest
     sta    $900e
     ldx    #$06             
-    stx    $100d
+    stx    $1001
     jsr    timer
     lda    #$01       
     sta    $900e
@@ -109,13 +110,13 @@ start:
     sta    $900c
 
     ldx    #$6f             
-    stx    $100d
+    stx    $1001
     jsr    timer
     
     lda    #$00             ; Sound Rest
     sta    $900e
     ldx    #$06             
-    stx    $100d
+    stx    $1001
     jsr    timer
     lda    #$01       
     sta    $900e
@@ -124,13 +125,13 @@ start:
     sta    $900c
 
     ldx    #$6f             
-    stx    $100d
+    stx    $1001
     jsr    timer
     
     lda    #$00             ; Sound Rest
     sta    $900e
     ldx    #$06             
-    stx    $100d
+    stx    $1001
     jsr    timer
     lda    #$01       
     sta    $900e
@@ -139,13 +140,13 @@ start:
     sta    $900c
 
     ldx    #$6f             
-    stx    $100d
+    stx    $1001
     jsr    timer
     
     lda    #$00             ; Sound Rest
     sta    $900e
     ldx    #$06             
-    stx    $100d
+    stx    $1001
     jsr    timer
     lda    #$01       
     sta    $900e
@@ -154,13 +155,13 @@ start:
     sta    $900c
 
     ldx    #$6f             
-    stx    $100d
+    stx    $1001
     jsr    timer
     
     lda    #$00             ; Sound Rest
     sta    $900e
     ldx    #$06             
-    stx    $100d
+    stx    $1001
     jsr    timer
     lda    #$01       
     sta    $900e
@@ -169,18 +170,18 @@ start:
     sta    $900c
 
     ldx    #$6f             
-    stx    $100d
+    stx    $1001
     jsr    timer
     
     lda    #$00             ; Sound Rest
     sta    $900e
     ldx    #$06             
-    stx    $100d
+    stx    $1001
     jsr    timer
     lda    #$01       
     sta    $900e
 
-    stx    $100d
+    stx    $1001
     jsr    timer
 
     lda    #$00             ; Off
@@ -189,15 +190,14 @@ start:
 /*
     The best goddamn timer that's ever existed on pure American hardware god damnit
     @Author Justin Parker
-    TODO: Use less total bytes (2+6)
+    
+    @Usage Set $1001 to the number of ~2ms intervals you want to wait for.
 */
 timer:           
-    dec     $100e           ; Decrement the timer low-bit
-    bne     timer           ; If it's not zero, keep going
-    jmp     l100d           ; If it's zero, jump to the timer high-bit
-l100d:
-    dec     $100d           ; Decrement the timer high-bit
-    bne     timer           ; If it's not zero, keep going
-    rts                     ; If it's zero, return from subroutine
+    dec     $1002           ; Decrement the timer low-bit
+    bne     timer           ; If the low-bit is not zero, keep decrementing the low-bit
+    dec     $1001           ; If the low-bit is zero, decrement the timer high-bit
+    bne     timer           ; If the high-bit is not zero, keep decrementing the low-bit
+    rts                     ; If the high-bit is zero, return from subroutine
 
     
