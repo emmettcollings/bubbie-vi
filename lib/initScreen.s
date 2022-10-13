@@ -13,7 +13,7 @@ size   = $100     ; 256 byte offset so that we write both halves of mem chunk
 
 initScreen:
     lda     #$08        ; Define screen colour and background (black)
-    sta     VICCOLOR
+    sta     CLRREG
 
     lda     #$2a        ; going with dots for now
     jsr     clearScreen
@@ -22,6 +22,8 @@ initScreen:
     jsr     colorScreen
 
     rts
+
+    SUBROUTINE
 
 /*
  * Writes whatever is in a to 512 bytes of screen mem
