@@ -42,6 +42,7 @@ start:
     jsr     $e55f           ; clear screen
     lda     #$42            ; set x to first character in new character set
     jsr     CHROUT
+
 loop:
     jmp     loop
 
