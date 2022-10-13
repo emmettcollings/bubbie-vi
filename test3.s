@@ -1,27 +1,41 @@
 /*
-    This is a comment.
+    TEST INFORMATION GOES HERE!
 */
-    processor 6502 ; This informs DASM we are assembling for the 6502 processor.
 
-/* 
- * Write some BASIC code into memory that will jump to our assembly. User
- * written BASIC gets stored at $1001 so that's where we begin
- */
-    org     $1001           ; mem location assembler assembles to
+/*
+    Processor Information
+*/
+    processor   6502        ; This informs the assembler that we are using a 6502 processor.
+
+/*
+    Memory Map
+*/
+    org     $1001           ; mem location of user region
     dc.w    stubend
     dc.w    1               ; arbitrary line number for BASIC syntax
     dc.b    $9e, "4353", 0  ; allocate bytes. 4353 = 1101
 
-stubend:    
+/* 
+    Global Definitions
+*/
+CHROUT = $ffd2              ; kernal character output routine
+
+/*
+    Utility Routines
+*/
+stubend:
     dc.w    0               ; insert null byte
 
-CHROUT  =   $FFD2           ; KERNEL | Output character to channel
+/*
+    Data
+*/
+pad         .byte   $00, $00, $00 ; Padding so that next byte is on 8 byte boundary
+chr_1       .byte   $00, $3c, $26, $56, $56, $26, $3c, $24 ; sus?
 
-pad         .byte   $00, $00, $00   ; Padding so that next byte is on 8 byte boundary
-
-chr_1       .byte   $00, $3c, $26, $56, $56, $26, $3c, $24  ; sus?
-
-    org     $1101           ; Code region
+/*
+    Main Routine
+*/
+    org     $1101           ; mem location of code region
 start: 
     lda     #$fc            
     sta     $9005           ; load custom character set

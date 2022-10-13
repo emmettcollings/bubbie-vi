@@ -1,14 +1,15 @@
 DASM = dasm/dasm.exe
 
-all:
-	echo "Compiling... (Will implement this later to compile all the files)"
+SRCS = $(wildcard *.s)
+PROGS = $(patsubst %.s,%,$(SRCS))
 
-test%: test%.s
-	mkdir -p bin
-	mkdir -p bin/test$*
-	$(DASM) test$*.s -obin/test$*/test$*.prg -lbin/test$*/test$*.lst
+all: $(PROGS)
 
 %: %.s
 	mkdir -p bin
-	mkdir -p bin/$*
-	$(DASM) $*.s -obin/$*/$*.prg -lbin/$*/$*.lst
+	mkdir -p bin/$@
+	@echo "Building $@ using $<, the built PRG is located at /bin/$@!"
+	$(DASM) $< -obin/$@/$@.prg -lbin/$@/$@.lst
+
+clean:
+	rm -rf bin

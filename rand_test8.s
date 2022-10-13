@@ -1,4 +1,8 @@
 /*
+    TEST INFORMATION GOES HERE!
+*/
+
+/*
     Processor Information
 */
     processor   6502        ; This informs the assembler that we are using a 6502 processor.

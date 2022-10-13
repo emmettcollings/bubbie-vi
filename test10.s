@@ -1,29 +1,41 @@
 /*
-    This is a comment.
+    TEST INFORMATION GOES HERE!
 */
-    processor 6502 ; This informs DASM we are assembling for the 6502 processor.
 
-/* 
- * Write some BASIC code into memory that will jump to our assembly. User
- * written BASIC gets stored at $1001 so that's where we begin
- */
-    org     $1001           ; mem location assembler assembles to
+/*
+    Processor Information
+*/
+    processor   6502        ; This informs the assembler that we are using a 6502 processor.
+
+/*
+    Memory Map
+*/
+    org     $1001           ; mem location of user region
     dc.w    stubend
     dc.w    1               ; arbitrary line number for BASIC syntax
     dc.b    $9e, "4353", 0  ; allocate bytes. 4353 = 1101
 
-stubend:    
-    dc.w    0               ; insert null byte
+/* 
+    Global Definitions
+*/
+CHROUT = $ffd2              ; kernal character output routine
 
-CHROUT  =   $FFD2           ; KERNEL | Output character to channel
+/*
+    Utility Routines
+*/
+stubend:
+    dc.w    0               ; insert null byte
 
 ; OSC1 = $900a                ; The first oscillator.
 ; OSC2 = $900b                ; The second oscillator.
 ; OSC3 = $900c                ; The third oscillator.
 ; OSCNS = $900d               ; The noise source oscillator.
 ; OSCVOL = $900e              ; The volume of the oscillators. (bits 0-3 set the volume of all sound channels, bits 4-7 are auxillary color information.)
-    org     $1101           ; mem location assembler assembles to
 
+/*
+    Main Routine
+*/
+    org     $1101           ; mem location of code region
 start:
     lda    #$01
     sta    $900e
