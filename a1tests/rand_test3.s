@@ -54,7 +54,7 @@ playTone:
     lda     #15
     sta     OSCVOL
 
-    lda     #$ff ; ff causes the oscillator to play the tone, but anything else is just a blip.
+    lda     #$ff            ; ff causes the oscillator to play the tone, but anything else is just a blip.
     sta     OSC1
     sta     OSC2
     sta     OSC3

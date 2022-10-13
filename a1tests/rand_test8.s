@@ -22,7 +22,7 @@
 /* 
     Global Definitions
 */
-CHROUT = $ffd2          ; kernal character output routine 
+CHROUT = $ffd2              ; kernal character output routine 
 
 /*
     Utility Routines

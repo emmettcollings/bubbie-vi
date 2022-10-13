@@ -41,7 +41,7 @@ start:
     ldx     #$00            ; set x to 0
 
 print:
-    lda     msg,x          ; load character from message
+    lda     msg,x           ; load character from message
     inx
     jsr     CHROUT          ; output character
     cmp     #$00            ; compare to null byte
