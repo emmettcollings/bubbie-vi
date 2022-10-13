@@ -1,5 +1,5 @@
 /*
-    TEST INFORMATION GOES HERE!
+    This test simply disables the cursor flashing.
 */
 
 /*

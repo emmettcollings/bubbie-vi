@@ -1,5 +1,6 @@
 /*
-    TEST INFORMATION GOES HERE!
+    This test does nothing besides print '0' to the screen.
+    Its main purpose is to ensure everything is working correctly.
 */
 
 /*

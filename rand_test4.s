@@ -1,5 +1,5 @@
 /*
-    TEST INFORMATION GOES HERE!
+    This test will simply change the background color to black, and the text color to blue.
 */
 
 /*

@@ -1,5 +1,9 @@
 /*
-    TEST INFORMATION GOES HERE!
+    This test simply waits for user input and then prints it to the screen.
+
+    I've got no clue of the mapping from my physical keyboard to the VIC-20 keybindings, 
+    so it's kinda funny just seeing random characters appear on the screen. All be it, 
+    the same characters over and over again, when you press the same key.
 */
 
 /*

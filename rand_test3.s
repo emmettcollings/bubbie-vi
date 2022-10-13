@@ -1,5 +1,6 @@
 /*
-    TEST INFORMATION GOES HERE!
+    This test simply plays a really, really, really, annoying sound.
+    It actually gave me a mini heart attack when I first ran it... :)
 */
 
 /*

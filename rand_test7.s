@@ -1,5 +1,8 @@
 /*
-    TEST INFORMATION GOES HERE!
+    This test simply changes the screen size and font size.
+
+    It results in a lot of garbage on the screen, however, the main point was to test
+    that we can change the screen size and font size, which we can.
 */
 
 /*
