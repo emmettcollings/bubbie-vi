@@ -1,4 +1,11 @@
 /*
+    This test was originally designed to print the character 'R' in the middle of the screen,
+    but it was sort of deprecated as we moved this test to the 'test2' test.
+
+    We're just leaving this test here for now, but it's not really being used.
+*/
+
+/*
     Processor Information
 */
     processor   6502        ; This informs the assembler that we are using a 6502 processor.

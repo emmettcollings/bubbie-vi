@@ -3,8 +3,7 @@
 
     This test will display the title screen to the user.
     Current TODO List:
-        - Figure out a good way to horizontally center the text. (We know how to shift left/right, just want to "automate" it if possible, otherwise we can hardcode it easily.)
-        - Figure out how to center it vertically. (No clue how to shift up/down yet...)
+        - Figure out what's wrong with the math for the vertical centering of the title (It's not correct)
 */
 
 /*

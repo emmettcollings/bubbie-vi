@@ -1,4 +1,9 @@
 /*
+    This test simply plays a really, really, really, annoying sound.
+    It actually gave me a mini heart attack when I first ran it... :)
+*/
+
+/*
     Processor Information
 */
     processor   6502        ; This informs the assembler that we are using a 6502 processor.
@@ -6,10 +11,10 @@
 /*
     Memory Map
 */
-    org     $1001           ; mem location assembler assembles to
+    org     $1001           ; mem location of user region
     dc.w    stubend
     dc.w    1               ; arbitrary line number for BASIC syntax
-    dc.b    $9e, "4109", 0  ; allocate bytes. 4109 = $100d
+    dc.b    $9e, "4353", 0  ; allocate bytes. 4353 = 1101
 
 /*
     Utility Routines
@@ -30,6 +35,7 @@ OSCVOL = $900e              ; The volume of the oscillators. (bits 0-3 set the v
 /*
     Main Routine
 */
+    org     $1101           ; mem location of code region
 start: 
     ; print 0 to the screen
     lda     #$30            ; this is the VIC-20 symbol for '0'
@@ -48,7 +54,7 @@ playTone:
     lda     #15
     sta     OSCVOL
 
-    lda     #$ff ; ff causes the oscillator to play the tone, but anything else is just a blip.
+    lda     #$ff            ; ff causes the oscillator to play the tone, but anything else is just a blip.
     sta     OSC1
     sta     OSC2
     sta     OSC3

@@ -1,6 +1,7 @@
 /*
-    This test is for input detection.
-    It will display another X to the screen every time a key is released AND THEN pressed.
+    This test displays a custom character to the screen.
+    For reference on what the character should look like, it is the character for the video game "Among Us".
+    See: https://www.innersloth.com/games/among-us/
 */
 
 /*
@@ -30,32 +31,20 @@ stubend:
 /*
     Data
 */
-l100d   .byte   $50, $52, $45, $53, $53, $20, $41, $4E, $59, $20, $4B, $45, $59
+pad         .byte   $00, $00, $00 ; Padding so that next byte is on 8 byte boundary
+chr_1       .byte   $00, $3c, $26, $56, $56, $26, $3c, $24 ; sus?
 
 /*
     Main Routine
 */
     org     $1101           ; mem location of code region
 start: 
+    lda     #$fc            
+    sta     $9005           ; load custom character set
     jsr     $e55f           ; clear screen
-    ldx     #$00
-
-name:
-    lda     l100d-1,x       ; reference name of memory <=> reference start of memory
-    inx
+    lda     #$42            ; set a to first character in new character set
     jsr     CHROUT
-    cpx     #$0e
-    bne     name
 
-nopress:
-    lda     $cb
-    cmp     #$40
-    bne     nopress
+loop:
+    jmp     loop
 
-press:
-    lda     $cb
-    cmp     #$40
-    beq     press
-    lda     #$58
-    jsr     CHROUT
-    jmp     nopress

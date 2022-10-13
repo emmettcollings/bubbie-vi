@@ -1,4 +1,11 @@
 /*
+    This test simply changes the screen size and font size.
+
+    It results in a lot of garbage on the screen, however, the main point was to test
+    that we can change the screen size and font size, which we can.
+*/
+
+/*
     Processor Information
 */
     processor   6502        ; This informs the assembler that we are using a 6502 processor.
@@ -31,11 +38,13 @@ start:
     ; little endian, so its read right to left.
 
     ; set to 20 columns
-    lda     #$14            ; load 00010100 into accumulator
+    ; lda     #$14            ; load 00010100 (hex is 14) into accumulator
+    lda     #%00010100      ; load 00010100 into accumulator
     sta     $9002           ; set # of columns on screen
 
     ; set to 10 rows, and 8x16 font
-    lda     #$15            ; load 00010101 into accumulator
+    ; lda     #$15            ; load 00010101 (hex is 15) into accumulator
+    lda     #%00010101      ; load 00010101 into accumulator
     sta     $9003           ; set # of rows on screen
 
     rts                     ; return to caller
