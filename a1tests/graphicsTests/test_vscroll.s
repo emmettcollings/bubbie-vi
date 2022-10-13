@@ -34,6 +34,24 @@ start:
     sta     SCRMEM
     sta     CURR
 
+downLoop:
+    cmp     #$d2
+    bmi     upLoop
+    jsr     scrollDown
+    lda     CURR
+    adc     #$15
+    sta     CURR
+    jmp     downLoop
+
+upLoop:
+    cmp     #$00
+    bmi     wait
+    jsr     scrollUp
+    lda     CURR
+    sbc     #$15
+    sta     CURR    
+    jmp     upLoop
+
 wait:
     nop
     jmp     wait
