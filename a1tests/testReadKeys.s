@@ -3,7 +3,7 @@
  * case the program exits to the OS
  */
     processor 6502          ; tell dasm we are writing 6502 asm
-    incdir "../../lib"
+    incdir "../lib"
 /* 
  * Write some BASIC code into memory that will jump to our assembly. User
  * written BASIC gets stored at $1001 so that's where we begin

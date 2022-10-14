@@ -2,7 +2,7 @@
  * See if we can modify the colors of chars bg and border
  */
     processor 6502          ; tell dasm we are writing 6502 asm
-    incdir "../../lib"
+    incdir "../lib"
 
 /* 
  * Write some BASIC code into memory that will jump to our assembly. User
