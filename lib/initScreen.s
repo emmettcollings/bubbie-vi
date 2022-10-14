@@ -3,7 +3,7 @@
  * fills screen with a character and sets the char colors to green
  */
 
-CLRREG = $900F    ; Screen and border colours
+VICCOLOR = $900F    ; Screen and border colours
 SCRMEM = $1E00    ; screen memory address
 CLRMEM = $9600
 size   = $100     ; 256 byte offset so that we write both halves of mem chunk
