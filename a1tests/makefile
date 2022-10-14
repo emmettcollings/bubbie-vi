@@ -1,4 +1,4 @@
-DASM = ../dasm/dasm.exe
+DASM = ~aycock/599.82/bin/dasm
 
 SRCS = $(wildcard *.s)
 PROGS = $(patsubst %.s,%,$(SRCS))
