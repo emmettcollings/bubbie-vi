@@ -1,12 +1,15 @@
-DASM 	= ~aycock/599.82/bin/dasm
+DASM = ../dasm/dasm.exe
 
-%.prg: 
-	$(DASM) $< -o$@ -l$*.lst
-	cp $@ ~/www/gameName.prg
-	chmod 644 ~/www/gameName.prg
-	echo https://pages.cpsc.ucalgary.ca/~emmett.collings1/gameName.prg
+SRCS = $(wildcard *.s)
+PROGS = $(patsubst %.s,%,$(SRCS))
 
-all: test.prg
+all: $(PROGS)
 
-test.prg: test.s
+%: %.s
+	mkdir -p bin
+	mkdir -p bin/$@
+	@echo "Building $@ using $<, the built PRG is located at /bin/$@!"
+	$(DASM) $< -obin/$@/$@.prg -lbin/$@/$@.lst
 
+clean:
+	rm -rf bin
