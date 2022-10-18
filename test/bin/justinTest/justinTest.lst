@@ -1,0 +1,126 @@
+------- FILE justinTest.s LEVEL 1 PASS 2
+      1  155a ????						;/*
+      2  155a ????						;    Processor Information
+      3  155a ????						;*/
+      4  155a ????				      processor	6502	; This informs the assembler that we are using a 6502 processor.
+      5  155a ????
+      6  155a ????						;/*
+      7  155a ????						;    Memory Map
+      8  155a ????						;*/
+      9  1001					      org	$1001	; mem location of user region
+     10  1001		       0b 10		      dc.w	stubend
+     11  1003		       01 00		      dc.w	1	; arbitrary line number for BASIC syntax
+     12  1005		       9e 34 33 35*	      dc.b	$9e, "4353", 0	; allocate bytes. 4353 = 1101
+     13  100b
+     14  100b							;/*
+     15  100b							;    Global Definitions
+     16  100b							;*/
+     17  100b		       ff d2	   CHROUT     =	$ffd2	; kernal character output routine
+     18  100b
+     19  100b							;/*
+     20  100b							;    Utility Routines
+     21  100b							;*/
+     22  100b				   stubend
+     23  100b		       00 00		      dc.w	0	; insert null byte
+     24  100d
+     25  100d							;/*
+     26  100d							;    Data
+     27  100d							;*/
+     28  100d		       00 00 00    pad	      .byte.b	$00, $00, $00	; Padding so that next byte is on 8 byte boundary
+     29  1010		       00 3c 26 56*chr_1      .byte.b	$00, $3c, $26, $56, $56, $26, $3c, $24	; sus?
+     30  1018		       00 00 00 00*chr_1_b    .byte.b	$00, $00, $00, $00, $00, $00, $00, $00	; sus_v2?
+     31  1020
+     32  1020							;/*
+     33  1020							;    Main Routine
+     34  1020							;*/
+     35  1101					      org	$1101	; mem location of code region
+     36  1101				   start
+     37  1101		       a9 fc		      lda	#$fc
+     38  1103		       8d 05 90 	      sta	$9005	; load custom character set
+     39  1106		       20 5f e5 	      jsr	$e55f	; clear screen
+     40  1109		       a9 42		      lda	#$42	; set a to first character in new character set
+     41  110b		       20 d2 ff 	      jsr	CHROUT
+     42  110e		       a9 43		      lda	#$43	; set a to second character in new character set
+     43  1110		       20 d2 ff 	      jsr	CHROUT
+     44  1113
+     45  1113				   loop
+     46  1113		       a9 4f		      lda	#$4f
+     47  1115		       85 fc		      sta	$fc
+     48  1117		       20 51 15 	      jsr	timer
+     49  111a
+     50  111a		       a9 01		      lda	#$01
+     51  111c		       85 fc		      sta	$fc
+     52  111e		       a9 7e		      lda	#$7e
+     53  1120		       85 fb		      sta	$fb
+     54  1122
+     55  1122		       20 01 15 	      jsr	charShift_H
+     56  1125		       4c 13 11 	      jmp	loop
+     57  1128
+     58  1128
+     59  1128							;/*
+     60  1128							;    A.M.O.G.U.S. Character Horizontal Shift Routine (Advanced Movement Of Graphics Using Shift)
+     61  1128							;    @ Author:   Justin Parker
+     62  1128							;
+     63  1128							;    @ Usage:	  $fb	  | Direction to shift character (3e = <-, 7e = ->)
+     64  1128							;		  $fc	  | Identifier of first linked character to shift ($1**0)
+     65  1128							;
+     66  1128							;    @ Location specific:    Yes
+     67  1128							;
+     68  1128							;    # Notes:	  Requires linked characters to be stored at $1**0 and $1**8 respectively
+     69  1128							;    35 Bytes
+     70  1128							;*/
+     71  1501					      org	$1501	; Memory location of new code region
+     72  1501				   charShift_H
+     73  1501		       a2 03		      ldx	#$03	; Initialize counter while also setting up for ror, since high nibble = 0 is all that matters
+     74  1503		       86 fd		      stx	$fd	; Store value in $fd for ror
+     75  1505		       a5 fc		      lda	$fc	; Load identifier of first character to shift
+     76  1507
+     77  1507		       38		      sec		; Set carry flag to ensure high nibble is 1
+     78  1508		       66 fc		      ror	$fc	; Shift high nibble of identifier
+     79  150a				   cS_P 		; Perform shift 3 times
+     80  150a		       66 fd		      ror	$fd	; --^
+     81  150c		       46 fc		      lsr	$fc	; --^
+     82  150e		       ca		      dex		; --^
+     83  150f		       d0 f9		      bne	cS_P	; --*
+     84  1511		       66 fd		      ror	$fd	; Shift low nibble of identifier
+     85  1513
+     86  1513		       a5 fd		      lda	$fd	; Load low byte of the address
+     87  1515		       8d 31 15 	      sta	$1531	; Store value in $1501 + 30 [SMC]
+     88  1518		       8d 34 15 	      sta	$1534	; Store value in $1501 + 33 [SMC]
+     89  151b
+     90  151b		       a5 fc		      lda	$fc	; Load high byte of the address
+     91  151d		       8d 30 15 	      sta	$1530	; Store value in $1501 + 2f [SMC]
+     92  1520		       09 08		      ora	#$08	; Add 8 to the low address byte (Since the linked character is stored at $***0)
+     93  1522		       8d 33 15 	      sta	$1533	; Store value in $1501 + 32 [SMC]
+     94  1525
+     95  1525		       a5 fb		      lda	$fb	; Get the instruction byte
+     96  1527		       8d 2f 15 	      sta	$152f	; Store in the instruction byte for the first ROx [SMC]
+     97  152a		       8d 32 15 	      sta	$1532	; Store in the instruction byte for the second ROx [SMC]
+     98  152d
+     99  152d		       a2 07		      ldx	#$07	; Set x to 7 (The number of bytes needed to ROx)
+    100  152f				   cS_L
+    101  152f		       7e 34 12 	      ror	$1234,x	; Code to be modified (1/2)
+    102  1532		       3e 65 87 	      rol	$8765,x	; Code to be modified (2/2)
+    103  1535		       ca		      dex		; Decrement x
+    104  1536		       d0 f7		      bne	cS_L	; Branch if x got underflowed
+    105  1538		       60		      rts
+    106  1539
+    107  1539							;/*
+    108  1539							;    The best goddamn timer that's ever existed on pure American hardware god damnit
+    109  1539							;    @ Author:   Justin Parker
+    110  1539							;
+    111  1539							;    ~ Usage:	  $fc | Number of ~2ms intervals you want to wait for.
+    112  1539							;
+    113  1539							;    & Location specific:    No
+    114  1539							;
+    115  1539							;    # Notes: This is a blocking timer. It will not return until the timer has expired.
+    116  1539							;    9 Bytes
+    117  1539							;*/
+    118  1551					      org	$1551	; Memory location of new code region
+    119  1551				   timer
+    120  1551		       c6 fb		      dec	$fb	; Decrement the timer low-bit (is not initially set, so timing may vary by up to 1 cycle)
+    121  1553		       d0 fc		      bne	timer	; If the low-bit isn't zero, keep decrementing the low-bit
+    122  1555		       c6 fc		      dec	$fc	; If the low-bit is zero, decrement the timer high-bit
+    123  1557		       d0 f8		      bne	timer	; If the high-bit isn't zero, keep decrementing the low-bit
+    124  1559		       60		      rts		; If the high-bit is zero, return from subroutine
+    125  155a

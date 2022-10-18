@@ -48,53 +48,65 @@ loop:
     jsr     timer
 
     lda     #$10
-    sta     $1514
+    sta     $151c
     lda     #$10
-    sta     $1513
+    sta     $151b
+    lda     #$3e
+    sta     $00
 
-    jsr     charShift_R
+    jsr     charShift_H
     jmp     loop
 
 
 /*
-    A.M.O.G.U.S. Character Right Shift Routine (Advanced Movement Of Graphics Using Shift)
-    @ Author: Justin Parker
+    A.M.O.G.U.S. Character Horizontal Shift Routine (Advanced Movement Of Graphics Using Shift)
+    @ Author:   Justin Parker
     
-    @ Usage: Set $1501+13, $1501+12 to the low and high address bytes of the character to be shifted respectively
-    @ Location specific: Yes
+    @ Usage:    $1501+b | high byte of character to shift's address
+                $1501+c | low byte of character to shift's address
+                $00     | Direction to shift character (3e = rol, 7e = ror)
+        
+    @ Location specific:    Yes
 
-    # Notes: Requires linked characters to be stored at $***0 and $***8 respectively
+    # Notes:    Requires linked characters to be stored at $***0 and $***8 respectively
+    35 Bytes
 */
     org     $1501           ; mem location of new code region
-charShift_R:
-    lda     $1514           ; Get the high address byte
-    sta     $1517           ; Store in the second ROR address byte
-    lda     $1513           ; Get the low address byte
+charShift_H:
+    lda     $151c           ; Get the high address byte
+    sta     $151f           ; Store in the second ROx address byte
+    lda     $151b           ; Get the low address byte
     ora     #$08            ; Add 8 to the low address byte (Since the linked character is stored at $***0)
-    sta     $1516           ; Store in the first ROR address byte
+    sta     $151e           ; Store in the first ROx address byte
+    lda     $00             ; Get the instruction byte
+    sta     $151a           ; Store in the instruction byte for the first ROx
+    sta     $151d           ; Store in the instruction byte for the second ROx
 
-    ldx     #$07            ; Set x to 7 (The number of bytes needed to ROR)
+    ldx     #$07            ; Set x to 7 (The number of bytes needed to ROx)
     clc                     ; Clear the carry flag
-csr_loop:
-    ror     $fffe,x         ; ff,fe == 1514,1513
-    ror     $fffe,x         ; ff,fe == 1517,1516
+csh_loop:
+    ror     $1234,x         ; Code to be modified (1/2)
+    rol     $8765,x         ; Code to be modified (2/2)
     dex                     ; Decrement x
-    bne     csr_loop        ; Branch if x got underflowed
+    bne     csh_loop        ; Branch if x got underflowed
     rts                     
 
 /*
     The best goddamn timer that's ever existed on pure American hardware god damnit
-    @ Author: Justin Parker
+    @ Author:   Justin Parker
 
-    @ Usage: Set $1001 to the number of ~2ms intervals you want to wait for.
-    @ Location specific: No
+    ~ Usage:    $01 | Number of ~2ms intervals you want to wait for.
+
+    & Location specific:    No
 
     # Notes: This is a blocking timer. It will not return until the timer has expired.
+    9 Bytes
 */
+    org     $1551           ; mem location of new code region
 timer:           
-    dec     $1002           ; Decrement the timer low-bit (is not initially set, so timing may vary by up to 1 cycle)
+    dec     $00             ; Decrement the timer low-bit (is not initially set, so timing may vary by up to 1 cycle)
     bne     timer           ; If the low-bit hasn't been underflowed, keep decrementing the low-bit
-    dec     $1001           ; If the low-bit has been underflowed, decrement the timer high-bit
+    dec     $01             ; If the low-bit has been underflowed, decrement the timer high-bit
     bne     timer           ; If the high-bit hasn't been underflowed, keep decrementing the low-bit
     rts                     ; If the high-bit has been underflowed, return from subroutine
 
