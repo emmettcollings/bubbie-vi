@@ -119,8 +119,8 @@ charShift_H:
 
     ldx     #$07            ; Set x to 7 (The number of bytes needed to ROx)
 cS_L:
-    ror     $1234,x         ; Code to be modified (1/2)
-    rol     $8765,x         ; Code to be modified (2/2)
+    ror     $1234,x         ; Rotate out of first character [SMC]
+    rol     $8765,x         ; Rotate into second character [SMC]
     dex                     ; Decrement x
     bne     cS_L            ; Branch if x got underflowed
     rts                     

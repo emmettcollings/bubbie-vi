@@ -120,8 +120,8 @@
     119  151e
     120  151e		       a2 07		      ldx	#$07	; Set x to 7 (The number of bytes needed to ROx)
     121  1520				   cS_L
-    122  1520		       7e 34 12 	      ror	$1234,x	; Code to be modified (1/2)
-    123  1523		       3e 65 87 	      rol	$8765,x	; Code to be modified (2/2)
+    122  1520		       7e 34 12 	      ror	$1234,x	; Rotate out of first character [SMC]
+    123  1523		       3e 65 87 	      rol	$8765,x	; Rotate into second character [SMC]
     124  1526		       ca		      dex		; Decrement x
     125  1527		       d0 f7		      bne	cS_L	; Branch if x got underflowed
     126  1529		       60		      rts
