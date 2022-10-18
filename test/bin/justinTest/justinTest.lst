@@ -1,12 +1,12 @@
 ------- FILE justinTest.s LEVEL 1 PASS 2
-      1  155a ????						;/*
-      2  155a ????						;    Processor Information
-      3  155a ????						;*/
-      4  155a ????				      processor	6502	; This informs the assembler that we are using a 6502 processor.
-      5  155a ????
-      6  155a ????						;/*
-      7  155a ????						;    Memory Map
-      8  155a ????						;*/
+      1  158a ????						;/*
+      2  158a ????						;    Processor Information
+      3  158a ????						;*/
+      4  158a ????				      processor	6502	; This informs the assembler that we are using a 6502 processor.
+      5  158a ????
+      6  158a ????						;/*
+      7  158a ????						;    Memory Map
+      8  158a ????						;*/
       9  1001					      org	$1001	; mem location of user region
      10  1001		       0b 10		      dc.w	stubend
      11  1003		       01 00		      dc.w	1	; arbitrary line number for BASIC syntax
@@ -43,84 +43,144 @@
      42  110e		       a9 43		      lda	#$43	; set a to second character in new character set
      43  1110		       20 d2 ff 	      jsr	CHROUT
      44  1113
-     45  1113				   loop
-     46  1113		       a9 4f		      lda	#$4f
-     47  1115		       85 fc		      sta	$fc
-     48  1117		       20 51 15 	      jsr	timer
-     49  111a
-     50  111a		       a9 01		      lda	#$01
+     45  1113		       a9 01		      lda	#$01
+     46  1115		       85 fc		      sta	$fc
+     47  1117		       20 61 15 	      jsr	characterFlip
+     48  111a
+     49  111a				   loop
+     50  111a		       a9 4f		      lda	#$4f
      51  111c		       85 fc		      sta	$fc
-     52  111e		       a9 7e		      lda	#$7e
-     53  1120		       85 fb		      sta	$fb
-     54  1122
-     55  1122		       20 01 15 	      jsr	charShift_H
-     56  1125		       4c 13 11 	      jmp	loop
-     57  1128
-     58  1128
-     59  1128							;/*
-     60  1128							;    A.M.O.G.U.S. Character Horizontal Shift Routine (Advanced Movement Of Graphics Using Shift)
-     61  1128							;    @ Author:   Justin Parker
-     62  1128							;
-     63  1128							;    @ Usage:	  $fb	  | Direction to shift character (3e = <-, 7e = ->)
-     64  1128							;		  $fc	  | Identifier of first linked character to shift ($1**0)
-     65  1128							;
-     66  1128							;    @ Location specific:    Yes
-     67  1128							;
-     68  1128							;    # Notes:	  Requires linked characters to be stored at $1**0 and $1**8 respectively
-     69  1128							;    35 Bytes
-     70  1128							;*/
-     71  1501					      org	$1501	; Memory location of new code region
-     72  1501				   charShift_H
-     73  1501		       a2 03		      ldx	#$03	; Initialize counter while also setting up for ror, since high nibble = 0 is all that matters
-     74  1503		       86 fd		      stx	$fd	; Store value in $fd for ror
-     75  1505		       a5 fc		      lda	$fc	; Load identifier of first character to shift
-     76  1507
-     77  1507		       38		      sec		; Set carry flag to ensure high nibble is 1
-     78  1508		       66 fc		      ror	$fc	; Shift high nibble of identifier
-     79  150a				   cS_P 		; Perform shift 3 times
-     80  150a		       66 fd		      ror	$fd	; --^
-     81  150c		       46 fc		      lsr	$fc	; --^
-     82  150e		       ca		      dex		; --^
-     83  150f		       d0 f9		      bne	cS_P	; --*
-     84  1511		       66 fd		      ror	$fd	; Shift low nibble of identifier
-     85  1513
-     86  1513		       a5 fd		      lda	$fd	; Load low byte of the address
-     87  1515		       8d 31 15 	      sta	$1531	; Store value in $1501 + 30 [SMC]
-     88  1518		       8d 34 15 	      sta	$1534	; Store value in $1501 + 33 [SMC]
-     89  151b
-     90  151b		       a5 fc		      lda	$fc	; Load high byte of the address
-     91  151d		       8d 30 15 	      sta	$1530	; Store value in $1501 + 2f [SMC]
-     92  1520		       09 08		      ora	#$08	; Add 8 to the low address byte (Since the linked character is stored at $***0)
-     93  1522		       8d 33 15 	      sta	$1533	; Store value in $1501 + 32 [SMC]
-     94  1525
-     95  1525		       a5 fb		      lda	$fb	; Get the instruction byte
-     96  1527		       8d 2f 15 	      sta	$152f	; Store in the instruction byte for the first ROx [SMC]
-     97  152a		       8d 32 15 	      sta	$1532	; Store in the instruction byte for the second ROx [SMC]
-     98  152d
-     99  152d		       a2 07		      ldx	#$07	; Set x to 7 (The number of bytes needed to ROx)
-    100  152f				   cS_L
-    101  152f		       7e 34 12 	      ror	$1234,x	; Code to be modified (1/2)
-    102  1532		       3e 65 87 	      rol	$8765,x	; Code to be modified (2/2)
-    103  1535		       ca		      dex		; Decrement x
-    104  1536		       d0 f7		      bne	cS_L	; Branch if x got underflowed
-    105  1538		       60		      rts
-    106  1539
-    107  1539							;/*
-    108  1539							;    The best goddamn timer that's ever existed on pure American hardware god damnit
-    109  1539							;    @ Author:   Justin Parker
-    110  1539							;
-    111  1539							;    ~ Usage:	  $fc | Number of ~2ms intervals you want to wait for.
-    112  1539							;
-    113  1539							;    & Location specific:    No
-    114  1539							;
-    115  1539							;    # Notes: This is a blocking timer. It will not return until the timer has expired.
-    116  1539							;    9 Bytes
-    117  1539							;*/
-    118  1551					      org	$1551	; Memory location of new code region
-    119  1551				   timer
-    120  1551		       c6 fb		      dec	$fb	; Decrement the timer low-bit (is not initially set, so timing may vary by up to 1 cycle)
-    121  1553		       d0 fc		      bne	timer	; If the low-bit isn't zero, keep decrementing the low-bit
-    122  1555		       c6 fc		      dec	$fc	; If the low-bit is zero, decrement the timer high-bit
-    123  1557		       d0 f8		      bne	timer	; If the high-bit isn't zero, keep decrementing the low-bit
-    124  1559		       60		      rts		; If the high-bit is zero, return from subroutine
-    125  155a
+     52  111e		       20 51 15 	      jsr	timer
+     53  1121
+     54  1121		       a9 01		      lda	#$01
+     55  1123		       85 fc		      sta	$fc
+     56  1125		       a9 7e		      lda	#$7e
+     57  1127		       85 fb		      sta	$fb
+     58  1129
+     59  1129		       20 01 15 	      jsr	charShift_H
+     60  112c		       4c 1a 11 	      jmp	loop
+     61  112f
+     62  112f							;/*
+     63  112f							;    Character identifier decoder - Support
+     64  112f							;    @ Author:   Justin Parker
+     65  112f							;
+     66  112f							;    ~ Usage:	  $fc | Character identifier byte
+     67  112f							;
+     68  112f							;    & Location specific:    No
+     69  112f							;    % Alters:   $fc, $fd
+     70  112f							;
+     71  112f							;    # Notes: Returns low byte in $fd and high byte in $fc
+     72  112f							;    19 Bytes
+     73  112f							;*/
+     74  1491					      org	$1491	; Memory location of new code region
+     75  1491				   charMidbyte
+     76  1491		       a2 03		      ldx	#$03	; Initialize counter while also setting up for ror, since high nibble = 0 is all that matters
+     77  1493		       86 fd		      stx	$fd	; Store value in $fd for ror
+     78  1495		       a5 fc		      lda	$fc	; Load identifier of first character to shift
+     79  1497
+     80  1497		       38		      sec		; Set carry flag to ensure high nibble is 1
+     81  1498		       66 fc		      ror	$fc	; Shift high nibble of identifier
+     82  149a				   cM_L 		; Perform shift 3 times
+     83  149a		       66 fd		      ror	$fd	; --^
+     84  149c		       46 fc		      lsr	$fc	; --^
+     85  149e		       ca		      dex		; --^
+     86  149f		       d0 f9		      bne	cM_L	; --*
+     87  14a1		       66 fd		      ror	$fd	; Shift low nibble of identifier
+     88  14a3		       60		      rts
+     89  14a4
+     90  14a4							;/*
+     91  14a4							;    A.M.O.G.U.S. Character Horizontal Shift Routine (Advanced Movement Of Graphics Using Shift)
+     92  14a4							;    @ Author:   Justin Parker
+     93  14a4							;
+     94  14a4							;    ~ Usage:	  $fb	  | Direction to shift character (3e = <-, 7e = ->)
+     95  14a4							;		  $fc	  | Identifier of first linked character to shift ($1**0)
+     96  14a4							;
+     97  14a4							;    & Location specific:    Yes
+     98  14a4							;    % Alters:   $fb, $fc, $fd
+     99  14a4							;
+    100  14a4							;    # Notes:	  Requires linked characters to be stored at $1**0 and $1**8 respectively
+    101  14a4							;    41 Bytes
+    102  14a4							;*/
+    103  1501					      org	$1501	; Memory location of new code region
+    104  1501				   charShift_H
+    105  1501		       20 91 14 	      jsr	charMidbyte	; Format the identifier into low and high address bytes
+    106  1504
+    107  1504		       a5 fd		      lda	$fd	; Load low byte of the address
+    108  1506		       8d 22 15 	      sta	$1522	; Store value in $1501 + 30 [SMC]
+    109  1509		       8d 25 15 	      sta	$1525	; Store value in $1501 + 33 [SMC]
+    110  150c
+    111  150c		       a5 fc		      lda	$fc	; Load high byte of the address
+    112  150e		       8d 21 15 	      sta	$1521	; Store value in $1501 + 2f [SMC]
+    113  1511		       09 08		      ora	#$08	; Add 8 to the low address byte (Since the linked character is stored at $***0)
+    114  1513		       8d 24 15 	      sta	$1524	; Store value in $1501 + 32 [SMC]
+    115  1516
+    116  1516		       a5 fb		      lda	$fb	; Get the instruction byte
+    117  1518		       8d 20 15 	      sta	$1520	; Store value in $1501 + 2e [SMC]
+    118  151b		       8d 23 15 	      sta	$1523	; Store value in $1501 + 31 [SMC]
+    119  151e
+    120  151e		       a2 07		      ldx	#$07	; Set x to 7 (The number of bytes needed to ROx)
+    121  1520				   cS_L
+    122  1520		       7e 34 12 	      ror	$1234,x	; Code to be modified (1/2)
+    123  1523		       3e 65 87 	      rol	$8765,x	; Code to be modified (2/2)
+    124  1526		       ca		      dex		; Decrement x
+    125  1527		       d0 f7		      bne	cS_L	; Branch if x got underflowed
+    126  1529		       60		      rts
+    127  152a
+    128  152a							;/*
+    129  152a							;    The best goddamn timer that's ever existed on pure American hardware god damnit
+    130  152a							;    @ Author:   Justin Parker
+    131  152a							;
+    132  152a							;    ~ Usage:	  $fc | Number of ~2ms intervals you want to wait for
+    133  152a							;
+    134  152a							;    & Location specific:    No
+    135  152a							;    % Alters:   $fb, $fc
+    136  152a							;
+    137  152a							;    # Notes: This is a blocking timer. It will not return until the timer has expired.
+    138  152a							;    9 Bytes
+    139  152a							;*/
+    140  1551					      org	$1551	; Memory location of new code region
+    141  1551				   timer
+    142  1551		       c6 fb		      dec	$fb	; Decrement the timer low-bit (is not initially set, so timing may vary by up to 1 cycle)
+    143  1553		       d0 fc		      bne	timer	; If the low-bit isn't zero, keep decrementing the low-bit
+    144  1555		       c6 fc		      dec	$fc	; If the low-bit is zero, decrement the timer high-bit
+    145  1557		       d0 f8		      bne	timer	; If the high-bit isn't zero, keep decrementing the low-bit
+    146  1559		       60		      rts		; If the high-bit is zero, return from subroutine
+    147  155a
+    148  155a							;/*
+    149  155a							;    E.J.E.C.T Character Flip Routine (Efficient Juggling of Expelled Characters)
+    150  155a							;    @ Author:   Justin Parker
+    151  155a							;
+    152  155a							;    ~ Usage:	  $fc | Character identifier byte
+    153  155a							;
+    154  155a							;    & Location specific:    Yes
+    155  155a							;    % Alters:   $fc, $fd
+    156  155a							;
+    157  155a							;    # Notes:
+    158  155a							;    41 bytes
+    159  155a							;*/
+    160  1561					      org	$1561	; Memory location of new code region
+    161  1561				   characterFlip
+    162  1561		       20 91 14 	      jsr	charMidbyte	; Format the identifier into low and high address bytes
+    163  1564
+    164  1564		       a2 07		      ldx	#$07	; Set x to 7 (The number of bytes we need to flip)
+    165  1566		       a5 fd		      lda	$fd	; Load low byte of the address
+    166  1568		       8d 77 15 	      sta	$1577	; Store value in $1561 + 16 [SMC]
+    167  156b		       8d 84 15 	      sta	$1584	; Store value in $1561 + 23 [SMC]
+    168  156e		       a5 fc		      lda	$fc	; Load high byte of the address
+    169  1570		       8d 78 15 	      sta	$1578	; Store value in $1561 + 17 [SMC]
+    170  1573		       8d 85 15 	      sta	$1585	; Store value in $1561 + 24 [SMC]
+    171  1576				   rB_P
+    172  1576		       bd 65 87 	      lda	$8765,x	; Load byte to be flipped [SMC]
+    173  1579		       85 fc		      sta	$fc	; Store copy of byte to be flipped in $fc
+    174  157b		       a0 08		      ldy	#$08	; Set y to 8 (The number of bits we need to flip)
+    175  157d				   rB_L
+    176  157d		       46 fc		      lsr	$fc	; Math stuff to get it to work
+    177  157f		       2a		      rol		; --^
+    178  1580		       88		      dey		; --^
+    179  1581		       d0 fa		      bne	rB_L	; --*
+    180  1583		       9d 65 87 	      sta	$8765,x	; Store flipped byte [SMC]
+    181  1586		       ca		      dex		; Decrement x
+    182  1587		       d0 ed		      bne	rB_P
+    183  1589		       60		      rts
+    184  158a
+    185  158a

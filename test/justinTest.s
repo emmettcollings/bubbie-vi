@@ -42,6 +42,10 @@ start:
     lda     #$43            ; set a to second character in new character set
     jsr     CHROUT
 
+    lda     #$01
+    sta     $fc
+    jsr     characterFlip
+
 loop:
     lda     #$4f
     sta     $fc
@@ -55,46 +59,63 @@ loop:
     jsr     charShift_H
     jmp     loop
 
-
 /*
-    A.M.O.G.U.S. Character Horizontal Shift Routine (Advanced Movement Of Graphics Using Shift)
+    Character identifier decoder - Support
     @ Author:   Justin Parker
     
-    @ Usage:    $fb     | Direction to shift character (3e = <-, 7e = ->)
-                $fc     | Identifier of first linked character to shift ($1**0)
-        
-    @ Location specific:    Yes
+    ~ Usage:    $fc | Character identifier byte
 
-    # Notes:    Requires linked characters to be stored at $1**0 and $1**8 respectively
-    56 Bytes
+    & Location specific:    No
+    % Alters:   $fc, $fd
+
+    # Notes: Returns low byte in $fd and high byte in $fc
+    19 Bytes
 */
-    org     $1501           ; Memory location of new code region
-charShift_H:
+    org     $1491           ; Memory location of new code region
+charMidbyte:
     ldx     #$03            ; Initialize counter while also setting up for ror, since high nibble = 0 is all that matters
     stx     $fd             ; Store value in $fd for ror
     lda     $fc             ; Load identifier of first character to shift
 
     sec                     ; Set carry flag to ensure high nibble is 1
     ror     $fc             ; Shift high nibble of identifier
-cS_P:                       ; Perform shift 3 times     
+cM_L:                       ; Perform shift 3 times     
     ror     $fd             ; --^
     lsr     $fc             ; --^
     dex                     ; --^
-    bne     cS_P            ; --*
+    bne     cM_L            ; --*
     ror     $fd             ; Shift low nibble of identifier
+    rts
+
+/*
+    A.M.O.G.U.S. Character Horizontal Shift Routine (Advanced Movement Of Graphics Using Shift)
+    @ Author:   Justin Parker
+    
+    ~ Usage:    $fb     | Direction to shift character (3e = <-, 7e = ->)
+                $fc     | Identifier of first linked character to shift ($1**0)
+
+    & Location specific:    Yes
+    % Alters:   $fb, $fc, $fd
+
+    # Notes:    Requires linked characters to be stored at $1**0 and $1**8 respectively
+    41 Bytes
+*/
+    org     $1501           ; Memory location of new code region
+charShift_H:
+    jsr     charMidbyte     ; Format the identifier into low and high address bytes
 
     lda     $fd             ; Load low byte of the address
-    sta     $1531           ; Store value in $1501 + 30 [SMC]
-    sta     $1534           ; Store value in $1501 + 33 [SMC]
+    sta     $1522           ; Store value in $1501 + 30 [SMC]
+    sta     $1525           ; Store value in $1501 + 33 [SMC]
 
     lda     $fc             ; Load high byte of the address
-    sta     $1530           ; Store value in $1501 + 2f [SMC]
+    sta     $1521           ; Store value in $1501 + 2f [SMC]
     ora     #$08            ; Add 8 to the low address byte (Since the linked character is stored at $***0)
-    sta     $1533           ; Store value in $1501 + 32 [SMC]
+    sta     $1524           ; Store value in $1501 + 32 [SMC]
 
     lda     $fb             ; Get the instruction byte
-    sta     $152f           ; Store in the instruction byte for the first ROx [SMC]
-    sta     $1532           ; Store in the instruction byte for the second ROx [SMC]
+    sta     $1520           ; Store value in $1501 + 2e [SMC]
+    sta     $1523           ; Store value in $1501 + 31 [SMC]
 
     ldx     #$07            ; Set x to 7 (The number of bytes needed to ROx)
 cS_L:
@@ -108,9 +129,10 @@ cS_L:
     The best goddamn timer that's ever existed on pure American hardware god damnit
     @ Author:   Justin Parker
 
-    ~ Usage:    $fc | Number of ~2ms intervals you want to wait for.
+    ~ Usage:    $fc | Number of ~2ms intervals you want to wait for
 
     & Location specific:    No
+    % Alters:   $fb, $fc
 
     # Notes: This is a blocking timer. It will not return until the timer has expired.
     9 Bytes
@@ -122,4 +144,42 @@ timer:
     dec     $fc             ; If the low-bit is zero, decrement the timer high-bit
     bne     timer           ; If the high-bit isn't zero, keep decrementing the low-bit
     rts                     ; If the high-bit is zero, return from subroutine
+
+/*
+    E.J.E.C.T Character Flip Routine (Efficient Juggling of Expelled Characters)
+    @ Author:   Justin Parker
+
+    ~ Usage:    $fc | Character identifier byte
+
+    & Location specific:    Yes
+    % Alters:   $fc, $fd
+
+    # Notes: 
+    41 bytes
+*/
+    org     $1561           ; Memory location of new code region
+characterFlip:
+    jsr     charMidbyte     ; Format the identifier into low and high address bytes
+
+    ldx     #$07            ; Set x to 7 (The number of bytes we need to flip)
+    lda     $fd             ; Load low byte of the address
+    sta     $1577           ; Store value in $1561 + 16 [SMC]
+    sta     $1584           ; Store value in $1561 + 23 [SMC]
+    lda     $fc             ; Load high byte of the address
+    sta     $1578           ; Store value in $1561 + 17 [SMC]
+    sta     $1585           ; Store value in $1561 + 24 [SMC]
+rB_P:
+    lda     $8765,x         ; Load byte to be flipped [SMC]
+    sta     $fc             ; Store copy of byte to be flipped in $fc
+    ldy     #$08            ; Set y to 8 (The number of bits we need to flip)
+rB_L:
+    lsr     $fc             ; Math stuff to get it to work
+    rol                     ; --^
+    dey                     ; --^            
+    bne     rB_L            ; --*
+    sta     $8765,x         ; Store flipped byte [SMC]
+    dex                     ; Decrement x
+    bne     rB_P            
+    rts
+
 
