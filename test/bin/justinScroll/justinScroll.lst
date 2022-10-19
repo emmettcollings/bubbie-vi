@@ -1,0 +1,113 @@
+------- FILE justinScroll.s LEVEL 1 PASS 2
+      1  155a ????						;/*
+      2  155a ????						;    Processor Information
+      3  155a ????						;*/
+      4  155a ????				      processor	6502	; This informs the assembler that we are using a 6502 processor.
+      5  155a ????
+      6  155a ????						;/*
+      7  155a ????						;    Memory Map
+      8  155a ????						;*/
+      9  1001					      org	$1001	; mem location of user region
+     10  1001		       0b 10		      dc.w	stubend
+     11  1003		       01 00		      dc.w	1	; arbitrary line number for BASIC syntax
+     12  1005		       9e 34 33 35*	      dc.b	$9e, "4353", 0	; allocate bytes. 4353 = 1101
+     13  100b
+     14  100b							;/*
+     15  100b							;    Global Definitions
+     16  100b							;*/
+     17  100b		       ff d2	   CHROUT     =	$ffd2	; kernal character output routine
+     18  100b
+     19  100b							;/*
+     20  100b							;    Utility Routines
+     21  100b							;*/
+     22  100b				   stubend
+     23  100b		       00 00		      dc.w	0	; insert null byte
+     24  100d
+     25  100d							;/*
+     26  100d							;    Data
+     27  100d							;*/
+     28  100d		       00 00 00    pad	      .byte.b	$00, $00, $00	; Padding so that next byte is on 8 byte boundary
+     29  1010		       00 3c 26 56*chr_1      .byte.b	$00, $3c, $26, $56, $56, $26, $3c, $24	; sus?
+     30  1018		       00 00 00 00*chr_1_b    .byte.b	$00, $00, $00, $00, $00, $00, $00, $00	; sus_v2?
+     31  1020
+     32  1020							;/*
+     33  1020							;    Main Routine
+     34  1020							;*/
+     35  1101					      org	$1101	; mem location of code region
+     36  1101				   start
+     37  1101		       a9 fc		      lda	#$fc
+     38  1103		       8d 05 90 	      sta	$9005	; load custom character set
+     39  1106		       20 5f e5 	      jsr	$e55f	; clear screen
+     40  1109		       a9 42		      lda	#$42	; set a to first character in new character set
+     41  110b		       20 d2 ff 	      jsr	CHROUT
+     42  110e		       a9 43		      lda	#$43	; set a to second character in new character set
+     43  1110		       20 d2 ff 	      jsr	CHROUT
+     44  1113
+     45  1113				   loop
+     46  1113		       a9 4f		      lda	#$4f
+     47  1115		       8d 01 10 	      sta	$1001
+     48  1118		       20 51 15 	      jsr	timer
+     49  111b
+     50  111b		       a9 10		      lda	#$10
+     51  111d		       8d 1c 15 	      sta	$151c
+     52  1120		       a9 10		      lda	#$10
+     53  1122		       8d 1b 15 	      sta	$151b
+     54  1125		       a9 3e		      lda	#$3e
+     55  1127		       85 00		      sta	$00
+     56  1129
+     57  1129		       20 01 15 	      jsr	charShift_H
+     58  112c		       4c 13 11 	      jmp	loop
+     59  112f
+     60  112f
+     61  112f							;/*
+     62  112f							;    A.M.O.G.U.S. Character Horizontal Shift Routine (Advanced Movement Of Graphics Using Shift)
+     63  112f							;    @ Author:   Justin Parker
+     64  112f							;
+     65  112f							;    @ Usage:	  $1501+b | high byte of character to shift's address
+     66  112f							;		  $1501+c | low byte of character to shift's address
+     67  112f							;		  $00	  | Direction to shift character (3e = rol, 7e = ror)
+     68  112f							;
+     69  112f							;    @ Location specific:    Yes
+     70  112f							;
+     71  112f							;    # Notes:	  Requires linked characters to be stored at $***0 and $***8 respectively
+     72  112f							;    35 Bytes
+     73  112f							;*/
+     74  1501					      org	$1501	; mem location of new code region
+     75  1501				   charShift_H
+     76  1501		       ad 1c 15 	      lda	$151c	; Get the high address byte
+     77  1504		       8d 1f 15 	      sta	$151f	; Store in the second ROx address byte
+     78  1507		       ad 1b 15 	      lda	$151b	; Get the low address byte
+     79  150a		       09 08		      ora	#$08	; Add 8 to the low address byte (Since the linked character is stored at $***0)
+     80  150c		       8d 1e 15 	      sta	$151e	; Store in the first ROx address byte
+     81  150f		       a5 00		      lda	$00	; Get the instruction byte
+     82  1511		       8d 1a 15 	      sta	$151a	; Store in the instruction byte for the first ROx
+     83  1514		       8d 1d 15 	      sta	$151d	; Store in the instruction byte for the second ROx
+     84  1517
+     85  1517		       a2 07		      ldx	#$07	; Set x to 7 (The number of bytes needed to ROx)
+     86  1519		       18		      clc		; Clear the carry flag
+     87  151a				   csh_loop
+     88  151a		       7e 34 12 	      ror	$1234,x	; Code to be modified (1/2)
+     89  151d		       3e 65 87 	      rol	$8765,x	; Code to be modified (2/2)
+     90  1520		       ca		      dex		; Decrement x
+     91  1521		       d0 f7		      bne	csh_loop	; Branch if x got underflowed
+     92  1523		       60		      rts
+     93  1524
+     94  1524							;/*
+     95  1524							;    The best goddamn timer that's ever existed on pure American hardware god damnit
+     96  1524							;    @ Author:   Justin Parker
+     97  1524							;
+     98  1524							;    ~ Usage:	  $01 | Number of ~2ms intervals you want to wait for.
+     99  1524							;
+    100  1524							;    & Location specific:    No
+    101  1524							;
+    102  1524							;    # Notes: This is a blocking timer. It will not return until the timer has expired.
+    103  1524							;    9 Bytes
+    104  1524							;*/
+    105  1551					      org	$1551	; mem location of new code region
+    106  1551				   timer
+    107  1551		       c6 01		      dec	$01	; Decrement the timer low-bit (is not initially set, so timing may vary by up to 1 cycle)
+    108  1553		       d0 fc		      bne	timer	; If the low-bit hasn't been underflowed, keep decrementing the low-bit
+    109  1555		       c6 00		      dec	$00	; If the low-bit has been underflowed, decrement the timer high-bit
+    110  1557		       d0 f8		      bne	timer	; If the high-bit hasn't been underflowed, keep decrementing the low-bit
+    111  1559		       60		      rts		; If the high-bit has been underflowed, return from subroutine
+    112  155a
