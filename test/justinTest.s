@@ -43,12 +43,16 @@ start:
     lda     #$43+2*(2-1)    ; set a to second character in new character set
     jsr     CHROUT
 
+loop:
+    lda     #$7f
+    sta     $fc
+    jsr     timer
+
     lda     #$02
     sta     $fd
     jsr     characterFlip
 
-loop:
-    lda     #$4f
+    lda     #$7f
     sta     $fc
     jsr     timer
 
@@ -59,6 +63,10 @@ loop:
 
     jsr     charShift_V
     
+    lda     #$02
+    sta     $fd
+    jsr     characterFlip
+
     jmp     loop
 
 /*
@@ -143,7 +151,7 @@ cS_hC:
 charShift_V:
     jsr     charMidbyte     ; Format the identifier into low and high address bytes
 
-    lda     #$07            ; Initialize with up (A must be set to 7 for the direction to be up)
+    lda     #$07            ; Initialize with up (A must be set to $07 for the direction to be up)
     ldx     #$88
     ldy     #$ff      
 
@@ -158,7 +166,7 @@ cS_vA:
     stx     $1531+$36       ; Store value in org + $36 [SMC]
     sty     $1531+$38       ; Store value in org + $38 [SMC]
 
-    ldx     #$02            ; Initialize counter for the loop to transfer ROx instructions
+    ldx     #$02            ; Initialize counter for the loop
 cS_vB:
     lda     $fb,x           ; Get the op code and character address bytes from zero page
     sta     $1531+$2f,x     ; Store value in org + $2f [SMC]
