@@ -124,7 +124,7 @@
     123  1519		       7e 34 12 	      ror	$1234,x	; Rotate out of first character [SMC]
     124  151c		       3e 65 87 	      rol	$8765,x	; Rotate into second character [SMC]
     125  151f		       ca		      dex		; Decrement x
-    126  1520		       10 f7		      bpl	cS_hC	; Branch if x got underflowed
+    126  1520		       10 f7		      bpl	cS_hC	; If x hasn't underflowed, loop
     127  1522		       60		      rts
     128  1523
     129  1523							;/*

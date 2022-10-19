@@ -123,7 +123,7 @@ cS_hC:
     ror     $1234,x         ; Rotate out of first character [SMC]
     rol     $8765,x         ; Rotate into second character [SMC]
     dex                     ; Decrement x
-    bpl     cS_hC           ; Branch if x got underflowed
+    bpl     cS_hC           ; If x hasn't underflowed, loop
     rts                     
 
 /*
