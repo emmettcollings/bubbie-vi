@@ -73,12 +73,14 @@ loop:
     E.J.E.Ct. Character Identifier Decoder Routine (Efficient Juggling of Expelled Characters)
     @ Author:   Justin Parker
     
-    ~ Usage:    $fd | Character identifier byte
+    ~ Usage:    -> $fd | Character identifier byte
+                <- $fc | Character low byte
+                <- $fd | Character high byte
 
     & Location specific:    No
     % Alters:   $fc, $fd
 
-    # Notes: Returns low byte in $fc and high byte in $fd
+    # Notes: ---
     19 Bytes
 */
     org     $1491           ; Memory location of new code region
@@ -101,8 +103,8 @@ cM_L:                       ; Perform shift 3 times
     A.M.O.G.U.S. Character Horizontal Shift Routine (Advanced Movement Of Graphics Using Shift)
     @ Author:   Justin Parker
     
-    ~ Usage:    $fb     | Direction to shift character (3e = <-, 7e = ->)
-                $fc     | Identifier of first linked character to shift ($1**0)
+    ~ Usage:    -> $fb | Direction to shift character (3e = <-, 7e = ->)
+                -> $fc | Identifier of first linked character to shift ($1**0)
 
     & Location specific:    Yes
     % Alters:   $fb, $fc, $fd
@@ -138,8 +140,8 @@ cS_hC:
     V.E.N.T.E.D. Character Vertical Shift Routine (Vertical Ejection of Narrowly-Tiled Entity Data)
     @ Author:   Justin Parker
     
-    ~ Usage:    $fb     | Direction to shift character (07 = ^, else = v)
-                $fc     | Identifier of first linked character to shift ($1**0)
+    ~ Usage:    -> $fb | Direction to shift character (07 = ^, else = v)
+                -> $fc | Identifier of first linked character to shift ($1**0)
 
     & Location specific:    Yes
     % Alters:   $fb, $fc, $fd
@@ -200,7 +202,7 @@ cS_vD:
     The best goddamn timer that's ever existed on pure American hardware god damnit
     @ Author:   Justin Parker
 
-    ~ Usage:    $fc | Number of ~2ms intervals you want to wait for
+    ~ Usage:    -> $fc | Number of ~2ms intervals you want to wait for
 
     & Location specific:    No
     % Alters:   $fb, $fc
@@ -220,7 +222,7 @@ timer:
     I.M.P.O.S.T.O.R. Character Flip Routine (Invertion Movement of Pre-Ordered, Shifted Tables Of Rasters)
     @ Author:   Justin Parker
 
-    ~ Usage:    $fc | Character identifier byte
+    ~ Usage:    -> $fc | Character identifier byte
 
     & Location specific:    Yes
     % Alters:   $fc, $fd
