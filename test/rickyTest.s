@@ -37,32 +37,30 @@ customA     .byte   $18, $24, $42, $7E, $42, $42, $42, $00 ; custom character A 
     org     $1101           ; mem location of code region
 start: 
     jsr     CLS             ; clear screen
-    lda     #$bc            ; funny colors 
-    jmp     colorShift
+    jmp     prepareColor
     rts                     ; return to caller
 
 prepareColor:
     ; in this routine, we will set the screen color, border color, character color, and aux color
     ; once we have set the colors, we will store them in the appropriate memory locations
     ; after that we will call another method to print characters to the screen (which will all require new bit patterns due to the new colors)
+    lda     #$00            ; set screen color to black
+    sta     $900f           ; store screen color in memory
+    lda     #$01            ; set border color to white
+    sta     $900e           ; store border color in memory 
 
 /*
  * Sets the contents of the border and background color register
  * Input: border and background color bits in a
  */
-colorShift:
-    ; color stuff
-    sta     $900f           ; location of screen and border color stuff (bits 4-7 are border color, bits 0-2 are background color)
-    lda     #$55            ; funny colors
-    sta     $900e           ; bits 0-3 set volume of all sounds, bits 4-7 set aux color
-
+printCharacters:
     ; custom character A
     lda     #$fc            
     sta     $9005           ; load custom character set
     jsr     $e55f           ; clear screen
     lda     #$42            ; set a to first character in new character set
     jsr     CHROUT
-    jmp     colorShift
+    jmp     printCharacters
 
 /* 
     Note Section

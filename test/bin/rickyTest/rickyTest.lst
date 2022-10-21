@@ -38,34 +38,35 @@
      37  1101					      org	$1101	; mem location of code region
      38  1101				   start
      39  1101		       20 5f e5 	      jsr	CLS	; clear screen
-     40  1104		       a9 bc		      lda	#$bc	; funny colors
-     41  1106		       4c 0a 11 	      jmp	colorShift
-     42  1109		       60		      rts		; return to caller
-     43  110a
-     44  110a				   prepareColor
-     45  110a							; in this routine, we will set the screen color, border color, character color, and aux color
-     46  110a							; once we have set the colors, we will store them in the appropriate memory locations
-     47  110a							; after that we will call another method to print characters to the screen (which will all require new bit patterns due to the new colors)
-     48  110a
-     49  110a							;/*
-     50  110a							; * Sets the contents of the border and background color register
-     51  110a							; * Input: border and background color bits in a
-     52  110a							;*/
-     53  110a				   colorShift
-     54  110a		       8d 0f 90 	      sta	$900f	; location of screen and border color stuff (bits 4-7 are border color, bits 0-2 are background color)
-     55  110d		       a9 55		      lda	#$55	; funny colors
-     56  110f		       8d 0e 90 	      sta	$900e	; bits 0-3 set volume of all sounds, bits 4-7 set aux color
-     57  1112		       a9 fc		      lda	#$fc
-     58  1114		       8d 05 90 	      sta	$9005	; load custom character set
-     59  1117		       20 5f e5 	      jsr	$e55f	; clear screen
-     60  111a		       a9 42		      lda	#$42	; set a to first character in new character set
-     61  111c		       20 d2 ff 	      jsr	CHROUT
-     62  111f		       4c 0a 11 	      jmp	colorShift
-     63  1122
-     64  1122							;/*
-     65  1122							;    Note Section
-     66  1122							;    -> Apparently the formula to find the current location of color memory is:
-     67  1122							;	  C = 37888 + 4 * (PEAK (36866) AND 128) [This formula is obviously in BASIC]
-     68  1122							;	  So, the formula in 6502 ASM is:
-     69  1122							;	  C = $9400 + 4 * ($9000 AND $80) [Obviously, this isn't right, just noting it down in a basic sense]
-     70  1122							;*/
+     40  1104		       4c 08 11 	      jmp	prepareColor
+     41  1107		       60		      rts		; return to caller
+     42  1108
+     43  1108				   prepareColor
+     44  1108							; in this routine, we will set the screen color, border color, character color, and aux color
+     45  1108							; once we have set the colors, we will store them in the appropriate memory locations
+     46  1108							; after that we will call another method to print characters to the screen (which will all require new bit patterns due to the new colors)
+     47  1108		       a9 00		      lda	#$00	; set screen color to black
+     48  110a		       8d 0f 90 	      sta	$900f	; store screen color in memory
+     49  110d		       a9 01		      lda	#$01	; set border color to white
+     50  110f		       8d 0e 90 	      sta	$900e	; store border color in memory
+     51  1112
+     52  1112							;/*
+     53  1112							; * Sets the contents of the border and background color register
+     54  1112							; * Input: border and background color bits in a
+     55  1112							;*/
+     56  1112				   printCharacters
+     57  1112							; custom character A
+     58  1112		       a9 fc		      lda	#$fc
+     59  1114		       8d 05 90 	      sta	$9005	; load custom character set
+     60  1117		       20 5f e5 	      jsr	$e55f	; clear screen
+     61  111a		       a9 42		      lda	#$42	; set a to first character in new character set
+     62  111c		       20 d2 ff 	      jsr	CHROUT
+     63  111f		       4c 12 11 	      jmp	printCharacters
+     64  1122
+     65  1122							;/*
+     66  1122							;    Note Section
+     67  1122							;    -> Apparently the formula to find the current location of color memory is:
+     68  1122							;	  C = 37888 + 4 * (PEAK (36866) AND 128) [This formula is obviously in BASIC]
+     69  1122							;	  So, the formula in 6502 ASM is:
+     70  1122							;	  C = $9400 + 4 * ($9000 AND $80) [Obviously, this isn't right, just noting it down in a basic sense]
+     71  1122							;*/
