@@ -23,6 +23,10 @@ stubend:
 */
 CLS = $e55f                 ; kernal clear screen routine
 COL_MEM = $9400             ; Color memory location
+;SCREEN_COLOR = $
+;BORDER_COLOR = $
+;CHARACTER_COLOR = $
+;AUX_COLOR = $
 
 /*
     Main Program
@@ -34,15 +38,17 @@ start:
     jmp     colorShift
     rts                     ; return to caller
 
+prepareColor:
+    ; in this routine, we will set the screen color, border color, character color, and aux color
+    ; once we have set the colors, we will store them in the appropriate memory locations
+    ; after that we will call another method to print characters to the screen (which will all require new bit patterns due to the new colors)
+
 /*
  * Sets the contents of the border and background color register
  * Input: border and background color bits in a
  */
 colorShift:
     sta     $900f           ; location of screen and border color stuff
-    ; store 191 as hex in accumulator
-    lda     #$bf
-    sta     $9600
     jmp     colorShift
 
 /* 
