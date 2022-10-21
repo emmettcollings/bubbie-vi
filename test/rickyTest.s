@@ -45,6 +45,9 @@ prepareColor:
     ; in this routine, we will set the screen color, border color, character color, and aux color
     ; once we have set the colors, we will store them in the appropriate memory locations
     ; after that we will call another method to print characters to the screen (which will all require new bit patterns due to the new colors)
+
+    ; remember: little endian, so its read right to left. (so the right most bit is bit 0, and the left most bit is bit 7)
+
     lda     #%00000000      ; set screen color to black
     sta     $900f           ; store screen color in memory
             ; bits 4-7 are the background color
