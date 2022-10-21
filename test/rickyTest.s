@@ -23,7 +23,7 @@ stubend:
 */
     org     $1101           ; mem location of code region
 start: 
-    lda     #$ac    ; funny colors 
+    lda     #$ac            ; funny colors 
     jsr     colorShift
     rts                     ; return to caller
 
@@ -32,5 +32,5 @@ start:
  * Input: border and background color bits in a
  */
 colorShift:
-    sta     $900f   ; location of screen and border color stuff
+    sta     $900f           ; location of screen and border color stuff
     rts
