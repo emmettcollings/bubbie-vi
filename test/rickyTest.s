@@ -27,6 +27,7 @@ COL_MEM = $9400             ; Color memory location
 ;BORDER_COLOR = $
 ;CHARACTER_COLOR = $
 ;AUX_COLOR = $
+customA     .byte   $18, $24, $42, $7E, $42, $42, $42, $00 ; custom character A (has a mix of screen color, border color, character color, and aux color. honestly, this is the example A from the bible hehe)
 
 /*
     Main Program
