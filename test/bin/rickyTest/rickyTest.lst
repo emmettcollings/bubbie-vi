@@ -48,26 +48,31 @@
      47  1108							; after that we will call another method to print characters to the screen (which will all require new bit patterns due to the new colors)
      48  1108		       a9 00		      lda	#$00	; set screen color to black
      49  110a		       8d 0f 90 	      sta	$900f	; store screen color in memory
-     50  110d		       a9 ac		      lda	#$ac	; set border color to white
-     51  110f		       8d 0e 90 	      sta	$900e	; store border color in memory
-     52  1112
-     53  1112							;/*
-     54  1112							; * Sets the contents of the border and background color register
-     55  1112							; * Input: border and background color bits in a
-     56  1112							;*/
-     57  1112				   printCharacters
-     58  1112							; custom character A
-     59  1112		       a9 fc		      lda	#$fc
-     60  1114		       8d 05 90 	      sta	$9005	; load custom character set
-     61  1117		       20 5f e5 	      jsr	$e55f	; clear screen
-     62  111a		       a9 42		      lda	#$42	; set a to first character in new character set
-     63  111c		       20 d2 ff 	      jsr	CHROUT
-     64  111f		       4c 12 11 	      jmp	printCharacters
-     65  1122
-     66  1122							;/*
-     67  1122							;    Note Section
-     68  1122							;    -> Apparently the formula to find the current location of color memory is:
-     69  1122							;	  C = 37888 + 4 * (PEAK (36866) AND 128) [This formula is obviously in BASIC]
-     70  1122							;	  So, the formula in 6502 ASM is:
-     71  1122							;	  C = $9400 + 4 * ($9000 AND $80) [Obviously, this isn't right, just noting it down in a basic sense]
-     72  1122							;*/
+     50  110d							; bits 4-7 are the background color
+     51  110d							; bits 0-2 are the border color
+     52  110d							; bit 3 selects inverted or normal mode
+     53  110d		       a9 ac		      lda	#$ac	; set border color to white
+     54  110f		       8d 0e 90 	      sta	$900e
+     55  1112							; bits 4-7 are the aux color
+     56  1112							; bits 0-3 set the volume of all sound channels
+     57  1112
+     58  1112							;/*
+     59  1112							; * Sets the contents of the border and background color register
+     60  1112							; * Input: border and background color bits in a
+     61  1112							;*/
+     62  1112				   printCharacters
+     63  1112							; custom character A
+     64  1112		       a9 fc		      lda	#$fc
+     65  1114		       8d 05 90 	      sta	$9005	; load custom character set
+     66  1117		       20 5f e5 	      jsr	$e55f	; clear screen
+     67  111a		       a9 42		      lda	#$42	; set a to first character in new character set
+     68  111c		       20 d2 ff 	      jsr	CHROUT
+     69  111f		       4c 12 11 	      jmp	printCharacters
+     70  1122
+     71  1122							;/*
+     72  1122							;    Note Section
+     73  1122							;    -> Apparently the formula to find the current location of color memory is:
+     74  1122							;	  C = 37888 + 4 * (PEAK (36866) AND 128) [This formula is obviously in BASIC]
+     75  1122							;	  So, the formula in 6502 ASM is:
+     76  1122							;	  C = $9400 + 4 * ($9000 AND $80) [Obviously, this isn't right, just noting it down in a basic sense]
+     77  1122							;*/

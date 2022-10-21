@@ -45,12 +45,12 @@ prepareColor:
     ; in this routine, we will set the screen color, border color, character color, and aux color
     ; once we have set the colors, we will store them in the appropriate memory locations
     ; after that we will call another method to print characters to the screen (which will all require new bit patterns due to the new colors)
-    lda     #$00            ; set screen color to black
+    lda     #%00000000      ; set screen color to black
     sta     $900f           ; store screen color in memory
             ; bits 4-7 are the background color
             ; bits 0-2 are the border color
             ; bit 3 selects inverted or normal mode
-    lda     #$ac            ; set border color to white
+    lda     #%00000000      ; set border color to black
     sta     $900e
             ; bits 4-7 are the aux color
             ; bits 0-3 set the volume of all sound channels
