@@ -51,4 +51,4 @@ colorShift:
         C = 37888 + 4 * (PEAK (36866) AND 128) [This formula is obviously in BASIC]
         So, the formula in 6502 ASM is:
         C = $9400 + 4 * ($9000 AND $80) [Obviously, this isn't right, just noting it down in a basic sense]
-    
+*/

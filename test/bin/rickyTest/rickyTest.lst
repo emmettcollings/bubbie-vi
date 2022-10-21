@@ -23,24 +23,33 @@
      22  100d							;    Global Definitions
      23  100d							;*/
      24  100d		       e5 5f	   CLS	      =	$e55f	; kernal clear screen routine
-     25  100d
-     26  100d							;/*
-     27  100d							;    Main Program
-     28  100d							;*/
-     29  1101					      org	$1101	; mem location of code region
-     30  1101				   start
-     31  1101		       20 5f e5 	      jsr	CLS	; clear screen
-     32  1104		       a9 ac		      lda	#$ac	; funny colors
-     33  1106		       4c 0a 11 	      jmp	colorShift
-     34  1109		       60		      rts		; return to caller
-     35  110a
-     36  110a							;/*
-     37  110a							; * Sets the contents of the border and background color register
-     38  110a							; * Input: border and background color bits in a
-     39  110a							;*/
-     40  110a				   colorShift
-     41  110a		       8d 0f 90 	      sta	$900f	; location of screen and border color stuff
-     42  110d							; store 191 as hex in accumulator
-     43  110d		       a9 bf		      lda	#$bf
-     44  110f		       8d 00 96 	      sta	$9600
-     45  1112		       4c 0a 11 	      jmp	colorShift
+     25  100d		       94 00	   COL_MEM    =	$9400	; Color memory location
+     26  100d
+     27  100d							;/*
+     28  100d							;    Main Program
+     29  100d							;*/
+     30  1101					      org	$1101	; mem location of code region
+     31  1101				   start
+     32  1101		       20 5f e5 	      jsr	CLS	; clear screen
+     33  1104		       a9 ac		      lda	#$ac	; funny colors
+     34  1106		       4c 0a 11 	      jmp	colorShift
+     35  1109		       60		      rts		; return to caller
+     36  110a
+     37  110a							;/*
+     38  110a							; * Sets the contents of the border and background color register
+     39  110a							; * Input: border and background color bits in a
+     40  110a							;*/
+     41  110a				   colorShift
+     42  110a		       8d 0f 90 	      sta	$900f	; location of screen and border color stuff
+     43  110d							; store 191 as hex in accumulator
+     44  110d		       a9 bf		      lda	#$bf
+     45  110f		       8d 00 96 	      sta	$9600
+     46  1112		       4c 0a 11 	      jmp	colorShift
+     47  1115
+     48  1115							;/*
+     49  1115							;    Note Section
+     50  1115							;    -> Apparently the formula to find the current location of color memory is:
+     51  1115							;	  C = 37888 + 4 * (PEAK (36866) AND 128) [This formula is obviously in BASIC]
+     52  1115							;	  So, the formula in 6502 ASM is:
+     53  1115							;	  C = $9400 + 4 * ($9000 AND $80) [Obviously, this isn't right, just noting it down in a basic sense]
+     54  1115							;*/
