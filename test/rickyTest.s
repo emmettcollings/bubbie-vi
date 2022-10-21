@@ -29,6 +29,7 @@ SCRMEM = $1E00              ; Screen memory location
 ;BORDER_COLOR = $
 ;CHARACTER_COLOR = $
 ;AUX_COLOR = $
+pad         .byte   $00, $00, $00 ; Padding so that next byte is on 8 byte boundary
 customA     .byte   $18, $24, $42, $7E, $42, $42, $42, $00 ; custom character A (has a mix of screen color, border color, character color, and aux color. honestly, this is the example A from the bible hehe)
 
 /*
