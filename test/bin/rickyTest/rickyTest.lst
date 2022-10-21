@@ -48,7 +48,7 @@
      47  1108							; after that we will call another method to print characters to the screen (which will all require new bit patterns due to the new colors)
      48  1108		       a9 00		      lda	#$00	; set screen color to black
      49  110a		       8d 0f 90 	      sta	$900f	; store screen color in memory
-     50  110d		       a9 01		      lda	#$01	; set border color to white
+     50  110d		       a9 ac		      lda	#$ac	; set border color to white
      51  110f		       8d 0e 90 	      sta	$900e	; store border color in memory
      52  1112
      53  1112							;/*
