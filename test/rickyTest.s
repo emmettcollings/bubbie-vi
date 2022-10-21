@@ -21,9 +21,10 @@ stubend:
 /* 
     Global Definitions
 */
-CHROUT = $ffd2              ; kernal character output routine
-CLS = $e55f                 ; kernal clear screen routine
-COL_MEM = $9400             ; Color memory location
+CHROUT = $FFD2              ; kernal character output routine
+CLS = $E55f                 ; kernal clear screen routine
+COLMEM = $9400              ; Color memory location
+SCRMEM = $1E00              ; Screen memory location
 ;SCREEN_COLOR = $
 ;BORDER_COLOR = $
 ;CHARACTER_COLOR = $
@@ -36,7 +37,7 @@ customA     .byte   $18, $24, $42, $7E, $42, $42, $42, $00 ; custom character A 
     org     $1101           ; mem location of code region
 start: 
     jsr     CLS             ; clear screen
-    lda     #$ac            ; funny colors 
+    lda     #$bc            ; funny colors 
     jmp     colorShift
     rts                     ; return to caller
 
@@ -50,7 +51,12 @@ prepareColor:
  * Input: border and background color bits in a
  */
 colorShift:
-    sta     $900f           ; location of screen and border color stuff
+    ; color stuff
+    sta     $900f           ; location of screen and border color stuff (bits 4-7 are border color, bits 0-2 are background color)
+    lda     #$55            ; funny colors
+    sta     $900e           ; bits 0-3 set volume of all sounds, bits 4-7 set aux color
+
+    ; custom character A
     lda     #$fc            
     sta     $9005           ; load custom character set
     jsr     $e55f           ; clear screen
