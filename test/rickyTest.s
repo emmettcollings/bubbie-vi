@@ -21,6 +21,7 @@ stubend:
 /* 
     Global Definitions
 */
+CHROUT = $ffd2              ; kernal character output routine
 CLS = $e55f                 ; kernal clear screen routine
 COL_MEM = $9400             ; Color memory location
 ;SCREEN_COLOR = $
@@ -50,6 +51,11 @@ prepareColor:
  */
 colorShift:
     sta     $900f           ; location of screen and border color stuff
+    lda     #$fc            
+    sta     $9005           ; load custom character set
+    jsr     $e55f           ; clear screen
+    lda     #$42            ; set a to first character in new character set
+    jsr     CHROUT
     jmp     colorShift
 
 /* 

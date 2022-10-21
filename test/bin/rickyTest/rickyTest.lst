@@ -1,16 +1,16 @@
 ------- FILE rickyTest.s LEVEL 1 PASS 2
-      1  1115 ????						;/*
-      2  1115 ????						;    Hi.
-      3  1115 ????						;*/
-      4  1115 ????
-      5  1115 ????						;/*
-      6  1115 ????						;    Processor Information
-      7  1115 ????						;*/
-      8  1115 ????				      processor	6502	; This informs the assembler that we are using a 6502 processor.
-      9  1115 ????
-     10  1115 ????						;/*
-     11  1115 ????						;    Memory Map
-     12  1115 ????						;*/
+      1  111d ????						;/*
+      2  111d ????						;    Hi.
+      3  111d ????						;*/
+      4  111d ????
+      5  111d ????						;/*
+      6  111d ????						;    Processor Information
+      7  111d ????						;*/
+      8  111d ????				      processor	6502	; This informs the assembler that we are using a 6502 processor.
+      9  111d ????
+     10  111d ????						;/*
+     11  111d ????						;    Memory Map
+     12  111d ????						;*/
      13  1001					      org	$1001	; mem location of user region
      14  1001		       0b 10		      dc.w	stubend
      15  1003		       01 00		      dc.w	1	; arbitrary line number for BASIC syntax
@@ -22,34 +22,47 @@
      21  100d							;/*
      22  100d							;    Global Definitions
      23  100d							;*/
-     24  100d		       e5 5f	   CLS	      =	$e55f	; kernal clear screen routine
-     25  100d		       94 00	   COL_MEM    =	$9400	; Color memory location
-     26  100d
-     27  100d							;/*
-     28  100d							;    Main Program
-     29  100d							;*/
-     30  1101					      org	$1101	; mem location of code region
-     31  1101				   start
-     32  1101		       20 5f e5 	      jsr	CLS	; clear screen
-     33  1104		       a9 ac		      lda	#$ac	; funny colors
-     34  1106		       4c 0a 11 	      jmp	colorShift
-     35  1109		       60		      rts		; return to caller
-     36  110a
-     37  110a							;/*
-     38  110a							; * Sets the contents of the border and background color register
-     39  110a							; * Input: border and background color bits in a
-     40  110a							;*/
-     41  110a				   colorShift
-     42  110a		       8d 0f 90 	      sta	$900f	; location of screen and border color stuff
-     43  110d							; store 191 as hex in accumulator
-     44  110d		       a9 bf		      lda	#$bf
-     45  110f		       8d 00 96 	      sta	$9600
-     46  1112		       4c 0a 11 	      jmp	colorShift
-     47  1115
-     48  1115							;/*
-     49  1115							;    Note Section
-     50  1115							;    -> Apparently the formula to find the current location of color memory is:
-     51  1115							;	  C = 37888 + 4 * (PEAK (36866) AND 128) [This formula is obviously in BASIC]
-     52  1115							;	  So, the formula in 6502 ASM is:
-     53  1115							;	  C = $9400 + 4 * ($9000 AND $80) [Obviously, this isn't right, just noting it down in a basic sense]
-     54  1115							;*/
+     24  100d		       ff d2	   CHROUT     =	$ffd2	; kernal character output routine
+     25  100d		       e5 5f	   CLS	      =	$e55f	; kernal clear screen routine
+     26  100d		       94 00	   COL_MEM    =	$9400	; Color memory location
+     27  100d							;SCREEN_COLOR = $
+     28  100d							;BORDER_COLOR = $
+     29  100d							;CHARACTER_COLOR = $
+     30  100d							;AUX_COLOR = $
+     31  100d		       18 24 42 7e*customA    .byte.b	$18, $24, $42, $7E, $42, $42, $42, $00	; custom character A (has a mix of screen color, border color, character color, and aux color. honestly, this is the example A from the bible hehe)
+     32  1015
+     33  1015							;/*
+     34  1015							;    Main Program
+     35  1015							;*/
+     36  1101					      org	$1101	; mem location of code region
+     37  1101				   start
+     38  1101		       20 5f e5 	      jsr	CLS	; clear screen
+     39  1104		       a9 ac		      lda	#$ac	; funny colors
+     40  1106		       4c 0a 11 	      jmp	colorShift
+     41  1109		       60		      rts		; return to caller
+     42  110a
+     43  110a				   prepareColor
+     44  110a							; in this routine, we will set the screen color, border color, character color, and aux color
+     45  110a							; once we have set the colors, we will store them in the appropriate memory locations
+     46  110a							; after that we will call another method to print characters to the screen (which will all require new bit patterns due to the new colors)
+     47  110a
+     48  110a							;/*
+     49  110a							; * Sets the contents of the border and background color register
+     50  110a							; * Input: border and background color bits in a
+     51  110a							;*/
+     52  110a				   colorShift
+     53  110a		       8d 0f 90 	      sta	$900f	; location of screen and border color stuff
+     54  110d		       a9 fc		      lda	#$fc
+     55  110f		       8d 05 90 	      sta	$9005	; load custom character set
+     56  1112		       20 5f e5 	      jsr	$e55f	; clear screen
+     57  1115		       a9 42		      lda	#$42	; set a to first character in new character set
+     58  1117		       20 d2 ff 	      jsr	CHROUT
+     59  111a		       4c 0a 11 	      jmp	colorShift
+     60  111d
+     61  111d							;/*
+     62  111d							;    Note Section
+     63  111d							;    -> Apparently the formula to find the current location of color memory is:
+     64  111d							;	  C = 37888 + 4 * (PEAK (36866) AND 128) [This formula is obviously in BASIC]
+     65  111d							;	  So, the formula in 6502 ASM is:
+     66  111d							;	  C = $9400 + 4 * ($9000 AND $80) [Obviously, this isn't right, just noting it down in a basic sense]
+     67  111d							;*/
