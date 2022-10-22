@@ -44,33 +44,33 @@ start:
     jsr     CHROUT
 
 loop:
+    ; lda     #$7f
+    ; sta     $fc
+    ; jsr     timer
+
+    ; lda     #$02
+    ; sta     $fd
+    ; jsr     characterFlip
+
     lda     #$7f
     sta     $fc
     jsr     timer
 
     lda     #$02
     sta     $fd
-    jsr     characterFlip
-
-    lda     #$7f
-    sta     $fc
-    jsr     timer
-
-    lda     #$02
-    sta     $fd
-    lda     #$07
+    lda     #$7e
     sta     $fb
 
-    jsr     charShift_V
-    
-    lda     #$02
-    sta     $fd
-    jsr     characterFlip
+    jsr     charShift_H
+
+    ; lda     #$02
+    ; sta     $fd
+    ; jsr     characterFlip
 
     jmp     loop
 
 /*
-    E.J.E.Ct. Character Identifier Decoder Routine (Efficient Juggling of Expelled Characters)
+    E.J.E.CT. Character Identifier Decoder Routine (Efficient Juggling of Expelled CharacTers)
     @ Author:   Justin Parker
     
     ~ Usage:    -> $fd | Character identifier byte
@@ -85,11 +85,11 @@ loop:
 */
     org     $1491           ; Memory location of new code region
 charMidbyte:
-    ldx     #$03            ; Initialize counter while also setting up for ror, since high nibble = 0 is all that matters
-    stx     $fc             ; Store value in $fd for ror
-    lda     $fd             ; Load identifier of first character to shift
+    ldx     #$03            ; Initialize counter while also setting up for ROR, since high nibble = 0 is all that matters
+    stx     $fc             ; Store value in $fd for ROR
+    lda     $fd             ; Load identifier of character to shift
 
-    sec                     ; Set carry flag to ensure high nibble is 1
+    sec                     ; Set carry flag to ensure high nibble is 1 (Math reasons)
     ror     $fd             ; Shift high nibble of identifier
 cM_L:                       ; Perform shift 3 times     
     ror     $fc             ; --^
@@ -103,37 +103,46 @@ cM_L:                       ; Perform shift 3 times
     A.M.O.G.U.S. Character Horizontal Shift Routine (Advanced Movement Of Graphics Using Shift)
     @ Author:   Justin Parker
     
-    ~ Usage:    -> $fb | Direction to shift character (3e = <-, 7e = ->)
+    ~ Usage:    -> $fb | Direction to shift character (3e = <-, 7e = ->) (OP code for ROR/ROL Absolute,x)
                 -> $fc | Identifier of first linked character to shift ($1**0)
 
     & Location specific:    Yes
-    % Alters:   $fb, $fc, $fd
+    % Alters:   $fc, $fd
 
     # Notes:    Requires linked characters to be stored at $1**0 and $1**8 respectively
-    34 Bytes
+    51 Bytes
 */
     org     $1501           ; Memory location of new code region
 charShift_H:
     jsr     charMidbyte     ; Format the identifier into low and high address bytes
 
-    ldx     #$02            ; Initialize counter for the loop to transfer ROx instructions
-cS_hA:
+    ldx     #$02            ; Initialize counter for the loop to transfer the ROR/ROL instructions (3)
+cS_hA:                      ; Here we prep the two ROR/ROL instructions
     lda     $fb,x           ; Get the op code and character address bytes from zero page
-    sta     $1501+$18,x     ; Store value in org + $18 [SMC]
-    cpx     #$01            ; Check if counter is 1, when we want to add 8 to the character address
+    sta     $1501+$29,x     ; Store first instruction set into first ROR/ROL [SMC]
+    cpx     #$01            ; Check if counter is 1 indicating that we're processing the low address byte
     bne     cS_hB           ; If not, skip the next instruction
-    ora     #$08            ; Add 8 to the low address byte (Since the linked character is stored at $***0)
+    ora     #$08            ; Add 8 to the low address byte, changing $1**0 into $1**8
 cS_hB:
-    sta     $1501+$1b,x     ; Store value in org + $1b [SMC]
-    dex                     ; Decrement counter
-    bpl     cS_hA           ; If counter is not 0, loop
-
-    ldx     #$07            ; Set x to 7 (The number of bytes needed to ROx)
+    sta     $1501+$2c,x     ; Store second instruction set into second ROR/ROL [SMC]
+    cpx     #$00
+    bne     cS_hC
+    ldx     #$03
+    eor     #$14            ; Magic number that turns 7e -> 6a and 3e -> 2a
 cS_hC:
-    ror     $1234,x         ; Rotate out of first character [SMC]
-    rol     $8765,x         ; Rotate into second character [SMC]
-    dex                     ; Decrement x
-    bpl     cS_hC           ; If x hasn't underflowed, loop
+    sta     $1501+$25,x 
+    dex                     ; Decrement counter
+    cpx     #$02
+    bne     cS_hA           ; Loop until counter underflows, indicating that we've processed all 3 bytes
+                            ; Run the two ROR instructions
+    ldx     #$07            ; Initialize counter for the number of bytes needed to ROR/ROL (8)
+cS_hD:
+    lda     $9999,x
+    ror
+    ror     $9999,x         ; Rotate out of first character [SMC]
+    ror     $9999,x         ; Rotate into second character [SMC]
+    dex                     ; Decrement counter
+    bpl     cS_hD           ; If counter hasn't underflowed, loop
     rts                     
 
 /*
@@ -149,53 +158,87 @@ cS_hC:
     # Notes:    Requires linked characters to be stored at $1**0 and $1**8 respectively
     75 Bytes
 */
-    org     $1531           ; Memory location of new code region
+    org     $1551           ; Memory location of new code region
 charShift_V:
     jsr     charMidbyte     ; Format the identifier into low and high address bytes
 
-    lda     #$07            ; Initialize with up (A must be set to $07 for the direction to be up)
-    ldx     #$88
-    ldy     #$ff      
+    ldx     #$01
 
-    cmp     $fb
-    beq     cS_vA           ; $fb == $07, (Character shifts up)
+    lda     $1020
+    sta     $fb
 
-    lda     #$00            ; Change to down
-    ldx     #$c8
-    ldy     #$08
-cS_vA:
-    sta     $1531+$2e       ; Store value in org + #2e [SMC]
-    stx     $1531+$36       ; Store value in org + $36 [SMC]
-    sty     $1531+$38       ; Store value in org + $38 [SMC]
-
-    ldx     #$02            ; Initialize counter for the loop
-cS_vB:
-    lda     $fb,x           ; Get the op code and character address bytes from zero page
-    sta     $1531+$2f,x     ; Store value in org + $2f [SMC]
-    sta     $1531+$32,x     ; Store value in org + $32 [SMC]
-    txa                     ; Ensures A is $01 a few lines down
+    lda     #$10
+    sta     $fd
+LLL:
+    lda     $1020,x
     dex
-    bne     cS_vB           ; If not, skip the next instruction
 
-    sta     $fd             ; A is $01 here
-    txa                     ; A is set to $00, since x is $00
-cS_vC:
-    ldy     #$08            ; Initialize counter for the loop [SMC]
-cS_vD:
-    ldx     $1234,y         ; Shift all the character bytes over by 1 address [SMC]
-    sta     $8765,y         ; --^ [SMC]
-    txa 
-    dey                     ; Decrement/Increment counter [SMC]
-    cpy     #$00            ; Check if counter is finished [SMC]
-    bne     cS_vD           ; If not, loop
-
-    lda     $fc             ; Load identifier of first character to shift
-    ora     #$08            ; Add 8 to the low address byte (Since the linked character is stored at $***0)
-    sta     $1531+$30       ; Store value in org + $30 [SMC]
-    sta     $1531+$33       ; Store value in org + $33 [SMC]
     txa
-    dec     $fd             ; Decrement A (Indicates first or second time through loop)
-    bpl     cS_vC           ; If loop hasn't been repeated, loop
+    and     #$0f
+    tax
+
+    sta     $1020,x
+    inx
+    inx
+
+    txa
+    and     #$0f
+    tax
+
+    dec     $fd
+    bne     LLL
+
+    lda     $fb
+    sta     $102f
+
+    ; lda     $1029
+    ; sta     $1028
+
+    ; lda     $102a
+    ; sta     $1029
+
+    ; lda     $102b
+    ; sta     $102a
+
+    ; lda     $102c
+    ; sta     $102b
+
+    ; lda     $102d
+    ; sta     $102c
+
+    ; lda     $102e
+    ; sta     $102d
+
+    ; lda     $102f
+    ; sta     $102e
+
+    ; lda     $1020
+    ; sta     $102f
+
+    ; lda     $1021
+    ; sta     $1020
+
+    ; lda     $1022
+    ; sta     $1021
+
+    ; lda     $1023
+    ; sta     $1022
+
+    ; lda     $1024
+    ; sta     $1023
+
+    ; lda     $1025
+    ; sta     $1024
+
+    ; lda     $1026
+    ; sta     $1025
+
+    ; lda     $1027
+    ; sta     $1026
+
+    ; lda     #$00
+    ; sta     $1027
+
     rts
 
 /*
@@ -230,7 +273,7 @@ timer:
     # Notes:    Requires linked characters to be stored at $1**0 and $1**8 respectively
     38 bytes
 */
-    org     $1621           ; Memory location of new code region
+    org     $1621           ; Memory location of new code region [TODO: Better comments]
 characterFlip:
     jsr     charMidbyte     ; Format the identifier into low and high address bytes
 
@@ -244,15 +287,15 @@ cF_N:
 
     ldx     #$07            ; Set x to 7 (The number of bytes we need to flip)
 cF_M:
-    lda     $8765,x         ; Load byte to be flipped [SMC]
+    lda     $9999,x         ; Load byte to be flipped [SMC]
     sta     $fc             ; Store copy of byte to be flipped in $fc
-    ldy     #$08            ; Set y to 8 (The number of bits we need to flip)
+    ldy     #$07            ; Set y to 8 (The number of bits we need to flip)
 cF_L:
     lsr     $fc             ; Math stuff to get it to work
     rol                     ; --^
     dey                     ; --^            
-    bne     cF_L            ; --*
-    sta     $8765,x         ; Store flipped byte [SMC]
+    bpl     cF_L            ; --*
+    sta     $9999,x         ; Store flipped byte [SMC]
     dex                     ; Decrement x
     bne     cF_M            ; If x is not zero, loop
     rts
