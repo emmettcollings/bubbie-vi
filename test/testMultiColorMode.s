@@ -43,7 +43,8 @@ start:
     jsr     CLS                 ; clear screen
     jsr     enableMultiColor 
     jsr     prepareScreen
-    jmp     printCharacters     
+    ; jsr     printCharacters     
+    jsr     printCharactersWithColors
     rts                         ; return to caller
 
 enableMultiColor:
@@ -69,7 +70,20 @@ printCharacters:
     jsr     $e55f           ; clear screen
     lda     #$42            ; set a to first character in new character set
     jsr     CHROUT
-    jmp     printCharacters
+    rts                     ; this is just for testing purposes, as the next routine is just for testing purposes
+
+printCharactersWithColors:
+    lda     #$07
+    sta     $0286
+    lda     #$30
+    jsr     CHROUT
+
+    lda     #$05
+    sta     $0286
+    lda     #$30
+    jsr     CHROUT
+
+    rts                     ; this is just for testing purposes, as the next routine is just for testing purposes
 
 
 
@@ -78,4 +92,5 @@ printCharacters:
     Notes
 
     -> When we've enabled multicolor mode, characters are 4x8 pixels instead of 8x8 pixels. (Halved horizontally, so we can use the mutlicolor mode)
+    -> $0x286 is the address for the color that is currently being printed. (We can manipulate this to change the color of each character)
 */

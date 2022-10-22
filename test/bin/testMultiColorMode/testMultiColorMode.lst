@@ -1,16 +1,16 @@
 ------- FILE testMultiColorMode.s LEVEL 1 PASS 2
-      1  112a ????						;/*
-      2  112a ????						;    Goal of this test is to properly implement multi-color mode.
-      3  112a ????						;*/
-      4  112a ????
-      5  112a ????						;/*
-      6  112a ????						;    Processor Information
-      7  112a ????						;*/
-      8  112a ????				      processor	6502	; This informs the assembler that we are using a 6502 processor.
-      9  112a ????
-     10  112a ????						;/*
-     11  112a ????						;    Memory Map
-     12  112a ????						;*/
+      1  113d ????						;/*
+      2  113d ????						;    Goal of this test is to properly implement multi-color mode.
+      3  113d ????						;*/
+      4  113d ????
+      5  113d ????						;/*
+      6  113d ????						;    Processor Information
+      7  113d ????						;*/
+      8  113d ????				      processor	6502	; This informs the assembler that we are using a 6502 processor.
+      9  113d ????
+     10  113d ????						;/*
+     11  113d ????						;    Memory Map
+     12  113d ????						;*/
      13  1001					      org	$1001	; mem location of user region
      14  1001		       0b 10		      dc.w	stubend
      15  1003		       01 00		      dc.w	1	; arbitrary line number for BASIC syntax
@@ -34,7 +34,7 @@
      33  100d		       00 00 00    pad	      .byte.b	$00, $00, $00	; Padding so that next byte is on 8 byte boundary
      34  1010							; customA     .byte   $18, $24, $42, $7E, $42, $42, $42, $00 ; custom character A (has a mix of screen color, border color, character color, and aux color. honestly, this is the example A from the bible hehe)
      35  1010							; customChar	.byte	$7E, $7E, $7E, $7E, $7E, $7E, $7E, $7E, $7E ; useless custom character, just for testing purposes
-     36  1010		       00 3c 26 56*chr_1      .byte.b	$00, $3c, $26, $56, $56, $26, $3c, $24	; among us (sussy)
+     36  1010		       00 3c 26 56*chr_1      .byte.b	$00, $3c, $26, $56, $56, $26, $3c, $24	; among us (sussy) [if this renders properly, then multi-color mode isn't working]
      37  1018
      38  1018							;/*
      39  1018							;    Main Program
@@ -44,39 +44,54 @@
      43  1101		       20 5f e5 	      jsr	CLS	; clear screen
      44  1104		       20 0e 11 	      jsr	enableMultiColor
      45  1107		       20 0f 11 	      jsr	prepareScreen
-     46  110a		       4c 1a 11 	      jmp	printCharacters
-     47  110d		       60		      rts		; return to caller
-     48  110e
-     49  110e				   enableMultiColor
-     50  110e		       60		      rts
-     51  110f
-     52  110f				   prepareScreen
-     53  110f							; remember: little endian, so its read right to left. (so the right most bit is bit 0, and the left most bit is bit 7)
-     54  110f		       a9 00		      lda	#%00000000	; set screen color to black
-     55  1111		       8d 0f 90 	      sta	$900f	; store screen color in memory
-     56  1114							; bits 4-7 are the background color
-     57  1114							; bits 0-2 are the border color
-     58  1114							; bit 3 selects inverted or normal mode
-     59  1114		       a9 00		      lda	#%00000000	; set border color to black
-     60  1116		       8d 0e 90 	      sta	$900e
-     61  1119							; bits 4-7 are the aux color
-     62  1119							; bits 0-3 set the volume of all sound channels
-     63  1119		       60		      rts		; Ultimately, this isn't needed, as we can just proceed to the next instruction. Just doing it for testing reasons.
-     64  111a
-     65  111a				   printCharacters
-     66  111a							; custom character A
-     67  111a		       a9 fc		      lda	#$fc
-     68  111c		       8d 05 90 	      sta	$9005	; load custom character set
-     69  111f		       20 5f e5 	      jsr	$e55f	; clear screen
-     70  1122		       a9 42		      lda	#$42	; set a to first character in new character set
-     71  1124		       20 d2 ff 	      jsr	CHROUT
-     72  1127		       4c 1a 11 	      jmp	printCharacters
-     73  112a
-     74  112a
-     75  112a
-     76  112a
-     77  112a							;/*
-     78  112a							;    Notes
-     79  112a							;
-     80  112a							;    -> When we've enabled multicolor mode, characters are 4x8 pixels instead of 8x8 pixels. (Halved horizontally, so we can use the mutlicolor mode)
-     81  112a							;*/
+     46  110a							; jsr	   printCharacters
+     47  110a		       20 28 11 	      jsr	printCharactersWithColors
+     48  110d		       60		      rts		; return to caller
+     49  110e
+     50  110e				   enableMultiColor
+     51  110e		       60		      rts
+     52  110f
+     53  110f				   prepareScreen
+     54  110f							; remember: little endian, so its read right to left. (so the right most bit is bit 0, and the left most bit is bit 7)
+     55  110f		       a9 00		      lda	#%00000000	; set screen color to black
+     56  1111		       8d 0f 90 	      sta	$900f	; store screen color in memory
+     57  1114							; bits 4-7 are the background color
+     58  1114							; bits 0-2 are the border color
+     59  1114							; bit 3 selects inverted or normal mode
+     60  1114		       a9 00		      lda	#%00000000	; set border color to black
+     61  1116		       8d 0e 90 	      sta	$900e
+     62  1119							; bits 4-7 are the aux color
+     63  1119							; bits 0-3 set the volume of all sound channels
+     64  1119		       60		      rts		; Ultimately, this isn't needed, as we can just proceed to the next instruction. Just doing it for testing reasons.
+     65  111a
+     66  111a				   printCharacters
+     67  111a							; custom character A
+     68  111a		       a9 fc		      lda	#$fc
+     69  111c		       8d 05 90 	      sta	$9005	; load custom character set
+     70  111f		       20 5f e5 	      jsr	$e55f	; clear screen
+     71  1122		       a9 42		      lda	#$42	; set a to first character in new character set
+     72  1124		       20 d2 ff 	      jsr	CHROUT
+     73  1127		       60		      rts		; this is just for testing purposes, as the next routine is just for testing purposes
+     74  1128
+     75  1128				   printCharactersWithColors
+     76  1128		       a9 07		      lda	#$07
+     77  112a		       8d 86 02 	      sta	$0286
+     78  112d		       a9 30		      lda	#$30
+     79  112f		       20 d2 ff 	      jsr	CHROUT
+     80  1132
+     81  1132		       a9 05		      lda	#$05
+     82  1134		       8d 86 02 	      sta	$0286
+     83  1137		       a9 30		      lda	#$30
+     84  1139		       20 d2 ff 	      jsr	CHROUT
+     85  113c
+     86  113c		       60		      rts		; this is just for testing purposes, as the next routine is just for testing purposes
+     87  113d
+     88  113d
+     89  113d
+     90  113d
+     91  113d							;/*
+     92  113d							;    Notes
+     93  113d							;
+     94  113d							;    -> When we've enabled multicolor mode, characters are 4x8 pixels instead of 8x8 pixels. (Halved horizontally, so we can use the mutlicolor mode)
+     95  113d							;    -> $0x286 is the address for the color that is currently being printed. (We can manipulate this to change the color of each character)
+     96  113d							;*/
