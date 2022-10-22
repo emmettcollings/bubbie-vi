@@ -97,8 +97,6 @@ printNewLine:
 
 printCharactersWithColors:
     ; ghetto method, sue me. i just like testing theories out quickly.
-    ; 0-8 seems to be just the normal colors for the background
-    ; 9-15 seems to be colors for multi-color mode (makes sense)
     jsr     printTestColorCharacter
     jsr     printTestColorCharacter
     jsr     printTestColorCharacter
@@ -117,7 +115,7 @@ printCharactersWithColors:
 
     jsr     printNewLine
     jsr     resetToDefaultColor
-
+    
     rts                     ; this is just for testing purposes, as the next routine is just for testing purposes
 
 
@@ -127,5 +125,10 @@ printCharactersWithColors:
     Notes
 
     -> When we've enabled multicolor mode, characters are 4x8 pixels instead of 8x8 pixels. (Halved horizontally, so we can use the mutlicolor mode)
+    
     -> $0x286 is the address for the color that is currently being printed. (We can manipulate this to change the color of each character)
+        -> From testing this register, with my very professional testing method of printing a bunch of characters, I've determined the following (plus the VIC manual):
+            - 0-7 seems to be just the normal colors for the background
+                - 0 = black, 1 = white, 2 = red, 3 = cyan, 4 = purple, 5 = green, 6 = blue, 7 = yellow
+            - 8-15 seems to be colors for multi-color mode (makes sense)
 */
