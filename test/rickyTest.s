@@ -30,16 +30,37 @@ SCRMEM = $1E00              ; Screen memory location
 ;CHARACTER_COLOR = $
 ;AUX_COLOR = $
 pad         .byte   $00, $00, $00 ; Padding so that next byte is on 8 byte boundary
-customA     .byte   $18, $24, $42, $7E, $42, $42, $42, $00 ; custom character A (has a mix of screen color, border color, character color, and aux color. honestly, this is the example A from the bible hehe)
+; customA     .byte   $18, $24, $42, $7E, $42, $42, $42, $00 ; custom character A (has a mix of screen color, border color, character color, and aux color. honestly, this is the example A from the bible hehe)
+customA     .byte   $7E, $7E, $7E, $7E, $7E, $7E, $7E, $7E, $7E
 
 /*
     Main Program
 */
     org     $1101           ; mem location of code region
 start: 
+    ; enable multicolor mode?
+    lda     #$0A
+    sta     $0286
+
     jsr     CLS             ; clear screen
+    jsr     enableMultiColor
     jmp     prepareColor
     rts                     ; return to caller
+
+enableMultiColor:
+    ; begins at 37888
+    ; formula is 37888 + 4 * (PEAK(36866) AND 128)
+    ; PEAK(36866) is the current color register
+    lda     $9002
+    and     #$80
+    ; times the accumulator by 4
+    lsr
+    lsr
+    ; add 37888 to the accumulator
+    lda     #$90
+    adc     #$00
+    ; lda     COLMEM ; 37888
+    rts
 
 prepareColor:
     ; in this routine, we will set the screen color, border color, character color, and aux color
@@ -48,7 +69,8 @@ prepareColor:
 
     ; remember: little endian, so its read right to left. (so the right most bit is bit 0, and the left most bit is bit 7)
 
-    lda     #%00000000      ; set screen color to black
+    ; lda     #%00000000      ; set screen color to black
+    lda     #$ac
     sta     $900f           ; store screen color in memory
             ; bits 4-7 are the background color
             ; bits 0-2 are the border color
@@ -79,5 +101,5 @@ printCharacters:
         C = $9400 + 4 * ($9000 AND $80) [Obviously, this isn't right, just noting it down in a basic sense]
 
     -> We need to enable multi-color mode for the character, which starts at $9600, by adding 8 bits to it.
-    -> Horizontal space is halved in multi-color mode. (Makes sense, since we have 2 bits to represent the color)
+    -> Horizontal space is halved in multi-color mode. (Makes sense, since we have 2 bits to represent the color) [4x8 pixels instead of 8x8 pixels]
 */

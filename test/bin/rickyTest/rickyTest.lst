@@ -1,16 +1,16 @@
 ------- FILE rickyTest.s LEVEL 1 PASS 2
-      1  1122 ????						;/*
-      2  1122 ????						;    Hi.
-      3  1122 ????						;*/
-      4  1122 ????
-      5  1122 ????						;/*
-      6  1122 ????						;    Processor Information
-      7  1122 ????						;*/
-      8  1122 ????				      processor	6502	; This informs the assembler that we are using a 6502 processor.
-      9  1122 ????
-     10  1122 ????						;/*
-     11  1122 ????						;    Memory Map
-     12  1122 ????						;*/
+      1  1136 ????						;/*
+      2  1136 ????						;    Hi.
+      3  1136 ????						;*/
+      4  1136 ????
+      5  1136 ????						;/*
+      6  1136 ????						;    Processor Information
+      7  1136 ????						;*/
+      8  1136 ????				      processor	6502	; This informs the assembler that we are using a 6502 processor.
+      9  1136 ????
+     10  1136 ????						;/*
+     11  1136 ????						;    Memory Map
+     12  1136 ????						;*/
      13  1001					      org	$1001	; mem location of user region
      14  1001		       0b 10		      dc.w	stubend
      15  1003		       01 00		      dc.w	1	; arbitrary line number for BASIC syntax
@@ -31,48 +31,76 @@
      30  100d							;CHARACTER_COLOR = $
      31  100d							;AUX_COLOR = $
      32  100d		       00 00 00    pad	      .byte.b	$00, $00, $00	; Padding so that next byte is on 8 byte boundary
-     33  1010		       18 24 42 7e*customA    .byte.b	$18, $24, $42, $7E, $42, $42, $42, $00	; custom character A (has a mix of screen color, border color, character color, and aux color. honestly, this is the example A from the bible hehe)
-     34  1018
-     35  1018							;/*
-     36  1018							;    Main Program
-     37  1018							;*/
-     38  1101					      org	$1101	; mem location of code region
-     39  1101				   start
-     40  1101		       20 5f e5 	      jsr	CLS	; clear screen
-     41  1104		       4c 08 11 	      jmp	prepareColor
-     42  1107		       60		      rts		; return to caller
-     43  1108
-     44  1108				   prepareColor
-     45  1108							; in this routine, we will set the screen color, border color, character color, and aux color
-     46  1108							; once we have set the colors, we will store them in the appropriate memory locations
-     47  1108							; after that we will call another method to print characters to the screen (which will all require new bit patterns due to the new colors)
-     48  1108		       a9 00		      lda	#$00	; set screen color to black
-     49  110a		       8d 0f 90 	      sta	$900f	; store screen color in memory
-     50  110d							; bits 4-7 are the background color
-     51  110d							; bits 0-2 are the border color
-     52  110d							; bit 3 selects inverted or normal mode
-     53  110d		       a9 ac		      lda	#$ac	; set border color to white
-     54  110f		       8d 0e 90 	      sta	$900e
-     55  1112							; bits 4-7 are the aux color
-     56  1112							; bits 0-3 set the volume of all sound channels
-     57  1112
-     58  1112							;/*
-     59  1112							; * Sets the contents of the border and background color register
-     60  1112							; * Input: border and background color bits in a
-     61  1112							;*/
-     62  1112				   printCharacters
-     63  1112							; custom character A
-     64  1112		       a9 fc		      lda	#$fc
-     65  1114		       8d 05 90 	      sta	$9005	; load custom character set
-     66  1117		       20 5f e5 	      jsr	$e55f	; clear screen
-     67  111a		       a9 42		      lda	#$42	; set a to first character in new character set
-     68  111c		       20 d2 ff 	      jsr	CHROUT
-     69  111f		       4c 12 11 	      jmp	printCharacters
-     70  1122
-     71  1122							;/*
-     72  1122							;    Note Section
-     73  1122							;    -> Apparently the formula to find the current location of color memory is:
-     74  1122							;	  C = 37888 + 4 * (PEAK (36866) AND 128) [This formula is obviously in BASIC]
-     75  1122							;	  So, the formula in 6502 ASM is:
-     76  1122							;	  C = $9400 + 4 * ($9000 AND $80) [Obviously, this isn't right, just noting it down in a basic sense]
-     77  1122							;*/
+     33  1010							; customA     .byte   $18, $24, $42, $7E, $42, $42, $42, $00 ; custom character A (has a mix of screen color, border color, character color, and aux color. honestly, this is the example A from the bible hehe)
+     34  1010		       7e 7e 7e 7e*customA    .byte.b	$7E, $7E, $7E, $7E, $7E, $7E, $7E, $7E, $7E
+     35  1019
+     36  1019							;/*
+     37  1019							;    Main Program
+     38  1019							;*/
+     39  1101					      org	$1101	; mem location of code region
+     40  1101				   start
+     41  1101							; enable multicolor mode?
+     42  1101		       a9 0a		      lda	#$0A
+     43  1103		       8d 86 02 	      sta	$0286
+     44  1106
+     45  1106		       20 5f e5 	      jsr	CLS	; clear screen
+     46  1109		       20 10 11 	      jsr	enableMultiColor
+     47  110c		       4c 1c 11 	      jmp	prepareColor
+     48  110f		       60		      rts		; return to caller
+     49  1110
+     50  1110				   enableMultiColor
+     51  1110							; begins at 37888
+     52  1110							; formula is 37888 + 4 * (PEAK(36866) AND 128)
+     53  1110							; PEAK(36866) is the current color register
+     54  1110		       ad 02 90 	      lda	$9002
+     55  1113		       29 80		      and	#$80
+     56  1115							; times the accumulator by 4
+     57  1115		       4a		      lsr
+     58  1116		       4a		      lsr
+     59  1117							; add 37888 to the accumulator
+     60  1117		       a9 90		      lda	#$90
+     61  1119		       69 00		      adc	#$00
+     62  111b							; lda	   COLMEM ; 37888
+     63  111b		       60		      rts
+     64  111c
+     65  111c				   prepareColor
+     66  111c							; in this routine, we will set the screen color, border color, character color, and aux color
+     67  111c							; once we have set the colors, we will store them in the appropriate memory locations
+     68  111c							; after that we will call another method to print characters to the screen (which will all require new bit patterns due to the new colors)
+     69  111c
+     70  111c							; remember: little endian, so its read right to left. (so the right most bit is bit 0, and the left most bit is bit 7)
+     71  111c
+     72  111c							; lda	   #%00000000	   ; set screen color to black
+     73  111c		       a9 ac		      lda	#$ac
+     74  111e		       8d 0f 90 	      sta	$900f	; store screen color in memory
+     75  1121							; bits 4-7 are the background color
+     76  1121							; bits 0-2 are the border color
+     77  1121							; bit 3 selects inverted or normal mode
+     78  1121		       a9 00		      lda	#%00000000	; set border color to black
+     79  1123		       8d 0e 90 	      sta	$900e
+     80  1126							; bits 4-7 are the aux color
+     81  1126							; bits 0-3 set the volume of all sound channels
+     82  1126
+     83  1126							;/*
+     84  1126							; * Sets the contents of the border and background color register
+     85  1126							; * Input: border and background color bits in a
+     86  1126							;*/
+     87  1126				   printCharacters
+     88  1126							; custom character A
+     89  1126		       a9 fc		      lda	#$fc
+     90  1128		       8d 05 90 	      sta	$9005	; load custom character set
+     91  112b		       20 5f e5 	      jsr	$e55f	; clear screen
+     92  112e		       a9 42		      lda	#$42	; set a to first character in new character set
+     93  1130		       20 d2 ff 	      jsr	CHROUT
+     94  1133		       4c 26 11 	      jmp	printCharacters
+     95  1136
+     96  1136							;/*
+     97  1136							;    Note Section
+     98  1136							;    -> Apparently the formula to find the current location of color memory is:
+     99  1136							;	  C = 37888 + 4 * (PEAK (36866) AND 128) [This formula is obviously in BASIC]
+    100  1136							;	  So, the formula in 6502 ASM is:
+    101  1136							;	  C = $9400 + 4 * ($9000 AND $80) [Obviously, this isn't right, just noting it down in a basic sense]
+    102  1136							;
+    103  1136							;    -> We need to enable multi-color mode for the character, which starts at $9600, by adding 8 bits to it.
+    104  1136							;    -> Horizontal space is halved in multi-color mode. (Makes sense, since we have 2 bits to represent the color) [4x8 pixels instead of 8x8 pixels]
+    105  1136							;*/
