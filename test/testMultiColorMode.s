@@ -87,6 +87,8 @@ printTestColorCharacter:
 
 printCharactersWithColors:
     ; ghetto method, sue me. i just like testing theories out quickly.
+    ; 0-8 seems to be just the normal colors for the background
+    ; 9-15 seems to be colors for multi-color mode (makes sense)
     jsr     printTestColorCharacter
     jsr     printTestColorCharacter
     jsr     printTestColorCharacter
