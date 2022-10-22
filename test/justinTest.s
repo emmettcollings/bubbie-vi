@@ -43,14 +43,11 @@ start:
     lda     #$43+2*(2-1)    ; set a to second character in new character set
     jsr     CHROUT
 
-loop:
-    ; lda     #$7f
-    ; sta     $fc
-    ; jsr     timer
+    lda     #$02
+    sta     $fd
+    jsr     characterFlip
 
-    ; lda     #$02
-    ; sta     $fd
-    ; jsr     characterFlip
+loop:
 
     lda     #$7f
     sta     $fc
@@ -62,10 +59,6 @@ loop:
     sta     $fb
 
     jsr     charShift_H
-
-    ; lda     #$02
-    ; sta     $fd
-    ; jsr     characterFlip
 
     jmp     loop
 
@@ -110,36 +103,34 @@ cM_L:                       ; Perform shift 3 times
     % Alters:   $fc, $fd
 
     # Notes:    Requires linked characters to be stored at $1**0 and $1**8 respectively
-    51 Bytes
+    49 Bytes
 */
     org     $1501           ; Memory location of new code region
 charShift_H:
     jsr     charMidbyte     ; Format the identifier into low and high address bytes
 
-    ldx     #$02            ; Initialize counter for the loop to transfer the ROR/ROL instructions (3)
+    ldx     #$07            ; Initialize counter for the loop to transfer the ROR/ROL instructions (3)
 cS_hA:                      ; Here we prep the two ROR/ROL instructions
-    lda     $fb,x           ; Get the op code and character address bytes from zero page
-    sta     $1501+$29,x     ; Store first instruction set into first ROR/ROL [SMC]
-    cpx     #$01            ; Check if counter is 1 indicating that we're processing the low address byte
+    lda     $f6,x           ; Get the op code and character address bytes from zero page
+    sta     $1501+$22,x     ; Store first instruction set into first ROR/ROL [SMC]
+    cpx     #$06            ; Check if we're reading the low address byte
     bne     cS_hB           ; If not, skip the next instruction
     ora     #$08            ; Add 8 to the low address byte, changing $1**0 into $1**8
 cS_hB:
-    sta     $1501+$2c,x     ; Store second instruction set into second ROR/ROL [SMC]
-    cpx     #$00
+    sta     $1501+$25,x     ; Store second instruction set into second ROR/ROL [SMC]
+    cpx     #$05
     bne     cS_hC
-    ldx     #$03
+    ldx     #$08
     eor     #$14            ; Magic number that turns 7e -> 6a and 3e -> 2a
 cS_hC:
-    sta     $1501+$25,x 
+    sta     $1501+$1e,x 
     dex                     ; Decrement counter
-    cpx     #$02
+    cpx     #$07    
     bne     cS_hA           ; Loop until counter underflows, indicating that we've processed all 3 bytes
-                            ; Run the two ROR instructions
-    ldx     #$07            ; Initialize counter for the number of bytes needed to ROR/ROL (8)
-cS_hD:
-    lda     $9999,x
-    ror
-    ror     $9999,x         ; Rotate out of first character [SMC]
+cS_hD:                      ; x is now 7, so we can use it as the counter for the main loop
+    lda     $9999,x         ; Load the second linked character [SMC]
+    ror                     ; Move bit 0/7 to carry depending on ROR/ROL [SMC]
+    ror     $9999,x         ; Rotate out of first character, shifting in the carry [SMC]
     ror     $9999,x         ; Rotate into second character [SMC]
     dex                     ; Decrement counter
     bpl     cS_hD           ; If counter hasn't underflowed, loop
@@ -153,7 +144,7 @@ cS_hD:
                 -> $fc | Identifier of first linked character to shift ($1**0)
 
     & Location specific:    Yes
-    % Alters:   $fb, $fc, $fd
+    % Alters:   $fc, $fd
 
     # Notes:    Requires linked characters to be stored at $1**0 and $1**8 respectively
     75 Bytes

@@ -1,11 +1,11 @@
 ------- FILE test.s LEVEL 1 PASS 2
-      1  1013 ????						;/*
+      1  1013 ????						;/*  
       2  1013 ????						; * Stub program that immediately starts our assembly program. Will serve as the
-      3  1013 ????						; * entry point for our final product
+      3  1013 ????						; * entry point for our final product 
       4  1013 ????						;*/
       5  1013 ????				      processor	6502	; tell dasm we are writing 6502 asm
       6  1013 ????
-      7  1013 ????						;/*
+      7  1013 ????						;/* 
       8  1013 ????						; * Write some BASIC code into memory that will jump to our assembly. User
       9  1013 ????						; * written BASIC gets stored at $1001 so that's where we begin
      10  1013 ????						;*/
@@ -21,6 +21,6 @@
      20  100d
      21  100d				   start
      22  100d		       a9 30		      lda	#$30	; this is the VIC-20 symbol for '0'
-     23  100f		       20 d2 ff 	      jsr	CHROUT	; call CHROUT
+     23  100f		       20 d2 ff 	      jsr	CHROUT	; call CHROUT 
      24  1012		       60		      rts		; return to caller
      25  1013
