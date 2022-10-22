@@ -31,9 +31,9 @@ SCRMEM = $1E00                  ; Screen memory location
 
 ; Custom Characters
 pad         .byte   $00, $00, $00 ; Padding so that next byte is on 8 byte boundary
-; customA     .byte   $18, $24, $42, $7E, $42, $42, $42, $00 ; custom character A (has a mix of screen color, border color, character color, and aux color. honestly, this is the example A from the bible hehe)
+customA     .byte   $18, $24, $42, $7E, $42, $42, $42, $00 ; custom character A (has a mix of screen color, border color, character color, and aux color. honestly, this is the example A from the bible hehe)
 ; customChar   .byte   $7E, $7E, $7E, $7E, $7E, $7E, $7E, $7E, $7E ; useless custom character, just for testing purposes
-chr_1       .byte   $00, $3c, $26, $56, $56, $26, $3c, $24 ; among us (sussy) [if this renders properly, then multi-color mode isn't working]
+; chr_1       .byte   $00, $3c, $26, $56, $56, $26, $3c, $24 ; among us (sussy) [if this renders properly, then multi-color mode isn't working]
 
 /*
     Main Program
@@ -115,7 +115,14 @@ printCharactersWithColors:
 
     jsr     printNewLine
     jsr     resetToDefaultColor
-    
+
+    ; lda     #$0e
+    ; sta     $0286
+    ; jsr     printCharacters
+
+    ; jsr     printNewLine
+    ; jsr     resetToDefaultColor
+
     rts                     ; this is just for testing purposes, as the next routine is just for testing purposes
 
 
@@ -131,4 +138,6 @@ printCharactersWithColors:
             - 0-7 seems to be just the normal colors for the background
                 - 0 = black, 1 = white, 2 = red, 3 = cyan, 4 = purple, 5 = green, 6 = blue, 7 = yellow
             - 8-15 seems to be colors for multi-color mode (makes sense)
+
+    -> $9400 to $95FF is the location of COLOR RAM
 */

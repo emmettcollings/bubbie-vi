@@ -32,9 +32,9 @@
      31  100d
      32  100d							; Custom Characters
      33  100d		       00 00 00    pad	      .byte.b	$00, $00, $00	; Padding so that next byte is on 8 byte boundary
-     34  1010							; customA     .byte   $18, $24, $42, $7E, $42, $42, $42, $00 ; custom character A (has a mix of screen color, border color, character color, and aux color. honestly, this is the example A from the bible hehe)
-     35  1010							; customChar	.byte	$7E, $7E, $7E, $7E, $7E, $7E, $7E, $7E, $7E ; useless custom character, just for testing purposes
-     36  1010		       00 3c 26 56*chr_1      .byte.b	$00, $3c, $26, $56, $56, $26, $3c, $24	; among us (sussy) [if this renders properly, then multi-color mode isn't working]
+     34  1010		       18 24 42 7e*customA    .byte.b	$18, $24, $42, $7E, $42, $42, $42, $00	; custom character A (has a mix of screen color, border color, character color, and aux color. honestly, this is the example A from the bible hehe)
+     35  1018							; customChar	.byte	$7E, $7E, $7E, $7E, $7E, $7E, $7E, $7E, $7E ; useless custom character, just for testing purposes
+     36  1018							; chr_1       .byte   $00, $3c, $26, $56, $56, $26, $3c, $24 ; among us (sussy) [if this renders properly, then multi-color mode isn't working]
      37  1018
      38  1018							;/*
      39  1018							;    Main Program
@@ -117,19 +117,28 @@
     116  1171		       20 3e 11 	      jsr	printNewLine
     117  1174		       20 21 11 	      jsr	resetToDefaultColor
     118  1177
-    119  1177		       60		      rts		; this is just for testing purposes, as the next routine is just for testing purposes
-    120  1178
-    121  1178
-    122  1178
-    123  1178
-    124  1178							;/*
-    125  1178							;    Notes
-    126  1178							;
-    127  1178							;    -> When we've enabled multicolor mode, characters are 4x8 pixels instead of 8x8 pixels. (Halved horizontally, so we can use the mutlicolor mode)
-    128  1178							;
-    129  1178							;    -> $0x286 is the address for the color that is currently being printed. (We can manipulate this to change the color of each character)
-    130  1178							;	  -> From testing this register, with my very professional testing method of printing a bunch of characters, I've determined the following (plus the VIC manual):
-    131  1178							;	      - 0-7 seems to be just the normal colors for the background
-    132  1178							;		  - 0 = black, 1 = white, 2 = red, 3 = cyan, 4 = purple, 5 = green, 6 = blue, 7 = yellow
-    133  1178							;	      - 8-15 seems to be colors for multi-color mode (makes sense)
-    134  1178							;*/
+    119  1177							; lda	   #$0e
+    120  1177							; sta	   $0286
+    121  1177							; jsr	   printCharacters
+    122  1177
+    123  1177							; jsr	   printNewLine
+    124  1177							; jsr	   resetToDefaultColor
+    125  1177
+    126  1177		       60		      rts		; this is just for testing purposes, as the next routine is just for testing purposes
+    127  1178
+    128  1178
+    129  1178
+    130  1178
+    131  1178							;/*
+    132  1178							;    Notes
+    133  1178							;
+    134  1178							;    -> When we've enabled multicolor mode, characters are 4x8 pixels instead of 8x8 pixels. (Halved horizontally, so we can use the mutlicolor mode)
+    135  1178							;
+    136  1178							;    -> $0x286 is the address for the color that is currently being printed. (We can manipulate this to change the color of each character)
+    137  1178							;	  -> From testing this register, with my very professional testing method of printing a bunch of characters, I've determined the following (plus the VIC manual):
+    138  1178							;	      - 0-7 seems to be just the normal colors for the background
+    139  1178							;		  - 0 = black, 1 = white, 2 = red, 3 = cyan, 4 = purple, 5 = green, 6 = blue, 7 = yellow
+    140  1178							;	      - 8-15 seems to be colors for multi-color mode (makes sense)
+    141  1178							;
+    142  1178							;    -> $9400 to $95FF is the location of COLOR RAM
+    143  1178							;*/
