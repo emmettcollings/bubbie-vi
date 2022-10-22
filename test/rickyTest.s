@@ -77,4 +77,7 @@ printCharacters:
         C = 37888 + 4 * (PEAK (36866) AND 128) [This formula is obviously in BASIC]
         So, the formula in 6502 ASM is:
         C = $9400 + 4 * ($9000 AND $80) [Obviously, this isn't right, just noting it down in a basic sense]
+
+    -> We need to enable multi-color mode for the character, which starts at $9600, by adding 8 bits to it.
+    -> Horizontal space is halved in multi-color mode. (Makes sense, since we have 2 bits to represent the color)
 */
