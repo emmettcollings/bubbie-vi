@@ -43,7 +43,9 @@ start:
     jsr     CLS                 ; clear screen
     jsr     enableMultiColor 
     jsr     prepareScreen
-    ; jsr     printCharacters     
+    ; jsr     printCharacters
+
+    ldx     #$00                ; load x with 0     
     jsr     printCharactersWithColors
     rts                         ; return to caller
 
@@ -63,6 +65,11 @@ prepareScreen:
             ; bits 0-3 set the volume of all sound channels
     rts                     ; Ultimately, this isn't needed, as we can just proceed to the next instruction. Just doing it for testing reasons.
 
+updateCurrentColor:
+    stx     $0286
+    inx
+    rts
+
 printCharacters:
     ; custom character A
     lda     #$fc            
@@ -72,16 +79,32 @@ printCharacters:
     jsr     CHROUT
     rts                     ; this is just for testing purposes, as the next routine is just for testing purposes
 
-printCharactersWithColors:
-    lda     #$07
-    sta     $0286
+printTestColorCharacter:
+    jsr     updateCurrentColor
     lda     #$30
     jsr     CHROUT
+    rts
 
-    lda     #$05
+printCharactersWithColors:
+    ; ghetto method, sue me. i just like testing theories out quickly.
+    jsr     printTestColorCharacter
+    jsr     printTestColorCharacter
+    jsr     printTestColorCharacter
+    jsr     printTestColorCharacter
+    jsr     printTestColorCharacter
+    jsr     printTestColorCharacter
+    jsr     printTestColorCharacter
+    jsr     printTestColorCharacter
+    jsr     printTestColorCharacter
+    jsr     printTestColorCharacter
+    jsr     printTestColorCharacter
+    jsr     printTestColorCharacter
+    jsr     printTestColorCharacter
+    jsr     printTestColorCharacter
+    jsr     printTestColorCharacter
+
+    lda     #$01
     sta     $0286
-    lda     #$30
-    jsr     CHROUT
 
     rts                     ; this is just for testing purposes, as the next routine is just for testing purposes
 

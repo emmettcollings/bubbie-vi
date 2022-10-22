@@ -1,16 +1,16 @@
 ------- FILE testMultiColorMode.s LEVEL 1 PASS 2
-      1  113d ????						;/*
-      2  113d ????						;    Goal of this test is to properly implement multi-color mode.
-      3  113d ????						;*/
-      4  113d ????
-      5  113d ????						;/*
-      6  113d ????						;    Processor Information
-      7  113d ????						;*/
-      8  113d ????				      processor	6502	; This informs the assembler that we are using a 6502 processor.
-      9  113d ????
-     10  113d ????						;/*
-     11  113d ????						;    Memory Map
-     12  113d ????						;*/
+      1  116b ????						;/*
+      2  116b ????						;    Goal of this test is to properly implement multi-color mode.
+      3  116b ????						;*/
+      4  116b ????
+      5  116b ????						;/*
+      6  116b ????						;    Processor Information
+      7  116b ????						;*/
+      8  116b ????				      processor	6502	; This informs the assembler that we are using a 6502 processor.
+      9  116b ????
+     10  116b ????						;/*
+     11  116b ????						;    Memory Map
+     12  116b ????						;*/
      13  1001					      org	$1001	; mem location of user region
      14  1001		       0b 10		      dc.w	stubend
      15  1003		       01 00		      dc.w	1	; arbitrary line number for BASIC syntax
@@ -42,56 +42,79 @@
      41  1101					      org	$1101	; mem location of code region
      42  1101				   start
      43  1101		       20 5f e5 	      jsr	CLS	; clear screen
-     44  1104		       20 0e 11 	      jsr	enableMultiColor
-     45  1107		       20 0f 11 	      jsr	prepareScreen
+     44  1104		       20 10 11 	      jsr	enableMultiColor
+     45  1107		       20 11 11 	      jsr	prepareScreen
      46  110a							; jsr	   printCharacters
-     47  110a		       20 28 11 	      jsr	printCharactersWithColors
-     48  110d		       60		      rts		; return to caller
-     49  110e
-     50  110e				   enableMultiColor
-     51  110e		       60		      rts
-     52  110f
-     53  110f				   prepareScreen
-     54  110f							; remember: little endian, so its read right to left. (so the right most bit is bit 0, and the left most bit is bit 7)
-     55  110f		       a9 00		      lda	#%00000000	; set screen color to black
-     56  1111		       8d 0f 90 	      sta	$900f	; store screen color in memory
-     57  1114							; bits 4-7 are the background color
-     58  1114							; bits 0-2 are the border color
-     59  1114							; bit 3 selects inverted or normal mode
-     60  1114		       a9 00		      lda	#%00000000	; set border color to black
-     61  1116		       8d 0e 90 	      sta	$900e
-     62  1119							; bits 4-7 are the aux color
-     63  1119							; bits 0-3 set the volume of all sound channels
-     64  1119		       60		      rts		; Ultimately, this isn't needed, as we can just proceed to the next instruction. Just doing it for testing reasons.
-     65  111a
-     66  111a				   printCharacters
-     67  111a							; custom character A
-     68  111a		       a9 fc		      lda	#$fc
-     69  111c		       8d 05 90 	      sta	$9005	; load custom character set
-     70  111f		       20 5f e5 	      jsr	$e55f	; clear screen
-     71  1122		       a9 42		      lda	#$42	; set a to first character in new character set
-     72  1124		       20 d2 ff 	      jsr	CHROUT
-     73  1127		       60		      rts		; this is just for testing purposes, as the next routine is just for testing purposes
-     74  1128
-     75  1128				   printCharactersWithColors
-     76  1128		       a9 07		      lda	#$07
-     77  112a		       8d 86 02 	      sta	$0286
-     78  112d		       a9 30		      lda	#$30
-     79  112f		       20 d2 ff 	      jsr	CHROUT
-     80  1132
-     81  1132		       a9 05		      lda	#$05
-     82  1134		       8d 86 02 	      sta	$0286
-     83  1137		       a9 30		      lda	#$30
-     84  1139		       20 d2 ff 	      jsr	CHROUT
-     85  113c
-     86  113c		       60		      rts		; this is just for testing purposes, as the next routine is just for testing purposes
-     87  113d
-     88  113d
-     89  113d
-     90  113d
-     91  113d							;/*
-     92  113d							;    Notes
-     93  113d							;
-     94  113d							;    -> When we've enabled multicolor mode, characters are 4x8 pixels instead of 8x8 pixels. (Halved horizontally, so we can use the mutlicolor mode)
-     95  113d							;    -> $0x286 is the address for the color that is currently being printed. (We can manipulate this to change the color of each character)
-     96  113d							;*/
+     47  110a
+     48  110a		       a2 00		      ldx	#$00	; load x with 0
+     49  110c		       20 38 11 	      jsr	printCharactersWithColors
+     50  110f		       60		      rts		; return to caller
+     51  1110
+     52  1110				   enableMultiColor
+     53  1110		       60		      rts
+     54  1111
+     55  1111				   prepareScreen
+     56  1111							; remember: little endian, so its read right to left. (so the right most bit is bit 0, and the left most bit is bit 7)
+     57  1111		       a9 00		      lda	#%00000000	; set screen color to black
+     58  1113		       8d 0f 90 	      sta	$900f	; store screen color in memory
+     59  1116							; bits 4-7 are the background color
+     60  1116							; bits 0-2 are the border color
+     61  1116							; bit 3 selects inverted or normal mode
+     62  1116		       a9 00		      lda	#%00000000	; set border color to black
+     63  1118		       8d 0e 90 	      sta	$900e
+     64  111b							; bits 4-7 are the aux color
+     65  111b							; bits 0-3 set the volume of all sound channels
+     66  111b		       60		      rts		; Ultimately, this isn't needed, as we can just proceed to the next instruction. Just doing it for testing reasons.
+     67  111c
+     68  111c				   updateCurrentColor
+     69  111c		       8e 86 02 	      stx	$0286
+     70  111f		       e8		      inx
+     71  1120		       60		      rts
+     72  1121
+     73  1121				   printCharacters
+     74  1121							; custom character A
+     75  1121		       a9 fc		      lda	#$fc
+     76  1123		       8d 05 90 	      sta	$9005	; load custom character set
+     77  1126		       20 5f e5 	      jsr	$e55f	; clear screen
+     78  1129		       a9 42		      lda	#$42	; set a to first character in new character set
+     79  112b		       20 d2 ff 	      jsr	CHROUT
+     80  112e		       60		      rts		; this is just for testing purposes, as the next routine is just for testing purposes
+     81  112f
+     82  112f				   printTestColorCharacter
+     83  112f		       20 1c 11 	      jsr	updateCurrentColor
+     84  1132		       a9 30		      lda	#$30
+     85  1134		       20 d2 ff 	      jsr	CHROUT
+     86  1137		       60		      rts
+     87  1138
+     88  1138				   printCharactersWithColors
+     89  1138							; ghetto method, sue me. i just like testing theories out quickly.
+     90  1138		       20 2f 11 	      jsr	printTestColorCharacter
+     91  113b		       20 2f 11 	      jsr	printTestColorCharacter
+     92  113e		       20 2f 11 	      jsr	printTestColorCharacter
+     93  1141		       20 2f 11 	      jsr	printTestColorCharacter
+     94  1144		       20 2f 11 	      jsr	printTestColorCharacter
+     95  1147		       20 2f 11 	      jsr	printTestColorCharacter
+     96  114a		       20 2f 11 	      jsr	printTestColorCharacter
+     97  114d		       20 2f 11 	      jsr	printTestColorCharacter
+     98  1150		       20 2f 11 	      jsr	printTestColorCharacter
+     99  1153		       20 2f 11 	      jsr	printTestColorCharacter
+    100  1156		       20 2f 11 	      jsr	printTestColorCharacter
+    101  1159		       20 2f 11 	      jsr	printTestColorCharacter
+    102  115c		       20 2f 11 	      jsr	printTestColorCharacter
+    103  115f		       20 2f 11 	      jsr	printTestColorCharacter
+    104  1162		       20 2f 11 	      jsr	printTestColorCharacter
+    105  1165
+    106  1165		       a9 01		      lda	#$01
+    107  1167		       8d 86 02 	      sta	$0286
+    108  116a
+    109  116a		       60		      rts		; this is just for testing purposes, as the next routine is just for testing purposes
+    110  116b
+    111  116b
+    112  116b
+    113  116b
+    114  116b							;/*
+    115  116b							;    Notes
+    116  116b							;
+    117  116b							;    -> When we've enabled multicolor mode, characters are 4x8 pixels instead of 8x8 pixels. (Halved horizontally, so we can use the mutlicolor mode)
+    118  116b							;    -> $0x286 is the address for the color that is currently being printed. (We can manipulate this to change the color of each character)
+    119  116b							;*/
