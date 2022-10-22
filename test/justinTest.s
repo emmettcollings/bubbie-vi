@@ -27,7 +27,7 @@ stubend:
 */
 pad         .byte   $00, $00, $00 ; Padding so that next byte is on 8 byte boundary
     org     $1020
-chr_1       .byte   $ff, $3c, $26, $56, $56, $26, $3c, $24 ; sus?
+chr_1       .byte   $00, $3c, $26, $56, $56, $26, $3c, $24 ; sus?
 chr_1_b     .byte   $00, $00, $00, $00, $00, $00, $00, $00 ; sus_v2?
 
 /*
@@ -57,6 +57,21 @@ loop:
     sta     $fd
     lda     #$7e
     sta     $fb
+    lda     #$01
+    sta     $fe
+
+    jsr     charShift_H
+
+    lda     #$7f
+    sta     $fc
+    jsr     timer
+
+    lda     #$02
+    sta     $fd
+    lda     #$3e
+    sta     $fb
+    lda     #$00
+    sta     $fe
 
     jsr     charShift_H
 
@@ -98,17 +113,19 @@ cM_L:                       ; Perform shift 3 times
     
     ~ Usage:    -> $fb | Direction to shift character (3e = <-, 7e = ->) (OP code for ROR/ROL Absolute,x)
                 -> $fc | Identifier of first linked character to shift ($1**0)
+                -> $fe | Number of times to shift character -1 (00 -> once, 01 -> twice, etc.)
 
     & Location specific:    Yes
-    % Alters:   $fc, $fd
+    % Alters:   $fc, $fd, $fe
 
     # Notes:    Requires linked characters to be stored at $1**0 and $1**8 respectively
-    49 Bytes
-*/
+    53 Bytes
+*/           
     org     $1501           ; Memory location of new code region
 charShift_H:
     jsr     charMidbyte     ; Format the identifier into low and high address bytes
 
+cs_hRepeat:                 ; Repeat the following code for the number of times specified by $fe
     ldx     #$07            ; Initialize counter for the loop to transfer the ROR/ROL instructions (3)
 cS_hA:                      ; Here we prep the two ROR/ROL instructions
     lda     $f6,x           ; Get the op code and character address bytes from zero page
@@ -118,23 +135,26 @@ cS_hA:                      ; Here we prep the two ROR/ROL instructions
     ora     #$08            ; Add 8 to the low address byte, changing $1**0 into $1**8
 cS_hB:
     sta     $1501+$25,x     ; Store second instruction set into second ROR/ROL [SMC]
-    cpx     #$05
-    bne     cS_hC
-    ldx     #$08
-    eor     #$14            ; Magic number that turns 7e -> 6a and 3e -> 2a
+    cpx     #$05            ; Check if we're reading the high address byte
+    bne     cS_hC           ; If not, skip the next two instructions
+    ldx     #$08            ; Set x so that the address we write the last instruction to is the single ROR/ROL [SMC]
+    eor     #$14            ; Magic number that turns 7e -> 6a and 3e -> 2a for the single ROR/ROL instruction
 cS_hC:
-    sta     $1501+$1e,x 
+    sta     $1501+$1e,x     ; Store the first LDA/ROR/ROL instruction dual line set [SMC]
     dex                     ; Decrement counter
-    cpx     #$07    
+    cpx     #$07            ; Check if we're done
     bne     cS_hA           ; Loop until counter underflows, indicating that we've processed all 3 bytes
-cS_hD:                      ; x is now 7, so we can use it as the counter for the main loop
+
+cS_hMain:                   ; x is now 7, so we can use it as the counter for the main loop
     lda     $9999,x         ; Load the second linked character [SMC]
     ror                     ; Move bit 0/7 to carry depending on ROR/ROL [SMC]
     ror     $9999,x         ; Rotate out of first character, shifting in the carry [SMC]
     ror     $9999,x         ; Rotate into second character [SMC]
     dex                     ; Decrement counter
-    bpl     cS_hD           ; If counter hasn't underflowed, loop
-    rts                     
+    bpl     cS_hMain        ; If counter hasn't underflowed, loop
+    dec     $fe             ; Decrement the number of times to shift
+    bpl     cs_hRepeat      ; If we still have to shift, loop
+    rts         
 
 /*
     V.E.N.T.E.D. Character Vertical Shift Routine (Vertical Ejection of Narrowly-Tiled Entity Data)
