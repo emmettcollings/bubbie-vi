@@ -70,6 +70,11 @@ updateCurrentColor:
     inx
     rts
 
+resetToDefaultColor:
+    lda     #$01
+    sta     $0286
+    rts
+
 printCharacters:
     ; custom character A
     lda     #$fc            
@@ -84,6 +89,11 @@ printTestColorCharacter:
     lda     #$30
     jsr     CHROUT
     rts
+
+printNewLine:
+    lda     #$11            ; load new line character
+    jsr     CHROUT          ; print a newline
+    rts                     ; return to caller
 
 printCharactersWithColors:
     ; ghetto method, sue me. i just like testing theories out quickly.
@@ -105,8 +115,8 @@ printCharactersWithColors:
     jsr     printTestColorCharacter
     jsr     printTestColorCharacter
 
-    lda     #$01
-    sta     $0286
+    jsr     printNewLine
+    jsr     resetToDefaultColor
 
     rts                     ; this is just for testing purposes, as the next routine is just for testing purposes
 
