@@ -200,62 +200,109 @@
     199  157b		       60		      rts
     200  157c
     201  157c							;/*
-    202  157c							;    The best goddamn timer that's ever existed on pure American hardware god damnit
-    203  157c							;    @ Author:   Justin Parker
-    204  157c							;
-    205  157c							;    ~ Usage:	  -> $fc | Number of ~2ms intervals you want to wait for
-    206  157c							;
-    207  157c							;    & Location specific:    No
-    208  157c							;    % Alters:   $fb, $fc
-    209  157c							;
-    210  157c							;    # Notes: This is a blocking timer. It will not return until the timer has expired.
-    211  157c							;    9 Bytes
-    212  157c							;*/
-    213  1601					      org	$1601	; Memory location of new code region
-    214  1601				   timer
-    215  1601		       c6 fb		      dec	$fb	; Decrement the timer low-bit (is not initially set, so timing may vary by up to 1 cycle)
-    216  1603		       d0 fc		      bne	timer	; If the low-bit isn't zero, keep decrementing the low-bit
-    217  1605		       c6 fc		      dec	$fc	; If the low-bit is zero, decrement the timer high-bit
-    218  1607		       d0 f8		      bne	timer	; If the high-bit isn't zero, keep decrementing the low-bit
-    219  1609		       60		      rts		; If the high-bit is zero, return from subroutine
-    220  160a
-    221  160a							;/*
-    222  160a							;    I.M.P.O.S.T.O.R. Character Flip Routine (Invertion Movement of Pre-Ordered, Shifted Tables Of Rasters)
-    223  160a							;    @ Author:   Justin Parker
-    224  160a							;
-    225  160a							;    ~ Usage:	  -> $fc | Character identifier byte
-    226  160a							;
-    227  160a							;    & Location specific:    Yes
-    228  160a							;    % Alters:   $fc, $fd
-    229  160a							;
-    230  160a							;    # Notes:	  Requires linked characters to be stored at $1**0 and $1**8 respectively
-    231  160a							;    38 bytes
-    232  160a							;*/
-    233  1621					      org	$1621	; Memory location of new code region
-    234  1621				   characterFlip
-    235  1621		       20 91 14 	      jsr	charMidbyte	; Format the identifier into low and high address bytes
-    236  1624
-    237  1624		       a2 01		      ldx	#$01	; Initialize counter for the loop to transfer LDA and STA instructions
-    238  1626				   cF_N
-    239  1626		       b5 fc		      lda	$fc,x	; Load address bytes of character to flip
-    240  1628		       9d 34 16 	      sta	$1621+$13,x	; Store value in org + $13 [SMC]
-    241  162b		       9d 41 16 	      sta	$1621+$20,x	; Store value in org + $20 [SMC]
-    242  162e		       ca		      dex		; Decrement counter
-    243  162f		       10 f5		      bpl	cF_N	; If counter did not underflow yet, loop
-    244  1631
-    245  1631		       a2 07		      ldx	#$07	; Set x to 7 (The number of bytes we need to flip)
-    246  1633				   cF_M
-    247  1633		       bd 65 87 	      lda	$8765,x	; Load byte to be flipped [SMC]
-    248  1636		       85 fc		      sta	$fc	; Store copy of byte to be flipped in $fc
-    249  1638		       a0 08		      ldy	#$08	; Set y to 8 (The number of bits we need to flip)
-    250  163a				   cF_L
-    251  163a		       46 fc		      lsr	$fc	; Math stuff to get it to work
-    252  163c		       2a		      rol		; --^
-    253  163d		       88		      dey		; --^
-    254  163e		       d0 fa		      bne	cF_L	; --*
-    255  1640		       9d 65 87 	      sta	$8765,x	; Store flipped byte [SMC]
-    256  1643		       ca		      dex		; Decrement x
-    257  1644		       d0 ed		      bne	cF_M	; If x is not zero, loop
-    258  1646		       60		      rts
-    259  1647
-    260  1647
+    202  157c							;*/
+    203  157c							;     org     $1551	       ; Memory location of new code region
+    204  157c							; transposeCharacter:
+    205  157c							;     lda     #$01
+    206  157c							;     sta     $fe
+    207  157c							; tN1:
+    208  157c							;     ldx     #$01
+    209  157c							; t0:
+    210  157c							;     lda     $fc,x	       ; Load low address byte
+    211  157c							;     ldy     $fe
+    212  157c							;     cpy     #$00
+    213  157c							;     bne     t12
+    214  157c							;     cpx     #$00
+    215  157c							;     bne     t12
+    216  157c							;     ora     #$08
+    217  157c							; t12:
+    218  157c							;     sta     $1551+$24,x
+    219  157c							;     sta     $1551+$36,x
+    220  157c							;     dex
+    221  157c							;     bpl     t0
+    222  157c
+    223  157c							;     ldy     #$07
+    224  157c							; t1:
+    225  157c							;     ldx     #$07
+    226  157c							;     lda     #$00
+    227  157c							; t2:
+    228  157c							;     ror     $9999,x
+    229  157c							;     ror
+    230  157c							;     dex
+    231  157c							;     bpl     t2
+    232  157c
+    233  157c							;     sta     $1000,y
+    234  157c							;     dey
+    235  157c							;     bpl     t1
+    236  157c
+    237  157c							;     ldx     #$07
+    238  157c							; t3:
+    239  157c							;     lda     $1000,x
+    240  157c							;     sta     $9999,x
+    241  157c							;     dex
+    242  157c							;     bpl     t3
+    243  157c							;     dec     $fe
+    244  157c							;     bpl     tN1
+    245  157c							;     rts
+    246  157c
+    247  157c
+    248  157c							;/*
+    249  157c							;    The best goddamn timer that's ever existed on pure American hardware god damnit
+    250  157c							;    @ Author:   Justin Parker
+    251  157c							;
+    252  157c							;    ~ Usage:	  -> $fc | Number of ~2ms intervals you want to wait for
+    253  157c							;
+    254  157c							;    & Location specific:    No
+    255  157c							;    % Alters:   $fb, $fc
+    256  157c							;
+    257  157c							;    # Notes: This is a blocking timer. It will not return until the timer has expired.
+    258  157c							;    9 Bytes
+    259  157c							;*/
+    260  1601					      org	$1601	; Memory location of new code region
+    261  1601				   timer
+    262  1601		       c6 fb		      dec	$fb	; Decrement the timer low-bit (is not initially set, so timing may vary by up to 1 cycle)
+    263  1603		       d0 fc		      bne	timer	; If the low-bit isn't zero, keep decrementing the low-bit
+    264  1605		       c6 fc		      dec	$fc	; If the low-bit is zero, decrement the timer high-bit
+    265  1607		       d0 f8		      bne	timer	; If the high-bit isn't zero, keep decrementing the low-bit
+    266  1609		       60		      rts		; If the high-bit is zero, return from subroutine
+    267  160a
+    268  160a							;/*
+    269  160a							;    I.M.P.O.S.T.O.R. Character Flip Routine (Invertion Movement of Pre-Ordered, Shifted Tables Of Rasters)
+    270  160a							;    @ Author:   Justin Parker
+    271  160a							;
+    272  160a							;    ~ Usage:	  -> $fc | Character identifier byte
+    273  160a							;
+    274  160a							;    & Location specific:    Yes
+    275  160a							;    % Alters:   $fc, $fd
+    276  160a							;
+    277  160a							;    # Notes:	  Requires linked characters to be stored at $1**0 and $1**8 respectively
+    278  160a							;    38 bytes
+    279  160a							;*/
+    280  1621					      org	$1621	; Memory location of new code region
+    281  1621				   characterFlip
+    282  1621		       20 91 14 	      jsr	charMidbyte	; Format the identifier into low and high address bytes
+    283  1624
+    284  1624		       a2 01		      ldx	#$01	; Initialize counter for the loop to transfer LDA and STA instructions
+    285  1626				   cF_N
+    286  1626		       b5 fc		      lda	$fc,x	; Load address bytes of character to flip
+    287  1628		       9d 34 16 	      sta	$1621+$13,x	; Store value in org + $13 [SMC]
+    288  162b		       9d 41 16 	      sta	$1621+$20,x	; Store value in org + $20 [SMC]
+    289  162e		       ca		      dex		; Decrement counter
+    290  162f		       10 f5		      bpl	cF_N	; If counter did not underflow yet, loop
+    291  1631
+    292  1631		       a2 07		      ldx	#$07	; Set x to 7 (The number of bytes we need to flip)
+    293  1633				   cF_M
+    294  1633		       bd 65 87 	      lda	$8765,x	; Load byte to be flipped [SMC]
+    295  1636		       85 fc		      sta	$fc	; Store copy of byte to be flipped in $fc
+    296  1638		       a0 08		      ldy	#$08	; Set y to 8 (The number of bits we need to flip)
+    297  163a				   cF_L
+    298  163a		       46 fc		      lsr	$fc	; Math stuff to get it to work
+    299  163c		       2a		      rol		; --^
+    300  163d		       88		      dey		; --^
+    301  163e		       d0 fa		      bne	cF_L	; --*
+    302  1640		       9d 65 87 	      sta	$8765,x	; Store flipped byte [SMC]
+    303  1643		       ca		      dex		; Decrement x
+    304  1644		       d0 ed		      bne	cF_M	; If x is not zero, loop
+    305  1646		       60		      rts
+    306  1647
+    307  1647

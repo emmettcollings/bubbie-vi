@@ -199,6 +199,53 @@ cS_vD:
     rts
 
 /*
+*/
+;     org     $1551           ; Memory location of new code region
+; transposeCharacter:
+;     lda     #$01
+;     sta     $fe
+; tN1:
+;     ldx     #$01
+; t0:
+;     lda     $fc,x           ; Load low address byte
+;     ldy     $fe
+;     cpy     #$00
+;     bne     t12
+;     cpx     #$00
+;     bne     t12
+;     ora     #$08
+; t12:
+;     sta     $1551+$24,x
+;     sta     $1551+$36,x
+;     dex
+;     bpl     t0
+
+;     ldy     #$07
+; t1:
+;     ldx     #$07
+;     lda     #$00
+; t2:
+;     ror     $9999,x
+;     ror
+;     dex
+;     bpl     t2
+
+;     sta     $1000,y
+;     dey
+;     bpl     t1
+
+;     ldx     #$07
+; t3:
+;     lda     $1000,x
+;     sta     $9999,x
+;     dex
+;     bpl     t3
+;     dec     $fe
+;     bpl     tN1
+;     rts
+
+
+/*
     The best goddamn timer that's ever existed on pure American hardware god damnit
     @ Author:   Justin Parker
 
