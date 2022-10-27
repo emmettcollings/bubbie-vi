@@ -114,8 +114,8 @@
     113  1501				   charShift_H
     114  1501		       a5 fb		      lda	$fb	; Load direction to shift character
     115  1503		       a0 07		      ldy	#$07	; Initialize counter for all bytes in character (Initialized to the first character)
-    116  1505		       8d 9a 15 	      sta	$1501+$99	; Store direction to shift character in the ROR/ROL instructions [SMC]
-    117  1508		       8d 9a 15 	      sta	$1501+$99
+    116  1505		       8d 0d 15 	      sta	$1501+$0c	; Store direction to shift character in the ROR/ROL instructions [SMC]
+    117  1508		       8d 16 15 	      sta	$1501+$15
     118  150b				   cS_ByteLoop
     119  150b		       b1 fc		      lda	($fc),y	; Load byte from first character
     120  150d		       6a		      ror		; Shift it to put either bit 0/7 in the carry flag [SMC]

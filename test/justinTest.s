@@ -113,8 +113,8 @@ cM_L:                       ; Perform shift 3 times
 charShift_H:
     lda     $fb             ; Load direction to shift character
     ldy     #$07            ; Initialize counter for all bytes in character (Initialized to the first character)
-    sta     $1501+$99       ; Store direction to shift character in the ROR/ROL instructions [SMC]
-    sta     $1501+$99
+    sta     $1501+$0c       ; Store direction to shift character in the ROR/ROL instructions [SMC]
+    sta     $1501+$15
 cS_ByteLoop:
     lda     ($fc),y         ; Load byte from first character
     ror                     ; Shift it to put either bit 0/7 in the carry flag [SMC]
