@@ -19,7 +19,7 @@
      18  100b				   stubend
      19  100b		       00 00		      dc.w	0	; insert null byte
      20  100d
-     21  100d							;/* 
+     21  100d							;/*
      22  100d							;    Global Definitions
      23  100d							;*/
      24  100d							; Routines
@@ -46,7 +46,7 @@
      45  1107		       20 11 11 	      jsr	prepareScreen
      46  110a							; jsr	   printCharacters
      47  110a
-     48  110a		       a2 00		      ldx	#$00	; load x with 0     
+     48  110a		       a2 00		      ldx	#$00	; load x with 0
      49  110c		       20 44 11 	      jsr	printCharactersWithColors
      50  110f		       60		      rts		; return to caller
      51  1110
@@ -129,11 +129,11 @@
     128  1178
     129  1178
     130  1178
-    131  1178							;/* 
+    131  1178							;/*
     132  1178							;    Notes
     133  1178							;
     134  1178							;    -> When we've enabled multicolor mode, characters are 4x8 pixels instead of 8x8 pixels. (Halved horizontally, so we can use the mutlicolor mode)
-    135  1178							;    
+    135  1178							;
     136  1178							;    -> $0x286 is the address for the color that is currently being printed. (We can manipulate this to change the color of each character)
     137  1178							;	  -> From testing this register, with my very professional testing method of printing a bunch of characters, I've determined the following (plus the VIC manual):
     138  1178							;	      - 0-7 seems to be just the normal colors for the background

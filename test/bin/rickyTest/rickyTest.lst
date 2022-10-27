@@ -19,7 +19,7 @@
      18  100b				   stubend
      19  100b		       00 00		      dc.w	0	; insert null byte
      20  100d
-     21  100d							;/* 
+     21  100d							;/*
      22  100d							;    Global Definitions
      23  100d							;*/
      24  100d		       ff d2	   CHROUT     =	$FFD2	; kernal character output routine
@@ -94,7 +94,7 @@
      93  1130		       20 d2 ff 	      jsr	CHROUT
      94  1133		       4c 26 11 	      jmp	printCharacters
      95  1136
-     96  1136							;/* 
+     96  1136							;/*
      97  1136							;    Note Section
      98  1136							;    -> Apparently the formula to find the current location of color memory is:
      99  1136							;	  C = 37888 + 4 * (PEAK (36866) AND 128) [This formula is obviously in BASIC]
