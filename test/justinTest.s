@@ -53,10 +53,8 @@ loop:
     sta     $fb
     lda     #$02
     sta     $fd
-    lda     #$07
-    sta     $fe
     jsr     charMidbyte     ; Format the identifier into low and high address bytes
-    jsr     charShift_H
+    jsr     charShift_V
 
     ; lda     #$02
     ; sta     $fd
@@ -70,8 +68,8 @@ loop:
     @ Author:   Justin Parker
     
     ~ Usage:    -> $fd | Character identifier byte
-                <- $fc | Character low byte
-                <- $fd | Character high byte
+                <- $fc | Character address low byte
+                <- $fd | Character address high byte
 
     & Location specific:    No
     % Alters:   $fc, $fd
@@ -100,8 +98,8 @@ cM_L:                       ; Perform shift 3 times
     @ Author:   Justin Parker
     
     ~ Usage:    -> $fb | Direction to shift character (2a = <-, 6a = ->) (OP code for ROR/ROL Indirect,y)
-                -> $fc | Character low byte
-                -> $fd | Character high byte
+                -> $fc | Character address low byte
+                -> $fd | Character address high byte
 
     & Location specific:    Yes
     % Alters:   None
@@ -113,8 +111,8 @@ cM_L:                       ; Perform shift 3 times
 charShift_H:
     lda     $fb             ; Load direction to shift character
     ldy     #$07            ; Initialize counter for all bytes in character (Initialized to the first character)
-    sta     $1501+$99       ; Store direction to shift character in the ROR/ROL instructions [SMC]
-    sta     $1501+$99
+    sta     $1501+$0c       ; Store direction to shift character in the ROR/ROL instructions [SMC]
+    sta     $1501+$15
 cS_ByteLoop:
     lda     ($fc),y         ; Load byte from first character
     ror                     ; Shift it to put either bit 0/7 in the carry flag [SMC]
@@ -140,46 +138,32 @@ cS_ShiftLoop:
     @ Author:   Justin Parker
     
     ~ Usage:    -> $fb | Direction to shift character (07 = ^, else = v)
-                -> $fc | Identifier of first linked character to shift ($1**0)
+                -> $fc | Character address low byte
+                -> $fd | Character address high byte
 
     & Location specific:    Yes
-    % Alters:   $fc, $fd
+    % Alters:   $fe
 
     # Notes:    Requires linked characters to be stored at $1**0 and $1**8 respectively
     75 Bytes
 */
     org     $1551           ; Memory location of new code region
 charShift_V:
-    jsr     charMidbyte     ; Format the identifier into low and high address bytes
+    lda     $1020
+    sta     $fe
 
-cS_vRepeat:
-    ldx     #$01
-t0:
-    lda     $fc,x
-    sta     $1551+$22,x
-    sta     $1551+$26,x
-    sta     $1551+$2d,x
-    cpx     #$00
-    bne     t12
-    ora     #$0f
-t12:
-    sta     $1551+$1f,x
-    dex
-    bpl     t0
-    ldx     #$0e
-    ldy     $999f
-t1:
-    lda     $9999,x
-    inx
-    sta     $9999,x
-    dex
-    dex
-    bpl     t1
-    sty     $9999
+    ldy     #$0e
+cS_A:
+    lda     $1021,y
+    sta     $1020,y
+    dey
+    bpl     cS_A
 
-    dec     $fe             ; Decrement the number of times to shift
-    bpl     cS_vRepeat      ; If we still have to shift, loop
+    lda     $fe
+    sta     $102f
+
     rts
+
 
 /*
     The best goddamn timer that's ever existed on pure American hardware god damnit
@@ -205,37 +189,40 @@ timer:
     I.M.P.O.S.T.O.R. Character Flip Routine (Invertion Movement of Pre-Ordered, Shifted Tables Of Rasters)
     @ Author:   Justin Parker
 
-    ~ Usage:    -> $fc | Character low byte
-                -> $fd | Character high byte
+    ~ Usage:    -> $fc | Character address low byte
+                -> $fd | Character address high byte
 
     & Location specific:    Yes
-    % Alters:   None
+    % Alters:   $fe
 
     # Notes:    Requires linked characters to be stored at $1**0 and $1**8 respectively
-    38 bytes
+    33 bytes
 */
     org     $1721
 characterFlip:
     ldx     #$01
-B:
-    lda     $fc,x           ; Load high byte of character
-    sta     $1721+$13,x 
+cF_A:
+    lda     $fc,x
+    sta     $1721+$17,x
     dex
-    bpl     B
+    bpl     cF_A
 
-    ldy     #$07            ; Initialize counter for all bytes in character (Initialized to the first character)
-    ldx     #$07
+    ldy     #$07
+cF_B:
+    lda     #$07
+    sta     $fe
+    tya
+    tax
     lda     ($fc),y
-A:
+cF_C:
     clc
     ror
     rol     $9999,x
 
-    dex
+    dec     $fe
+    bpl     cF_C
+
     dey
-    bpl     A
+    bpl     cF_B     
     rts
-
-
-
 
