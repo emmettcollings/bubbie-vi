@@ -25,7 +25,6 @@ stubend:
 /*
     Data
 */
-pad         .byte   $00, $00, $00 ; Padding so that next byte is on 8 byte boundary
     org     $1020
 chr_1       .byte   $00, $3c, $26, $56, $56, $26, $3c, $24 ; sus?
 chr_1_b     .byte   $00, $00, $00, $00, $00, $00, $00, $00 ; sus_v2?
@@ -49,17 +48,24 @@ loop:
     sta     $fc
     jsr     timer
 
-    ; lda     #$c8
-    ; sta     $fb
-    ; lda     #$02
-    ; sta     $fd
-    ; jsr     charMidbyte     ; Format the identifier into low and high address bytes
-    ; jsr     charShift_V
-
+    lda     #$c8
+    sta     $fb
     lda     #$02
     sta     $fd
     jsr     charMidbyte     ; Format the identifier into low and high address bytes
-    jsr     characterFlip
+    jsr     charShift_V
+
+    lda     #$6a
+    sta     $fb
+    lda     #$02
+    sta     $fd
+    jsr     charMidbyte     ; Format the identifier into low and high address bytes
+    jsr     charShift_H
+
+    ; lda     #$02
+    ; sta     $fd
+    ; jsr     charMidbyte     ; Format the identifier into low and high address bytes
+    ; jsr     characterFlip
 
     jmp     loop
 
