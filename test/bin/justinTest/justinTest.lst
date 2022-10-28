@@ -1,12 +1,12 @@
 ------- FILE justinTest.s LEVEL 1 PASS 2
-      1  1742 ????						;/*
-      2  1742 ????						;    Processor Information
-      3  1742 ????						;*/
-      4  1742 ????				      processor	6502	; This informs the assembler that we are using a 6502 processor.
-      5  1742 ????
-      6  1742 ????						;/*
-      7  1742 ????						;    Memory Map
-      8  1742 ????						;*/
+      1  174a ????						;/*
+      2  174a ????						;    Processor Information
+      3  174a ????						;*/
+      4  174a ????				      processor	6502	; This informs the assembler that we are using a 6502 processor.
+      5  174a ????
+      6  174a ????						;/*
+      7  174a ????						;    Memory Map
+      8  174a ????						;*/
       9  1001					      org	$1001	; mem location of user region
      10  1001		       0b 10		      dc.w	stubend
      11  1003		       01 00		      dc.w	1	; arbitrary line number for BASIC syntax
@@ -48,40 +48,40 @@
      47  1113
      48  1113		       a9 7f		      lda	#$7f
      49  1115		       85 fc		      sta	$fc
-     50  1117		       20 01 17 	      jsr	timer
+     50  1117		       20 41 17 	      jsr	timer
      51  111a
-     52  111a		       a9 2a		      lda	#$2a
-     53  111c		       85 fb		      sta	$fb
-     54  111e		       a9 02		      lda	#$02
-     55  1120		       85 fd		      sta	$fd
-     56  1122		       20 91 14 	      jsr	charMidbyte	; Format the identifier into low and high address bytes
-     57  1125		       20 51 15 	      jsr	charShift_V
-     58  1128
-     59  1128							; lda	   #$02
-     60  1128							; sta	   $fd
-     61  1128							; jsr	   charMidbyte	   ; Format the identifier into low and high address bytes
-     62  1128							; jsr	   characterFlip
-     63  1128
-     64  1128		       4c 13 11 	      jmp	loop
-     65  112b
-     66  112b							;/*
-     67  112b							;    E.J.E.CT. Character Identifier Decoder Routine (Efficient Juggling of Expelled CharacTers)
-     68  112b							;    @ Author:   Justin Parker
-     69  112b							;
-     70  112b							;    ~ Usage:	  -> $fd | Character identifier byte
-     71  112b							;		  <- $fc | Character address low byte
-     72  112b							;		  <- $fd | Character address high byte
-     73  112b							;
-     74  112b							;    & Location specific:    No
-     75  112b							;    % Alters:   $fc, $fd
-     76  112b							;
-     77  112b							;    # Notes: ---
-     78  112b							;    19 Bytes
-     79  112b							;*/
+     52  111a							; lda	   #$c8
+     53  111a							; sta	   $fb
+     54  111a							; lda	   #$02
+     55  111a							; sta	   $fd
+     56  111a							; jsr	   charMidbyte	   ; Format the identifier into low and high address bytes
+     57  111a							; jsr	   charShift_V
+     58  111a
+     59  111a		       a9 02		      lda	#$02
+     60  111c		       85 fd		      sta	$fd
+     61  111e		       20 91 14 	      jsr	charMidbyte	; Format the identifier into low and high address bytes
+     62  1121		       20 01 17 	      jsr	characterFlip
+     63  1124
+     64  1124		       4c 13 11 	      jmp	loop
+     65  1127
+     66  1127							;/*
+     67  1127							;    E.J.E.CT. Character Identifier Decoder Routine (Efficient Juggling of Expelled CharacTers)
+     68  1127							;    @ Author:   Justin Parker
+     69  1127							;
+     70  1127							;    ~ Usage:	  -> $fd | Character identifier byte
+     71  1127							;		  <- $fc | Character address low byte
+     72  1127							;		  <- $fd | Character address high byte
+     73  1127							;
+     74  1127							;    & Location specific:    No
+     75  1127							;    % Alters:   $fc, $fd
+     76  1127							;
+     77  1127							;    # Notes:	  ---
+     78  1127							;    19 Bytes
+     79  1127							;*/
      80  1491					      org	$1491	; Memory location of new code region
      81  1491				   charMidbyte
      82  1491		       a2 03		      ldx	#$03	; Initialize counter while also setting up for ROR, since high nibble = 0 is all that matters
-     83  1493		       86 fc		      stx	$fc	; Store value in $fd for ROR
+     83  1493		       86 fc		      stx	$fc	; Store value in $fc for ROR
      84  1495		       a5 fd		      lda	$fd	; Load identifier of character to shift
      85  1497
      86  1497		       38		      sec		; Set carry flag to ensure high nibble is 1 (Math reasons)
@@ -98,7 +98,7 @@
      97  14a4							;    A.M.O.G.U.S. Character Horizontal Shift Routine (Advanced Movement Of Graphics Using Shift)
      98  14a4							;    @ Author:   Justin Parker
      99  14a4							;
-    100  14a4							;    ~ Usage:	  -> $fb | Direction to shift character (2a = <-, 6a = ->) (OP code for ROR/ROL Indirect,y)
+    100  14a4							;    ~ Usage:	  -> $fb | Direction to shift character (2a = <-, 6a = ->) (OP code for ROL/ROR Indirect,y)
     101  14a4							;		  -> $fc | Character address low byte
     102  14a4							;		  -> $fd | Character address high byte
     103  14a4							;
@@ -114,11 +114,11 @@
     113  1503		       a0 07		      ldy	#$07	; Initialize counter for all bytes in character (Initialized to the first character)
     114  1505		       8d 0d 15 	      sta	$1501+$0c	; Store direction to shift character in the ROR/ROL instructions [SMC]
     115  1508		       8d 16 15 	      sta	$1501+$15
-    116  150b				   cS_ByteLoop
+    116  150b				   cSH_ByteLoop
     117  150b		       b1 fc		      lda	($fc),y	; Load byte from first character
     118  150d		       6a		      ror		; Shift it to put either bit 0/7 in the carry flag [SMC]
     119  150e		       a2 01		      ldx	#$01	; Initialize counter to cycle through both characters
-    120  1510				   cS_ShiftLoop
+    120  1510				   cSH_ShiftLoop
     121  1510		       98		      tya		; Swap y between first and second character
     122  1511		       49 08		      eor	#$08
     123  1513		       a8		      tay
@@ -128,102 +128,110 @@
     127  1517		       91 fc		      sta	($fc),y	; Store byte back in character indicated by y, now shifted
     128  1519
     129  1519		       ca		      dex
-    130  151a		       10 f4		      bpl	cS_ShiftLoop	; If we've looped through both characters, exit loop
+    130  151a		       10 f4		      bpl	cSH_ShiftLoop	; If we've looped through both characters, exit loop
     131  151c
     132  151c		       88		      dey
-    133  151d		       10 ec		      bpl	cS_ByteLoop	; If we've looped through all bytes, exit loop
+    133  151d		       10 ec		      bpl	cSH_ByteLoop	; If we've looped through all bytes, exit loop
     134  151f		       60		      rts
     135  1520
     136  1520							;/*
     137  1520							;    V.E.N.T.E.D. Character Vertical Shift Routine (Vertical Ejection of Narrowly-Tiled Entity Data)
     138  1520							;    @ Author:   Justin Parker
     139  1520							;
-    140  1520							;    ~ Usage:	  -> $fb | Direction to shift character (07 = ^, else = v)
+    140  1520							;    ~ Usage:	  -> $fb | Direction to shift character (c8 = v, 88 = ^) (OP code for INY/DEY)
     141  1520							;		  -> $fc | Character address low byte
     142  1520							;		  -> $fd | Character address high byte
     143  1520							;
     144  1520							;    & Location specific:    Yes
-    145  1520							;    % Alters:   $fe
+    145  1520							;    % Alters:   None
     146  1520							;
     147  1520							;    # Notes:	  Requires linked characters to be stored at $1**0 and $1**8 respectively
-    148  1520							;    75 Bytes
+    148  1520							;    33 Bytes
     149  1520							;*/
     150  1551					      org	$1551	; Memory location of new code region
     151  1551				   charShift_V
-    152  1551		       ad 20 10 	      lda	$1020
-    153  1554		       85 fe		      sta	$fe
-    154  1556
-    155  1556		       a0 0e		      ldy	#$0e
-    156  1558				   cS_A
-    157  1558		       b9 21 10 	      lda	$1021,y
-    158  155b		       99 20 10 	      sta	$1020,y
-    159  155e		       88		      dey
-    160  155f		       10 f7		      bpl	cS_A
-    161  1561
-    162  1561		       a5 fe		      lda	$fe
-    163  1563		       8d 2f 10 	      sta	$102f
-    164  1566
-    165  1566		       60		      rts
-    166  1567
-    167  1567
-    168  1567							;/*
-    169  1567							;    The best goddamn timer that's ever existed on pure American hardware god damnit
-    170  1567							;    @ Author:   Justin Parker
-    171  1567							;
-    172  1567							;    ~ Usage:	  -> $fc | Number of ~2ms intervals you want to wait for
-    173  1567							;
-    174  1567							;    & Location specific:    No
-    175  1567							;    % Alters:   $fb, $fc
-    176  1567							;
-    177  1567							;    # Notes: This is a blocking timer. It will not return until the timer has expired.
-    178  1567							;    9 Bytes
-    179  1567							;*/
-    180  1701					      org	$1701	; Memory location of new code region
-    181  1701				   timer
-    182  1701		       c6 fb		      dec	$fb	; Decrement the timer low-bit (is not initially set, so timing may vary by up to 1 cycle)
-    183  1703		       d0 fc		      bne	timer	; If the low-bit isn't zero, keep decrementing the low-bit
-    184  1705		       c6 fc		      dec	$fc	; If the low-bit is zero, decrement the timer high-bit
-    185  1707		       d0 f8		      bne	timer	; If the high-bit isn't zero, keep decrementing the low-bit
-    186  1709		       60		      rts		; If the high-bit is zero, return from subroutine
-    187  170a
-    188  170a							;/*
-    189  170a							;    I.M.P.O.S.T.O.R. Character Flip Routine (Invertion Movement of Pre-Ordered, Shifted Tables Of Rasters)
-    190  170a							;    @ Author:   Justin Parker
-    191  170a							;
-    192  170a							;    ~ Usage:	  -> $fc | Character address low byte
-    193  170a							;		  -> $fd | Character address high byte
-    194  170a							;
-    195  170a							;    & Location specific:    Yes
-    196  170a							;    % Alters:   $fe
-    197  170a							;
-    198  170a							;    # Notes:	  Requires linked characters to be stored at $1**0 and $1**8 respectively
-    199  170a							;    33 bytes
-    200  170a							;*/
-    201  1721					      org	$1721
-    202  1721				   characterFlip
-    203  1721		       a2 01		      ldx	#$01
-    204  1723				   cF_A
-    205  1723		       b5 fc		      lda	$fc,x
-    206  1725		       9d 38 17 	      sta	$1721+$17,x
-    207  1728		       ca		      dex
-    208  1729		       10 f8		      bpl	cF_A
-    209  172b
-    210  172b		       a0 07		      ldy	#$07
-    211  172d				   cF_B
-    212  172d		       a9 07		      lda	#$07
-    213  172f		       85 fe		      sta	$fe
-    214  1731		       98		      tya
-    215  1732		       aa		      tax
-    216  1733		       b1 fc		      lda	($fc),y
-    217  1735				   cF_C
-    218  1735		       18		      clc
-    219  1736		       6a		      ror
-    220  1737		       3e 99 99 	      rol	$9999,x
-    221  173a
-    222  173a		       c6 fe		      dec	$fe
-    223  173c		       10 f7		      bpl	cF_C
-    224  173e
-    225  173e		       88		      dey
-    226  173f		       10 ec		      bpl	cF_B
-    227  1741		       60		      rts
-    228  1742
+    152  1551		       a5 fb		      lda	$fb	; Load direction to shift character
+    153  1553		       a0 0f		      ldy	#$0f	; Initialize counter for all bytes in linked character set
+    154  1555		       8d 64 15 	      sta	$1551+$13	; Store direction to shift character in the DEY/INY instruction [SMC]
+    155  1558
+    156  1558				   cSV_StorageLoop		; Stores all bytes in the linked character set into $1000-$100f
+    157  1558		       b1 fc		      lda	($fc),y	; Load byte from character indicated by y
+    158  155a		       99 00 10 	      sta	$1000,y	; Store byte in corresponding location in $1000-$100f
+    159  155d		       88		      dey		; Decrement y until we've looped through all bytes
+    160  155e		       10 f8		      bpl	cSV_StorageLoop	; If we've looped through all bytes, exit loop
+    161  1560		       c8		      iny		; Increment y once, so that y is now #$00
+    162  1561				   cSV_ShiftLoop
+    163  1561		       b9 00 10 	      lda	$1000,y	; Load byte from $1000-$100f
+    164  1564		       c8		      iny		; Increment/Decrement y to get the location in the character to store the byte [SMC]
+    165  1565
+    166  1565							; Ensure that y in in range of $00-$0f
+    167  1565		       aa		      tax		; Use x as temporary storage for a
+    168  1566		       98		      tya		; Transfer y to a so we can do math on it
+    169  1567		       29 0f		      and	#$0f	; Mask out the high nibble of y (now in a)
+    170  1569		       a8		      tay		; Store y (currently in a) back in y
+    171  156a		       8a		      txa		; Restore a from x
+    172  156b
+    173  156b		       91 fc		      sta	($fc),y	; Store byte in character indicated by y
+    174  156d		       c0 00		      cpy	#$00	; Check if we've looped through all bytes
+    175  156f		       d0 f0		      bne	cSV_ShiftLoop	; If we have, exit loop
+    176  1571		       60		      rts
+    177  1572
+    178  1572							;/*
+    179  1572							;    I.M.P.O.S.T.O.R. Character Flip Routine (Invertion Movement of Pre-Ordered, Shifted Tables Of Rasters)
+    180  1572							;    @ Author:   Justin Parker
+    181  1572							;
+    182  1572							;    ~ Usage:	  -> $fc | Character address low byte
+    183  1572							;		  -> $fd | Character address high byte
+    184  1572							;
+    185  1572							;    & Location specific:    Yes
+    186  1572							;    % Alters:   $fe
+    187  1572							;
+    188  1572							;    # Notes:	  ---
+    189  1572							;    32 bytes
+    190  1572							;*/
+    191  1701					      org	$1701
+    192  1701				   characterFlip
+    193  1701		       a2 01		      ldx	#$01
+    194  1703				   cF_ByteLoop
+    195  1703		       b5 fc		      lda	$fc,x
+    196  1705		       9d 17 17 	      sta	$1701+$16,x
+    197  1708		       ca		      dex
+    198  1709		       10 f8		      bpl	cF_ByteLoop
+    199  170b
+    200  170b		       a0 07		      ldy	#$07
+    201  170d				   cF_B
+    202  170d		       a9 07		      lda	#$07
+    203  170f		       85 fe		      sta	$fe
+    204  1711		       98		      tya
+    205  1712		       aa		      tax
+    206  1713		       b1 fc		      lda	($fc),y
+    207  1715				   cF_ShiftLoop
+    208  1715		       6a		      ror
+    209  1716		       3e 99 99 	      rol	$9999,x
+    210  1719
+    211  1719		       c6 fe		      dec	$fe
+    212  171b		       10 f8		      bpl	cF_ShiftLoop
+    213  171d
+    214  171d		       88		      dey
+    215  171e		       10 ed		      bpl	cF_B
+    216  1720		       60		      rts
+    217  1721
+    218  1721							;/*
+    219  1721							;    The best goddamn timer that's ever existed on pure American hardware god damnit
+    220  1721							;    @ Author:   Justin Parker
+    221  1721							;
+    222  1721							;    ~ Usage:	  -> $fc | Number of ~2ms intervals you want to wait for
+    223  1721							;
+    224  1721							;    & Location specific:    No
+    225  1721							;    % Alters:   $fb, $fc
+    226  1721							;
+    227  1721							;    # Notes:	  This is a blocking timer. It will not return until the timer has expired.
+    228  1721							;    9 Bytes
+    229  1721							;*/
+    230  1741					      org	$1741	; Memory location of new code region
+    231  1741				   timer
+    232  1741		       c6 fb		      dec	$fb	; Decrement the timer low-bit (is not initially set, so timing may vary by up to 1 cycle)
+    233  1743		       d0 fc		      bne	timer	; If the low-bit isn't zero, keep decrementing the low-bit
+    234  1745		       c6 fc		      dec	$fc	; If the low-bit is zero, decrement the timer high-bit
+    235  1747		       d0 f8		      bne	timer	; If the high-bit isn't zero, keep decrementing the low-bit
+    236  1749		       60		      rts		; If the high-bit is zero, return from subroutine
