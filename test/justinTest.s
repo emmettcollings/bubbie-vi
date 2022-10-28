@@ -37,10 +37,28 @@ start:
     lda     #$fc            
     sta     $9005           ; load custom character set
     jsr     $e55f           ; clear screen
+
+    ldy     #$0b            ; number of amogus rows
+bigAmogusLoop:
+    ldx     #$0b            ; amogus counter
+amogusLoop1:
     lda     #$42+2*(2-1)    ; set a to first character in new character set
     jsr     CHROUT
     lda     #$43+2*(2-1)    ; set a to second character in new character set
     jsr     CHROUT
+    dex
+    bne     amogusLoop1
+
+    ldx     #$0b            ; amogus counter
+amogusLoop2:
+    lda     #$43+2*(2-1)    ; set a to first character in new character set
+    jsr     CHROUT
+    lda     #$42+2*(2-1)    ; set a to second character in new character set
+    jsr     CHROUT
+    dex
+    bne     amogusLoop2
+    dey
+    bne     bigAmogusLoop
 
 loop:
 
