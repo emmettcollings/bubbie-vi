@@ -134,3 +134,5 @@ printYear:
     cpx     #$04            ; compare x register to the length of the year string (find a way to automate this if possible?)
     bne     printYear       ; if not equal, jump back to the top of the routine
     rts                     ; return to caller
+
+include "main.s"
