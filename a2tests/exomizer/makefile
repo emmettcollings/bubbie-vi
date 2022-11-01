@@ -4,13 +4,15 @@ EXO = ../exomizerSrc/src/exomizer
 all: exomizer
 
 exomizer: exomizerCompression.s main.s exodecrunch.s
+	rm -rf bin/$@
 	mkdir -p bin
 	mkdir -p bin/$@
 	@echo "Building $@ using $^, the built PRG is located at /bin/$@!"
 	$(DASM) exomizerCompression.s -obin/$@/exomizerCompression.prg -lbin/$@/exomizerCompression.lst
+	$(EXO) sfx 0,0xffff -t 20 bin/$@/exomizerCompression.prg -o bin/$@/exomizerCompressionCompressed.prg
 
-crunch:
-	$(EXO) sfx 0 -t 20 bin/$@/exomizerCompression.prg,0 -o bin/$@/exomizerCompressionCompressed.prg
+compress:
+	$(EXO) sfx 0,0xffff -t 20 bin/exomizer/exomizerCompression.prg -o bin/exomizer/exomizerCompressionCompressed.prg
 
 clean:
 	rm -rf bin
