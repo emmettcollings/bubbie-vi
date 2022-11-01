@@ -10,6 +10,7 @@
     Processor Information
 */
     processor   6502        ; This informs the assembler that we are using a 6502 processor.
+    incdir      "./"
 
 /*
     Memory Map
@@ -135,4 +136,4 @@ printYear:
     bne     printYear       ; if not equal, jump back to the top of the routine
     rts                     ; return to caller
 
-include "main.s"
+    include "main.s"

@@ -1,15 +1,12 @@
 DASM = ../../dasm/dasm.exe
 
-SRCS = $(wildcard *.s)
-PROGS = $(patsubst %.s,%,$(SRCS))
+all: exomizer
 
-all: $(PROGS)
-
-%: %.s
+exomizer: exomizerCompression.s main.s exodecrunch.s
 	mkdir -p bin
 	mkdir -p bin/$@
-	@echo "Building $@ using $<, the built PRG is located at /bin/$@!"
-	$(DASM) $< -obin/$@/$@.prg -lbin/$@/$@.lst
+	@echo "Building $@ using $^, the built PRG is located at /bin/$@!"
+	$(DASM) exomizerCompression.s -obin/$@/exomizerCompression.prg -lbin/$@/exomizerCompression.lst
 
 clean:
 	rm -rf bin
