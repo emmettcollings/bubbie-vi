@@ -1,4 +1,5 @@
 DASM = ../../dasm/dasm.exe
+ZX02 = ./zx02
 
 all: 
 	rm -rf bin/$@
