@@ -1,5 +1,5 @@
 DASM = ../../dasm/dasm.exe
-EXO = ../exomizerSrc/src/exomizer
+EXO = ./exomizer
 
 all: exomizer
 
