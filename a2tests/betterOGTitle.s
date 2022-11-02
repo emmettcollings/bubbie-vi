@@ -74,7 +74,6 @@ colorScreen:
     bne     .loop
     rts
 
-
 /*
     ldx     #$0d
 bubbie:
@@ -83,6 +82,4 @@ bubbie:
     dex     
     bne     bubbie
     */
-    
-
 

@@ -6,11 +6,12 @@ DASM 	= ~aycock/599.82/bin/dasm
 	chmod 644 ~/www/asdwf$@
 	echo https://pages.cpsc.ucalgary.ca/~emmett.collings1/asdwf$@
 
-all: ogtest.prg betterogtest.prg
+all: ogtest.prg betterogtest.prg ds1.prg
 
 clean: 
 	rm -rf *.lst *.prg
 
 ogtest.prg: originalTitleScreen.s
 betterogtest.prg: betterOGTitle.s
+ds1.prg: data-specific-1.s
 
