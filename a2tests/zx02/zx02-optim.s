@@ -29,29 +29,31 @@ full_decomp:
     ; Get initialization block
     ldy #7
 
-copy_init     lda zx0_ini_block-1,y
-              sta offset-1,y
-              dey
-              bne copy_init
+copy_init:
+    lda zx0_ini_block-1,y
+    sta offset-1,y
+    dey
+    bne copy_init
 
 ; Decode literal: Ccopy next N bytes from compressed file
 ;    Elias(length)  byte[1]  byte[2]  ...  byte[N]
 decode_literal:
     jsr   get_elias
 
-cop0          lda   (ZX0_src),y
-              inc   ZX0_src
-              bne   dzx0s_copy
-              inc   ZX0_src+1
-              sta   (ZX0_dst),y
-              inc   ZX0_dst
-              bne   dzx0s_copy
-              inc   ZX0_dst+1
-              dex
-              bne   cop0
+cop0: 
+    lda   (ZX0_src),y
+    inc   ZX0_src
+    bne   dzx0s_copy
+    inc   ZX0_src+1
+    sta   (ZX0_dst),y
+    inc   ZX0_dst
+    bne   dzx0s_copy
+    inc   ZX0_dst+1
+    dex
+    bne   cop0
 
-              asl   bitr
-              bcs   dzx0s_new_offset
+    asl   bitr
+    bcs   dzx0s_new_offset
 
 ; Copy from last offset (repeat N bytes from last offset)
 ;    Elias(length)
