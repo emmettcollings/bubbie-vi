@@ -30,6 +30,6 @@ start:
     org     $6700
 
 comp_data:
-    ins     "data.zx02"
-
-	run	    start
+    incbin  "data.zx02"
+    
+    jmp     start
