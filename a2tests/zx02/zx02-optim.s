@@ -40,15 +40,19 @@ copy_init:
 decode_literal:
     jsr   get_elias
 
-cop0: 
+cop0:
     lda   (ZX0_src),y
     inc   ZX0_src
-    bne   dzx0s_copy
+    bne   anon1
     inc   ZX0_src+1
+
+anon1:   
     sta   (ZX0_dst),y
     inc   ZX0_dst
-    bne   dzx0s_copy
+    bne   anon2
     inc   ZX0_dst+1
+
+anon2:   
     dex
     bne   cop0
 
@@ -58,7 +62,7 @@ cop0:
 ; Copy from last offset (repeat N bytes from last offset)
 ;    Elias(length)
     jsr   get_elias
-    
+
 dzx0s_copy:
     lda   ZX0_dst
     sbc   offset  ; C=0 from get_elias
@@ -70,12 +74,16 @@ dzx0s_copy:
 cop1:
     lda   (pntr),y
     inc   pntr
-    bne   dzx0s_new_offset
+    bne   anon3
     inc   pntr+1
+
+anon3:   
     sta   (ZX0_dst),y
     inc   ZX0_dst
-    bne   dzx0s_new_offset
+    bne   anon4
     inc   ZX0_dst+1
+
+anon4:
     dex
     bne   cop1
 
@@ -97,9 +105,10 @@ dzx0s_new_offset:
     ; Get low part of offset, a literal 7 bits
     lda   (ZX0_src),y
     inc   ZX0_src
-    bne   get_elias
+    bne   anon5
     inc   ZX0_src+1
 
+anon5:
     ; Divide by 2
     ror
     sta   offset
@@ -119,7 +128,8 @@ get_elias:
     ldx   #1
     bne   elias_start
 
-elias_get:     ; Read next data bit to result
+elias_get:
+    ; Read next data bit to result
     asl   bitr
     rol
     tax
@@ -132,8 +142,10 @@ elias_start:
     ; Read new bit from stream
     lda   (ZX0_src),y
     inc   ZX0_src
-    bne   elias_skip1
+    bne   anon6
     inc   ZX0_src+1
+
+anon6:   
     ;sec   ; not needed, C=1 guaranteed from last bit
     rol
     sta   bitr
