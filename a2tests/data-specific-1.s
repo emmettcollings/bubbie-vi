@@ -84,7 +84,9 @@ wait:
 /*
     Gets a single bit from a stream of bits in memory. Uses a buffer to store
     bits from our stream, and we keep track of when we run out of data via a 
-    tracking bit.
+    tracking bit. Fairly standard concept as far as assembly goes, I've seen 
+    this kind of thing before in computing machinery courses and some security
+    applications as well.
  */
 getBit:
     asl     BITBUF  ; we use a zero page address as a buffer to store our bits
@@ -103,7 +105,7 @@ done:
 
     SUBROUTINE
 /*
-    Loads a 5 bit chunk from our stream to A
+    Loads a 5 bit chunk from our stream to A using our getBit routine.
  */
 getChunk:
     lda     #$00    ; clear A
