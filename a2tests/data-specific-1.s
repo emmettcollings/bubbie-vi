@@ -44,7 +44,10 @@ start:
     lda     #$06            ; set col val to blue for everything
     jsr     colorScreen
 
-    lda     #$80            ; initialize the bit buffer
+    lda     #$80            ; initialize the bit buffer. The 1 in the leftmost
+                            ; bit serves as our tracker. When it gets the the
+                            ; carry and the buffer is empty (asl shifts 0s in)
+                            ; we know we need to fetch the next byte
     sta     BITBUF
 
     lda     #$0d            ; size of our title data
@@ -86,7 +89,8 @@ wait:
     bits from our stream, and we keep track of when we run out of data via a 
     tracking bit. Fairly standard concept as far as assembly goes, I've seen 
     this kind of thing before in computing machinery courses and some security
-    applications as well.
+    applications (see a fair amount of assembly when trying to break things) as
+    well.
  */
 getBit:
     asl     BITBUF  ; we use a zero page address as a buffer to store our bits
