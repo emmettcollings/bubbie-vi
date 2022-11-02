@@ -31,11 +31,11 @@ stubend:
 
 ZP=$80
 
-offset          equ ZP+0
-ZX0_src         equ ZP+2
-ZX0_dst         equ ZP+4
-bitr            equ ZP+6
-pntr            equ ZP+7
+offset=ZP+0
+ZX0_src=ZP+2
+ZX0_dst=ZP+4
+bitr=ZP+6
+pntr=ZP+7
 
     ; Initial values for offset, source, destination and bitr
 zx0_ini_block
