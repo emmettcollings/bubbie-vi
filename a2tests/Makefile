@@ -10,6 +10,7 @@ all: ogtest.prg betterogtest.prg ds1.prg
 
 clean: 
 	rm -rf *.lst *.prg
+	rm -rf ~/www/*.prg
 
 ogtest.prg: originalTitleScreen.s
 betterogtest.prg: betterOGTitle.s

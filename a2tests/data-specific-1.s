@@ -10,58 +10,74 @@
     processor   6502        ; This informs the assembler that we are using a 6502 processor.
 
 /*
-    Memory Map
-*/
-    org     $1001           ; mem location of user region
+    BASIC stub
+ */
+    org     $1001           ; mem location assembler assembles to
     dc.w    stubend
     dc.w    1               ; arbitrary line number for BASIC syntax
-    dc.b    $9e, "4353", 0  ; allocate bytes. 4353 = 1101
+    dc.b    $9e, "4109", 0  ; allocate bytes. 4109 = $100d
+
+stubend:    
+    dc.w    0               ; insert null byte
 
 /* 
     Global Definitions
 */
-BITBUF  = $00fb     ; use this as a buffer to hold our bitstream
 CLS    = $e55f                 ; kernal clear screen routine
 SCRMEM = $1e00
+CLRMEM = $9600
+size   = $100     ; 256 byte offset to write whole scr/clr mem in one pass
 BUBBIESTART = $1e31     ; start of the line that says BUBBIE THE VI
 TEAMSTART = $1e5b
 YEARSTART = $1e76
-CLRMEM = $9600
-size   = $100     ; 256 byte offset so that we write both halves of mem chunk
-                  ; in one loop iteration
-data = $100d        ; temp mem location
+BITBUF  = $fb     ; use this as a buffer to hold our bitstream
+data = $1069      ; where our mem is
+DATASIZE = $fc    ; keep track of how much data we write here
 
-/*
-    Utility Routines
-*/
-stubend:
-    dc.w    0               ; insert null byte
 
-/*
-    Data
-*/
-l100d   .byte   $90     ; just the letter B in our encoding for now
 /*
     Main Routine
 */
-    org     $1101           ; mem location of code region
 start: 
     jsr     CLS             ; clear screen
 
     lda     #$06            ; set col val to blue for everything
     jsr     colorScreen
 
-    jsr     getChunk        ; get a chunk of mem
-    tax                     ; save mem in X
-    and     #$10            ; check our indicator bit
-    beq     write           ; if 0 then we don't have to modify
-    adc     #$10            ; otherwise we need to add 16 for screen code
+    lda     #$80            ; initialize the bit buffer
+    sta     BITBUF
 
-write:
+    lda     #$0d            ; size of our title data
+    sta     DATASIZE        ; store our size here
+
+writeTitleData:
+    jsr     getChunk        ; get a chunk of mem
+    tax
+    inx
+    
+writeTitle:
     stx     BUBBIESTART     ; load our char into screen mem
+    inc     writeTitle + 1       ; same self modifying code trick
+
+    dec     DATASIZE        ; loop until we go through all data
+    bne     writeTitleData
+
+    lda     #$11            ; size of our title screen data
+    sta     DATASIZE        ; store our size here
+
+writeTeamData:
+    jsr     getChunk        ; get a chunk of mem
+    tax
+    inx
+    
+writeTeam:
+    stx     TEAMSTART       ; load our char into screen mem
+    inc     writeTeam + 1       ; same self modifying code trick
+
+    dec     DATASIZE        ; loop until we go through all data
+    bne     writeTeamData
 
 wait:
-    nop
     jmp     wait
 
     SUBROUTINE
@@ -112,4 +128,11 @@ colorScreen:
     inx
     bne     .loop
     rts
+
+/*
+    Data
+*/
+    dc.b    $0d, $02, $14, $13, $f3, $39, $3f, $54
+    dc.b    $35, $d3, $f9, $1a, $ea, $18, $ff, $61
+    dc.b    $18, $e8, $e0
 
