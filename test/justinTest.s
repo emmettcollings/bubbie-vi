@@ -185,8 +185,9 @@ cSV_StorageLoop:            ; Stores all bytes in the linked character set into 
     iny                     ; Increment y once, so that y is now #$00
 cSV_ShiftLoop:
     lda     $1000,y         ; Load byte from $1000-$100f
-    iny                     ; Increment/Decrement y to get the location in the character to store the byte [SMC]
 
+    iny                     ; Increment/Decrement y to get the location in the character to store the byte [SMC]
+                            
                             ; Ensure that y in in range of $00-$0f
     tax                     ; Use x as temporary storage for a
     tya                     ; Transfer y to a so we can do math on it
