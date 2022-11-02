@@ -10,25 +10,6 @@
 ; (c) 2022 DMSC
 ; Code under MIT license, see LICENSE file.
 
-/*
-    Processor Information
-*/
-    processor   6502        ; This informs the assembler that we are using a 6502 processor.
-
-/*
-    Memory Map
-*/
-    org     $1001           ; mem location of user region
-    dc.w    stubend
-    dc.w    1               ; arbitrary line number for BASIC syntax
-    dc.b    $9e, "4353", 0  ; allocate bytes. 4353 = 1101
-
-/*
-    Utility Routines
-*/
-stubend:
-    dc.w    0               ; insert null byte
-
 ZP=$80
 
 offset=ZP+0
@@ -60,13 +41,13 @@ decode_literal:
 
 cop0          lda   (ZX0_src),y
               inc   ZX0_src
-              bne   @+
+              bne   dzx0s_copy
               inc   ZX0_src+1
-@             sta   (ZX0_dst),y
+              sta   (ZX0_dst),y
               inc   ZX0_dst
-              bne   @+
+              bne   dzx0s_copy
               inc   ZX0_dst+1
-@             dex
+              dex
               bne   cop0
 
               asl   bitr
@@ -86,13 +67,13 @@ dzx0s_copy:
 cop1:
     lda   (pntr),y
     inc   pntr
-    bne   @+
+    bne   dzx0s_new_offset
     inc   pntr+1
-@   sta   (ZX0_dst),y
+    sta   (ZX0_dst),y
     inc   ZX0_dst
-    bne   @+
+    bne   dzx0s_new_offset
     inc   ZX0_dst+1
-@   dex
+    dex
     bne   cop1
 
     asl   bitr
@@ -107,17 +88,17 @@ dzx0s_new_offset:
     ; Decrease and divide by 2
     dex
     txa
-    lsr   @
+    lsr
     sta   offset+1
 
     ; Get low part of offset, a literal 7 bits
     lda   (ZX0_src),y
     inc   ZX0_src
-    bne   @+
+    bne   get_elias
     inc   ZX0_src+1
-@
+
     ; Divide by 2
-    ror   @
+    ror
     sta   offset
 
     ; And get the copy length.
@@ -137,7 +118,7 @@ get_elias:
 
 elias_get:     ; Read next data bit to result
     asl   bitr
-    rol   @
+    rol
     tax
 
 elias_start:
@@ -148,10 +129,10 @@ elias_start:
     ; Read new bit from stream
     lda   (ZX0_src),y
     inc   ZX0_src
-    bne   @+
+    bne   elias_skip1
     inc   ZX0_src+1
-@   ;sec   ; not needed, C=1 guaranteed from last bit
-    rol   @
+    ;sec   ; not needed, C=1 guaranteed from last bit
+    rol
     sta   bitr
 
 elias_skip1:

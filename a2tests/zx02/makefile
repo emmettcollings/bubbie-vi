@@ -1,19 +1,15 @@
 DASM = ../../dasm/dasm.exe
 ZX02 = ./zx02
 
-all: 
-	rm -rf bin/$@
-	mkdir -p bin
-	mkdir -p bin/$@
-	@echo "Building $@ using $^, the built PRG is located at /bin/$@!"
-	$(DASM) zx02Compression.s -obin/$@/zx02Compression.prg -lbin/$@/zx02Compression.lst
+all: zx
 
-zx02: zx02Compression.s
+zx: 
 	rm -rf bin/$@
 	mkdir -p bin
 	mkdir -p bin/$@
 	@echo "Building $@ using $^, the built PRG is located at /bin/$@!"
-	$(DASM) zx02Compression.s -obin/$@/zx02Compression.prg -lbin/$@/zx02Compression.lst
+	$(ZX02) -f title.bin data.zx02
+	$(DASM) zx02.s -obin/$@/zx02Compression.prg -lbin/$@/zx02Compression.lst
 
 clean:
 	rm -rf bin
