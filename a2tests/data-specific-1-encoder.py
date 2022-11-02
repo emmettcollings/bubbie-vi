@@ -1,4 +1,5 @@
 # not that good at python this can be massively improved
+# would prefer this to write to a binary file that we can just incbin
 b = '00001'
 u = '10100'
 i = '01000'
