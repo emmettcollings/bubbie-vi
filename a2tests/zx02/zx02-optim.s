@@ -58,6 +58,7 @@ cop0:
 ; Copy from last offset (repeat N bytes from last offset)
 ;    Elias(length)
     jsr   get_elias
+    
 dzx0s_copy:
     lda   ZX0_dst
     sbc   offset  ; C=0 from get_elias
