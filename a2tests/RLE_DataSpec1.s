@@ -11,18 +11,22 @@
     dc.w    1                           ; arbitrary line number for BASIC syntax
     dc.b    $9e, "4125", 0              ; allocate bytes. 4125 = 101d
 
-/* 
-    Global Definitions
-*/
-SCRMEM = $1e00                          ; screen memory address
-CLRMEM = $9600                          ; colour memory address 
-HALF_SIZE = $0100                       ; half the screen size
-
 /*
     Utility Routines
 */
 stubend:
     dc.w    0                           ; insert null byte
+
+/* 
+    Global Definitions
+*/
+SCRMEM = $1e00                          ; Screen memory address
+CLRMEM = $9600                          ; Colour memory address 
+HALF_SIZE = $0100                       ; Half the screen size
+
+TITLE_LOC = $31                         ; Title location in screen memory
+TEAM_LOC = $5b                          ; Team name location in screen memory
+YEAR_LOC = $76                          ; Year location in screen memory
 
 /*
     Lookup Table
@@ -81,36 +85,38 @@ loadOntoStack:
     inx                                 ; We've retrieved all the data we need from this byte, so increment the counter
     cpx     #$11                        ; Check if we've reached the end of the title data
     bne     loadOntoStack               ; If not, loop back to the top of the decompression routine
+                                        ; Was not able to shorten these three nearly identical chunks of code :(
+                                        ; We are reading from bottom of screen to top of screen because of the stack
 
-    ldx     #$3                         
+    ldx     #$3                         ; Initialize the counter used to loop through the year data (4 bytes, so x = 4-1)
 writeYear:
-    pla
-    tay
-    lda     ($fb),y
-    sta     SCRMEM+$76,x
-    dex
-    bpl     writeYear
+    pla                                 ; Pop the bottom nibble off the stack
+    tay                                 ; Transfer the bottom nibble to the Y register
+    lda     ($fb),y                     ; Load the bottom nibble's character from the lookup table
+    sta     SCRMEM+YEAR_LOC,x                ; Write the character to the screen memory
+    dex                                 ; Decrement the counter
+    bpl     writeYear                   ; Loop back to the top of the year writing routine if the counter did not underflow
 
-    ldx     #$10
+    ldx     #$10                        ; Initialize the counter used to loop through the team name data (17 bytes, so x = 17-1)
 writeName:
-    pla
-    tay
-    lda     ($fb),y
-    sta     SCRMEM+$5b,x
-    dex
-    bpl     writeName
+    pla                                 ; Pop the bottom nibble off the stack    
+    tay                                 ; Transfer the bottom nibble to the Y register                       
+    lda     ($fb),y                     ; Load the bottom nibble's character from the lookup table
+    sta     SCRMEM+TEAM_LOC,x                ; Write the character to the screen memory
+    dex                                 ; Decrement the counter
+    bpl     writeName                   ; Loop back to the top of the name writing routine if the counter did not underflow
 
-    ldx     #$0c
-writeTitle:
-    pla
-    tay
-    lda     ($fb),y
-    sta     SCRMEM+$31,x
-    dex
-    bpl     writeTitle
+    ldx     #$0c                        ; Initialize the counter used to loop through the team name data (13 bytes, so x = 13-1)
+writeTitle:                     
+    pla                                 ; Pop the bottom nibble off the stack            
+    tay                                 ; Transfer the bottom nibble to the Y register               
+    lda     ($fb),y                     ; Load the bottom nibble's character from the lookup table
+    sta     SCRMEM+TITLE_LOC,x                ; Write the character to the screen memory
+    dex                                 ; Decrement the counter 
+    bpl     writeTitle                  ; Loop back to the top of the title writing routine if the counter did not underflow
 
 infLoop:
-    bne    infLoop   ; yeeehhhhawwwww!
+    bne    infLoop                      ; Yeeehhhhawwwww! (infinite loop, final resting place of the program)
 
 
 /*

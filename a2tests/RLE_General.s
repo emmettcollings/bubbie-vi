@@ -11,18 +11,18 @@
     dc.w    1                           ; arbitrary line number for BASIC syntax
     dc.b    $9e, "4109", 0              ; allocate bytes. 4109 = 100d
 
-/* 
-    Global Definitions
-*/
-SCRMEM = $1e00                          ; screen memory address
-CLRMEM = $9600                          ; colour memory address 
-HALF_SIZE = $0100                       ; half the screen size
-
 /*
     Utility Routines
 */
 stubend:
-    dc.w    0                           ; insert null byte
+    dc.w    0                           ; Insert null byte
+
+/* 
+    Global Definitions
+*/
+SCRMEM = $1e00                          ; Screen memory address
+CLRMEM = $9600                          ; Colour memory address 
+HALF_SIZE = $0100                       ; Half the screen size
 
 /*
     Main Routine
