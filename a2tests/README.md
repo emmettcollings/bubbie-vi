@@ -9,9 +9,9 @@ Our original title screen test program's total size was 404B. Our input data was
 
 # Byte repetition encoding (data general)
 
-**File:** bin/RLE_General/RLE_General.prg (330 bytes)
+**File:** bin/RLE_General/RLE_General.prg (163 bytes)
 
-**Compression Ratio:** 1.22
+**Compression Ratio:** 2.48
 
 This is a simple compression algorithm that efficiently stores repeated bytes.  For all repeated consecutive bytes (including runs of 1), the byte to be repeated is stored followed by the length of that byte sequence.  For example, if the character `B` is written to the screen twice (like in the word 'BUBBIE') that would be stored as the consecutive bytes $02, $02.  If the character `B` is written to the screen once, that would be stored as the consecutive bytes $02, $01.  Since we are writing directly to screen memory, we use the character code for the character to be written.
 
