@@ -11,7 +11,7 @@
 */
     processor   6502        ; This informs the assembler that we are using a 6502 processor.
     incdir      "./"        ; This tells the assembler to look in the current directory for include files.
-    include     "main.s"    ; This includes the main file for the assembler. (This is the exomizer main file)
+    include     "main.s"    ; This includes the main file for the assembler. (This is the exomizer decruncher's main file)
 
 /*
     Memory Map
