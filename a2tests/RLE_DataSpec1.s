@@ -1,38 +1,28 @@
 /*
-    Title Screen Test
-
-    This test will display the title screen to the user.
-    Current TODO List:
-        - Figure out what's wrong with the math for the vertical centering of the title (It's not correct)
-*/
-
-/*
     Processor Information
 */
-    processor   6502        ; This informs the assembler that we are using a 6502 processor.
+    processor   6502                    ; This informs the assembler that we are using a 6502 processor.
 
 /*
     Memory Map
 */
-    org     $1001           ; mem location of user region
+    org     $1001                       ; mem location of user region
     dc.w    stubend
-    dc.w    1               ; arbitrary line number for BASIC syntax
-    dc.b    $9e, "4125", 0  ; allocate bytes. 4125 = 101d
+    dc.w    1                           ; arbitrary line number for BASIC syntax
+    dc.b    $9e, "4125", 0              ; allocate bytes. 4125 = 101d
 
 /* 
     Global Definitions
 */
-
-VICCOLOR = $900f    ; Screen and border colours
-SCRMEM = $1e00    ; screen memory address
-CLRMEM = $9600
-HALF_SIZE = $0100
+SCRMEM = $1e00                          ; screen memory address
+CLRMEM = $9600                          ; colour memory address 
+HALF_SIZE = $0100                       ; half the screen size
 
 /*
     Utility Routines
 */
 stubend:
-    dc.w    0               ; insert null byte
+    dc.w    0                           ; insert null byte
 
 /*
     Lookup Table
@@ -119,11 +109,11 @@ writeTitle:
     dex
     bpl     writeTitle
 
-justinWantsInf:
-    bne    justinWantsInf   ; yeeehhhhawwwww!
+infLoop:
+    bne    infLoop   ; yeeehhhhawwwww!
 
 
 /*
     Title Data
 */
-lC101d   .byte   $3d, $33, $74, $0c, $64, $0e, $79, $ac, $04, $9a, $d5, $60, $84, $8a, $bf, $21, $22
+lC101d  .byte   $3d, $33, $74, $0c, $64, $0e, $79, $ac, $04, $9a, $d5, $60, $84, $8a, $bf, $21, $22

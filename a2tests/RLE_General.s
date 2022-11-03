@@ -1,105 +1,82 @@
 /*
     Processor Information
 */
-    processor   6502        ; This informs the assembler that we are using a 6502 processor.
+    processor   6502                    ; This informs the assembler that we are using a 6502 processor.
 
 /*
     Memory Map
 */
-    org     $1001           ; mem location of user region
+    org     $1001                       ; mem location of user region
     dc.w    stubend
-    dc.w    1               ; arbitrary line number for BASIC syntax
-    dc.b    $9e, "4109", 0  ; allocate bytes. 4109 = 100d
+    dc.w    1                           ; arbitrary line number for BASIC syntax
+    dc.b    $9e, "4109", 0              ; allocate bytes. 4109 = 100d
 
 /* 
     Global Definitions
 */
-
-VICCOLOR = $900f    ; Screen and border colours
-SCRMEM = $1e00    ; screen memory address
-CLRMEM = $9600
-HALF_SIZE = $0100
-
-DATASTART = $1101
+SCRMEM = $1e00                          ; screen memory address
+CLRMEM = $9600                          ; colour memory address 
+HALF_SIZE = $0100                       ; half the screen size
 
 /*
     Utility Routines
 */
 stubend:
-    dc.w    0               ; insert null byte
+    dc.w    0                           ; insert null byte
 
 /*
     Main Routine
 */
 start: 
-    jsr     clearScreen
+    ldx     #$00                        ; Initialize the counter
+initializeScreenAndColour:    
+    lda     #$20                        ; Load a with a space to fill the screen with
+    sta     SCRMEM,X                    ; Write to the first half of the screen memory
+    sta     SCRMEM+HALF_SIZE,X          ; Write to the second half of the screen memory
 
-    lda     #$06        ; blue
-    jsr     colorScreen
+    lda     #$06                        ; Load a with the colour of the characters to be displayed (blue)
+    sta     CLRMEM,X                    ; Write to the first half of the colour memory
+    sta     CLRMEM+HALF_SIZE,X          ; Write to the second half of the colour memory
+    inx
+    bne     initializeScreenAndColour   ; Loop until the counter overflows back to 0, then exit the loop
 
-    ldy     #$00
-    sty     $fc
+    ldy     #$00                        ; Initialize pointer to: first byte of data to read, screen memory to write, and
+    sty     $fc                         ; indicator for which part of the screen to write to (upper or lower)
     sty     $fd
 mainLoop:
-    lda     DATASTART+$01,y
-    cmp     #$00
+    lda     lC1101+$01,y                ; Read the length byte from the next chunk of data
+    cmp     #$00                        ; If the length byte is 0, then we have reached the end of the data
 infLoop:
-    beq     infLoop   ; yeeehhhhawwwww!
-    tax
-    lda     DATASTART,y
+    beq     infLoop                     ; Yeeehhhhawwwww! (infinite loop, final resting place of the program)
+    tax                                 ; Copy the length byte to the X register so we can get the actual byte in a
+    lda     lC1101,y                    ; Read the actual byte to be displayed
+    iny                                 ; Increment the data pointer twice (since we read in two consecutive bytes at the same time)
     iny
-    iny
-    sty     $fb
-    ldy     $fc
+    sty     $fb                         ; Store the data pointer in $fb
+    ldy     $fc                         ; Load the screen memory pointer into Y
 writeToScreenLoop:
-    pha
-    lda     $fd
-    cmp     #$00
-    bne     writeToHighScreen
-    pla
-    sta     SCRMEM,y
-    jmp     writeToLowScreen
-writeToHighScreen:
-    pla
-    sta     SCRMEM+HALF_SIZE,y
-writeToLowScreen:
-    iny
-    bne     swapScreenLowHigh
-    inc     $fd
+    pha                                 ; Push the byte to be displayed onto the stack, so we can first check if we are on the 
+    lda     $fd                         ; upper or lower half of the screen
+    cmp     #$00                        ; If we are on the upper half of the screen
+    bne     writeToLowerScreen          ; If we aren't, jump to the lower half of the screen
+    pla                                 ; But if we're here we're on the upper half, so pull the byte to be displayed off the stack
+    sta     SCRMEM,y                    ; Write it to the upper half of the screen
+    jmp     wroteToUpperScreen          
+writeToLowerScreen:
+    pla                                 ; Pull the byte to be displayed off the stack
+    sta     SCRMEM+HALF_SIZE,y          ; Write it to the lower half of the screen
+wroteToUpperScreen:
+    iny                                 ; Increment the screen memory pointer
+    bne     swapScreenLowHigh           ; If the screen memory pointer didn't overflow, then we're done writing to the screen
+    inc     $fd                         ; If the screen memory pointer did overflow, then we're now on the lower half of the screen
 swapScreenLowHigh:
-    dex
-    bne     writeToScreenLoop
-    sty     $fc
-    ldy     $fb
-    jmp     mainLoop
+    dex                                 ; Decrement the length byte
+    bne     writeToScreenLoop           ; If the length byte isn't zero, keep looping
+    sty     $fc                         ; We're now done with this byte pair, so store the screen memory pointer in $fc
+    ldy     $fb                         ; Load the data pointer back into Y
+    jmp     mainLoop                    ; Reset back to the beginning of the main loop
 
-/*
- * Writes whatever is in a to 512 bytes of color mem
- */
-colorScreen:
-    ldx     #$00    ; only have 1 byte that we can loop on
-
-colorLoop:      
-    sta     CLRMEM,X          ; write in first half
-    sta     CLRMEM+HALF_SIZE,X     ; write in second half
-    inx
-    bne     colorLoop
-    rts
-
-
-clearScreen:
-    ldx     #$00    ; only have 1 byte that we can loop on
-    lda     #$20    ; clear the screen
-.loop:      
-    sta     SCRMEM,X          ; write in first half
-    sta     SCRMEM+HALF_SIZE,X     ; write in second half
-    inx
-    bne     .loop
-    rts
-
-    org     $1101
-
-    dc.b    $20, $31, $02, $01, $15, $01, $02, $02, $09, $01, $05, $01, $20, $01    ; BUBBIE
+lC1101      .byte   $20, $31, $02, $01, $15, $01, $02, $02, $09, $01, $05, $01, $20, $01    ; BUBBIE
     dc.b    $14, $01, $08, $01, $05, $01, $20, $01                                  ; THE
     dc.b    $16, $01, $09, $01, $20, $1d                                            ; VI
 
