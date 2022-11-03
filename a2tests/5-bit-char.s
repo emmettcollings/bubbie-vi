@@ -23,7 +23,6 @@ stubend:
 /* 
     Global Definitions
 */
-CLS    = $e55f                 ; kernal clear screen routine
 SCRMEM = $1e00
 CLRMEM = $9600
 size   = $100     ; 256 byte offset to write whole scr/clr mem in one pass
