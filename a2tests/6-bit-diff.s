@@ -55,6 +55,12 @@ start:
     lda     #$0d
     sta     DATASIZE
 
+/*
+    Coming up with something that could print out all 3 lines of our title
+    screen and reuse lots of code was giving diminishing returns compared 
+    to having 1 loop and printing out a bigger piece of data.
+ */
+
 initTitleData:
     lda     data    ; first char of title
 
