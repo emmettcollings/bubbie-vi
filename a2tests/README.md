@@ -54,6 +54,10 @@ with 6502 the time of writing for our initial title screen.
 
 # 4-bit lookup table representation (data specific)
 
+**File: bin/RLE_DataSpec1/RLE_DataSpec1.prg (148 bytes)**
+
+**Compression Ratio: 2.73**
+
 For this algorithm notice that there are 16 unique characters for our title screen, so we can represent each character using 4 bits. We can use a lookup table to map the 4 bit values to the VIC-20 charset values. The end result is we have 4-bit chunks that directly correspond to the desired characters' screen codes, saving 4 bits off of every character.
 
 Since each byte is 8 bits, we can effectively fit 2 4-bit chunks in a single byte, which is exactly what we do; the top and bottom nibble of each stored information byte is an individual lookup address into our lookup table, which stores the character byte that is written to screen memory.
