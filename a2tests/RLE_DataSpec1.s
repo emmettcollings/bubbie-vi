@@ -17,15 +17,16 @@
     org     $1001           ; mem location of user region
     dc.w    stubend
     dc.w    1               ; arbitrary line number for BASIC syntax
-    dc.b    $9e, "4142", 0  ; allocate bytes. 4125 = 101d
+    dc.b    $9e, "4125", 0  ; allocate bytes. 4125 = 101d
 
 /* 
     Global Definitions
 */
 
-VICCOLOR = $900F    ; Screen and border colours
-SCRMEM = $1E00    ; screen memory address
+VICCOLOR = $900f    ; Screen and border colours
+SCRMEM = $1e00    ; screen memory address
 CLRMEM = $9600
+HALF_SIZE = $0100
 
 /*
     Utility Routines
@@ -34,60 +35,64 @@ stubend:
     dc.w    0               ; insert null byte
 
 /*
-    Data
-    _ - 0
-    0 - 1
-    2 - 2
-    b - 3
-    e - 4
-    g - 5
-    h - 6
-    i - 7
-    m - 8
-    n - 9
-    o - a
-    r - b
-    t - c
-    u - d
-    v - e
-    y - f
+    Lookup Table
+    T[0] = _
+    T[1] = 0
+    T[2] = 2
+    T[3] = b
+    T[4] = e
+    T[5] = g
+    T[6] = h
+    T[7] = i
+    T[8] = m
+    T[9] = n
+    T[a] = o
+    T[b] = r
+    T[c] = t
+    T[d] = u
+    T[e] = v
+    T[f] = y
 */
-lC100d   .byte   $20, $30, $32, $02, $05, $07, $08, $09, $0d, $0e, $0f, $12, $14, $15, $16, $19
-
-lC101d   .byte   $3d, $33, $74, $0c, $64, $0e, $79, $ac, $04, $9a, $d5, $60, $84, $8a, $bf, $21, $22
+    dc.b   $20, $30, $32, $02, $05, $07, $08, $09, $0d, $0e, $0f, $12, $14, $15, $16, $19
 
 /*
     Main Routine
 */
 start: 
-    jsr     clearScreen
+    ldx     #$00                        ; Initialize the counter
+initializeScreenAndColour:    
+    lda     #$20                        ; Load a with a space to fill the screen with
+    sta     SCRMEM,X                    ; Write to the first half of the screen memory
+    sta     SCRMEM+HALF_SIZE,X          ; Write to the second half of the screen memory
 
-    lda     #$06        ; blue
-    jsr     colorScreen
+    lda     #$06                        ; Load a with the colour of the characters to be displayed (blue)
+    sta     CLRMEM,X                    ; Write to the first half of the colour memory
+    sta     CLRMEM+HALF_SIZE,X          ; Write to the second half of the colour memory
+    inx
+    bne     initializeScreenAndColour   ; Loop until the counter overflows back to 0, then exit the loop
 
-    lda     #$0d
+    lda     #$0d                        ; Load $fb and $fc with the high and low bytes of the lookup table for indirection
     sta     $fb
-
     lda     #$10
     sta     $fc
 
-    ldx     #$00
-decompress:
-    lda     $101d,x
+    ldx     #$00                        ; Initialize the counter used to loop through the title data
+loadOntoStack:
+    lda     lC101d,x                    ; Load the next byte from the title data
+    lsr                                 ; Shift the high nibble into the bottom nibble, and discard the bottom nibble
     lsr
     lsr
     lsr
-    lsr
-    pha
-    lda     $101d,x
-    and     #%00001111
-    pha
+    pha                                 ; Push the high nibble onto the stack
+    lda     lC101d,x                    ; Reload the same byte byte from the title data
+    and     #%00001111                  ; Mask the bottom nibble
+    pha                                 ; Push the bottom nibble onto the stack
 
-    inx
-    cpx     #$11
-    bne     decompress
+    inx                                 ; We've retrieved all the data we need from this byte, so increment the counter
+    cpx     #$11                        ; Check if we've reached the end of the title data
+    bne     loadOntoStack               ; If not, loop back to the top of the decompression routine
 
-    ldx     #$3
+    ldx     #$3                         
 writeYear:
     pla
     tay
@@ -117,25 +122,8 @@ writeTitle:
 justinWantsInf:
     bne    justinWantsInf   ; yeeehhhhawwwww!
 
+
 /*
- * Writes whatever is in a to 512 bytes of color mem
- */
-colorScreen:
-    ldx     #$00    ; only have 1 byte that we can loop on
-
-colorLoop:      
-    sta     CLRMEM,X          ; write in first half
-    sta     CLRMEM+$100,X     ; write in second half
-    inx
-    bne     colorLoop
-    rts
-
-clearScreen:
-    ldx     #$00    ; only have 1 byte that we can loop on
-    lda     #$20    ; clear the screen
-.loop:      
-    sta     $1e00,X          ; write in first half
-    sta     $1e00+$100,X     ; write in second half
-    inx
-    bne     .loop
-    rts
+    Title Data
+*/
+lC101d   .byte   $3d, $33, $74, $0c, $64, $0e, $79, $ac, $04, $9a, $d5, $60, $84, $8a, $bf, $21, $22

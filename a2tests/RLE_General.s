@@ -9,7 +9,7 @@
     org     $1001           ; mem location of user region
     dc.w    stubend
     dc.w    1               ; arbitrary line number for BASIC syntax
-    dc.b    $9e, "4109", 0  ; allocate bytes.
+    dc.b    $9e, "4109", 0  ; allocate bytes. 4109 = 100d
 
 /* 
     Global Definitions
