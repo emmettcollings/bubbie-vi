@@ -8,7 +8,7 @@ zx:
 	mkdir -p bin
 	mkdir -p bin/$@
 	@echo "Building $@ using $^, the built PRG is located at /bin/$@!"
-	$(ZX02) -f title.bin data.zx02
+	$(ZX02) -f test.bin data.zx02
 	$(DASM) zx02.s -obin/$@/zx02Compression.prg -lbin/$@/zx02Compression.lst
 
 clean:
