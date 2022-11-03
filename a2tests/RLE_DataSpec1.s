@@ -85,9 +85,9 @@ loadOntoStack:
     inx                                 ; We've retrieved all the data we need from this byte, so increment the counter
     cpx     #$11                        ; Check if we've reached the end of the title data
     bne     loadOntoStack               ; If not, loop back to the top of the decompression routine
+    
                                         ; Was not able to shorten these three nearly identical chunks of code :(
                                         ; We are reading from bottom of screen to top of screen because of the stack
-
     ldx     #$3                         ; Initialize the counter used to loop through the year data (4 bytes, so x = 4-1)
 writeYear:
     pla                                 ; Pop the bottom nibble off the stack
