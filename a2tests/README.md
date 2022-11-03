@@ -19,6 +19,13 @@ As explained above, Exomizer 3 was straightforward to implement. All that was re
 
 Finally, moving on to if it's an efficient compression method or not. Exomizer 3 had a compression ratio of 0.93. So, we saw an increase in size, which isn't what you'd want of a compression method. However, this could be due to the fact that our input data was so small. If we were to compress a larger file, we'd likely see a better compression ratio. However, it still does not appear to be the best compression method.
 
+# byte repetition encoding (data general)
+
+This is a simple compression algorithm that efficiently stores repeated bytes.  For all repeated consecutive bytes (including runs of 1), the byte to be repeated is stored followed by the length of that byte sequence.  For example, if the character `B` is written to the screen twice (like in the word 'BUBBIE') that would be stored as the consecutive bytes $02, $02.  If the character `B` is written to the screen once, that would be stored as the consecutive bytes $02, $01.  Since we are writing directly to screen memory, we use the character code for the character to be written.
+
+We also have a special case for the length code $00, which is the end of the string.  If we encounter a $00 as the length of a byte sequence, we immediately stop reading the data.
+
+
 # 5 bit char representation (data specific)
 
 **File:** bin/5-bit-char/5-bit-char.prg (149 bytes)
@@ -66,6 +73,8 @@ For this algorithm notice that there are 16 unique characters for our title scre
 
 Since each byte is 8 bits, we can effectively fit 2 4-bit chunks in a single byte, which is exactly what we do; the top and bottom nibble of each stored information byte is an individual lookup address into our lookup table, which stores the character byte that is written to screen memory.
 
+Our lookup table is hand crafted for our specific data, and thus stores the screen codes for the characters ` 02beghimnortuvy` in that order
+
 For example, the first byte of screen data is $3d, which is 0011 1101 in binary. The top nibble is 0011, which is the lookup address for the letter `B`, and the bottom nibble is 1101, which is the lookup address for the letter `U`.  Thus, $3d will be written to screen memory as `BU`.
 
-Since we're dealing with 4-bit values, this method is naturally more intuitive to understand and implement (for a computer scientist) than the 5-bit method.
+Since we're dealing with 4-bit values (power of 2, woo!), this method is naturally intuitive to understand and implement (for a computer scientist).
