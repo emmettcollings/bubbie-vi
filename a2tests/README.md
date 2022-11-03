@@ -19,9 +19,9 @@ We also have a special case for the length code $00, which is the end of the str
 
 # 6-bit offset representation (data specific)
 
-**File:** 
+**File:** bin/6-bit-diff/6-bit-diff.prg (246 bytes)
 
-**Compression Ratio:** 
+**Compression Ratio:** 1.64
 
 For this algorithm, we noticed that the majority of the data we were writing to the screen memory were characters, ranging from $02 to $19.  Using this knowledge, we can represent the data more efficiently by using a 6-bit offset from the previously displayed character code, starting with `B` [0x02].
 
