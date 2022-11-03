@@ -40,7 +40,7 @@ YEAR = $1090
     Main Routine
 */
 start: 
-    jsr     CLS             ; clear screen
+    jsr     clearScreen             ; clear screen
 
     lda     #$06            ; set col val to blue for everything
     jsr     colorScreen
@@ -151,6 +151,15 @@ colorScreen:
     bne     .loop
     rts
 
+clearScreen:
+    ldx     #$00    ; only have 1 byte that we can loop on
+    lda     #$20    ; clear the screen
+clearLoop:      
+    sta     $1e00,X          ; write in first half
+    sta     $1e00+$100,X     ; write in second half
+    inx
+    bne     clearLoop
+    rts
 /*
     Data
 */
