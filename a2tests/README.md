@@ -1,6 +1,6 @@
 # Original Title Screen
 
-**File:** bin/originalTitleScreen/originalTitleScreen.prg  (404 bytes)
+**File:** bin/originalTitleScreen/originalTitleScreen.prg (404 bytes)
 
 **Compression Ratio:** N/A
 
@@ -35,9 +35,9 @@ Overall, the code compression ratio with respect to our original title screen te
 
 # 4-bit lookup table representation (data specific)
 
-**File:** bin/RLE_DataSpec1/RLE_DataSpec1.prg (148 bytes)
+**File:** bin/RLE_DataSpec1/RLE_DataSpec1.prg (135 bytes)
 
-**Compression Ratio:** 2.73
+**Compression Ratio:** 2.99
 
 For this algorithm notice that there are 16 unique characters for our title screen, so we can represent each character using 4 bits. We can use a lookup table to map the 4-bit values to the VIC-20 charset values. The end result is we have 4-bit chunks that directly correspond to the desired characters' screen codes, saving 4 bits off of every character.
 
