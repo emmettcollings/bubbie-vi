@@ -61,7 +61,7 @@ Our lookup table is hand-crafted for our specific data, and thus stores the scre
 
 For example, the first byte of screen data is $3d, which is 0011 1101 in binary. The top nibble is 0011, which is the lookup address for the letter `B`, and the bottom nibble is 1101, which is the lookup address for the letter `U`.  Thus, $3d will be written to screen memory as `BU`.
 
-Since we're dealing with 4-bit values (power of 2, woo!), this method is naturally intuitive to understand and implement (for a computer scientist).
+Since we're dealing with 4-bit values (power of 2, woohoo!), this method is naturally intuitive to understand and implement (for a computer scientist).
 
 # Exomizer 3
 
