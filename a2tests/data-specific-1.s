@@ -31,8 +31,9 @@ BUBBIESTART = $1e31     ; start of the line that says BUBBIE THE VI
 TEAMSTART = $1e5b
 YEARSTART = $1e76
 BITBUF  = $fb     ; use this as a buffer to hold our bitstream
-data = $1069      ; where our mem is
+data = $107d      ; where our mem is
 DATASIZE = $fc    ; keep track of how much data we write here
+YEAR = $1090
 
 
 /*
@@ -50,6 +51,7 @@ start:
                             ; we know we need to fetch the next byte
     sta     BITBUF
 
+; game title
     lda     #$0d            ; size of our title data
     sta     DATASIZE        ; store our size here
 
@@ -65,6 +67,7 @@ writeTitle:
     dec     DATASIZE        ; loop until we go through all data
     bne     writeTitleData
 
+; do the team name
     lda     #$11            ; size of our title screen data
     sta     DATASIZE        ; store our size here
 
@@ -79,6 +82,19 @@ writeTeam:
 
     dec     DATASIZE        ; loop until we go through all data
     bne     writeTeamData
+
+; year
+    lda     #$04
+    sta     DATASIZE
+
+writeYearData:
+    lda     YEAR
+    sta     YEARSTART
+    inc     writeYearData + 1
+    inc     writeYearData + 4
+
+    dec     DATASIZE
+    bne     writeYearData
 
 wait:
     jmp     wait
@@ -141,4 +157,5 @@ colorScreen:
     dc.b    $0d, $02, $14, $13, $f3, $39, $3f, $54
     dc.b    $35, $d3, $f9, $1a, $ea, $18, $ff, $61
     dc.b    $18, $e8, $e0
+    dc.b    $32, $30, $32, $32 
 
