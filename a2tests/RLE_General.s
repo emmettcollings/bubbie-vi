@@ -27,6 +27,8 @@ VICCOLOR = $900F    ; Screen and border colours
 SCRMEM = $1E00    ; screen memory address
 CLRMEM = $9600
 
+DATASTART = $1101
+
 /*
     Utility Routines
 */
@@ -45,11 +47,12 @@ start:
     ldy     #$00
     sty     $fc
 L2:
-    lda     $1102,y
+    lda     $DATASTART+$1,y
     cmp     #$00
-    beq     justinWantsInf
+justinWantsInf:
+    beq     justinWantsInf   ; yeeehhhhawwwww!
     tax
-    lda     $1101,y
+    lda     $DATASTART,y
     iny
     iny
     sty     $fb
@@ -61,10 +64,7 @@ L1:
     bne     L1
     sty     $fc
     ldy     $fb
-    bne     L2
-
-justinWantsInf:
-    beq    justinWantsInf   ; yeeehhhhawwwww!
+    jmp     L2
 
 /*
  * Writes whatever is in a to 512 bytes of color mem
@@ -117,6 +117,8 @@ clearScreen:
     dc.b    $16, $01, $09, $01, $20, $1d                                            ; VI
 
     dc.b    $0e, $01, $0f, $01, $14, $01, $20, $01                                  ; NOT
-    dc.b    $05, $01, $0e, $01, $0f, $01, $15, $01, $07, $01, $08, $01              ; ENOUGH
-    ; ;dc.b    "MEMORY"                                                                ; MEMORY
+    dc.b    $05, $01, $0e, $01, $0f, $01, $15, $01, $07, $01, $08, $01, $20, $01    ; ENOUGH
+    dc.b    $0d, $01, $05, $01, $0d, $01, $0f, $01, $12, $01, $19, $01, $20, $0a    ; MEMORY
+
+    dc.b    $32, $01, $30, $01, $32, $02, $ff, $00                                   ; 2022
 
