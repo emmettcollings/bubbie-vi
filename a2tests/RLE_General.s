@@ -41,7 +41,7 @@ initializeScreenAndColour:
     bne     initializeScreenAndColour   ; Loop until the counter overflows back to 0, then exit the loop
 
     ldy     #$00                        ; Initialize pointer to: first byte of data to read, screen memory to write, and
-    sty     $fc                         ; indicator for which part of the screen to write to (upper or lower)
+    sty     $fc                             ; indicator for which part of the screen to write to (upper or lower)
     sty     $fd
 mainLoop:
     lda     lC1101+$01,y                ; Read the length byte from the next chunk of data
@@ -56,7 +56,7 @@ infLoop:
     ldy     $fc                         ; Load the screen memory pointer into Y
 writeToScreenLoop:
     pha                                 ; Push the byte to be displayed onto the stack, so we can first check if we are on the 
-    lda     $fd                         ; upper or lower half of the screen
+    lda     $fd                             ; upper or lower half of the screen
     cmp     #$00                        ; If we are on the upper half of the screen
     bne     writeToLowerScreen          ; If we aren't, jump to the lower half of the screen
     pla                                 ; But if we're here we're on the upper half, so pull the byte to be displayed off the stack
