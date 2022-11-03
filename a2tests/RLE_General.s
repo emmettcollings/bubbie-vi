@@ -1,12 +1,4 @@
 /*
-    Title Screen Test
-
-    This test will display the title screen to the user.
-    Current TODO List:
-        - Figure out what's wrong with the math for the vertical centering of the title (It's not correct)
-*/
-
-/*
     Processor Information
 */
     processor   6502        ; This informs the assembler that we are using a 6502 processor.
@@ -23,9 +15,10 @@
     Global Definitions
 */
 
-VICCOLOR = $900F    ; Screen and border colours
-SCRMEM = $1E00    ; screen memory address
+VICCOLOR = $900f    ; Screen and border colours
+SCRMEM = $1e00    ; screen memory address
 CLRMEM = $9600
+HALF_SIZE = $0100
 
 DATASTART = $1101
 
@@ -46,25 +39,39 @@ start:
 
     ldy     #$00
     sty     $fc
-L2:
-    lda     $DATASTART+$1,y
+    sty     $fd
+mainLoop:
+    lda     DATASTART+$01,y
     cmp     #$00
-justinWantsInf:
-    beq     justinWantsInf   ; yeeehhhhawwwww!
+infLoop:
+    beq     infLoop   ; yeeehhhhawwwww!
     tax
-    lda     $DATASTART,y
+    lda     DATASTART,y
     iny
     iny
     sty     $fb
     ldy     $fc
-L1:
-    sta     $1e00,y
+writeToScreenLoop:
+    pha
+    lda     $fd
+    cmp     #$00
+    bne     writeToHighScreen
+    pla
+    sta     SCRMEM,y
+    jmp     writeToLowScreen
+writeToHighScreen:
+    pla
+    sta     SCRMEM+HALF_SIZE,y
+writeToLowScreen:
     iny
+    bne     swapScreenLowHigh
+    inc     $fd
+swapScreenLowHigh:
     dex
-    bne     L1
+    bne     writeToScreenLoop
     sty     $fc
     ldy     $fb
-    jmp     L2
+    jmp     mainLoop
 
 /*
  * Writes whatever is in a to 512 bytes of color mem
@@ -74,7 +81,7 @@ colorScreen:
 
 colorLoop:      
     sta     CLRMEM,X          ; write in first half
-    sta     CLRMEM+$100,X     ; write in second half
+    sta     CLRMEM+HALF_SIZE,X     ; write in second half
     inx
     bne     colorLoop
     rts
@@ -84,31 +91,11 @@ clearScreen:
     ldx     #$00    ; only have 1 byte that we can loop on
     lda     #$20    ; clear the screen
 .loop:      
-    sta     $1e00,X          ; write in first half
-    sta     $1e00+$100,X     ; write in second half
+    sta     SCRMEM,X          ; write in first half
+    sta     SCRMEM+HALF_SIZE,X     ; write in second half
     inx
     bne     .loop
     rts
-
-/*
-    Data
-    _ - 20
-    0 - 30
-    2 - 32
-    b - 02
-    e - 05
-    g - 07
-    h - 08
-    i - 09
-    m - 0d
-    n - 0e
-    o - 0f
-    r - 12
-    t - 14
-    u - 15
-    v - 16
-    y - 19
-*/
 
     org     $1101
 
@@ -120,5 +107,5 @@ clearScreen:
     dc.b    $05, $01, $0e, $01, $0f, $01, $15, $01, $07, $01, $08, $01, $20, $01    ; ENOUGH
     dc.b    $0d, $01, $05, $01, $0d, $01, $0f, $01, $12, $01, $19, $01, $20, $0a    ; MEMORY
 
-    dc.b    $32, $01, $30, $01, $32, $02, $ff, $00                                   ; 2022
+    dc.b    $32, $01, $30, $01, $32, $02, $ff, $00                                  ; 2022
 
