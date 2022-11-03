@@ -7,18 +7,6 @@
 Our original title screen test program's total size was 404B. Our input data was
 34B, which consisted of 3 strings that were written to screen memory.
 
-# Exomizer 3
-
-**File:** bin/exomizer/exomizerCompressionCompressed.prg (435 bytes)
-
-**Compression Ratio:** 0.93
-
-Exomizer 3 was pretty straightforward in regard to the implementation within our code. It took a bit of time to get functional properly, due to mistakes regarding the jump address, so the compression wasn't occurring properly.
-
-As explained above, Exomizer 3 was straightforward to implement. All that was required to get it up and running was copying the two files for Exomizer's decrunchers and importing the `main.s` file into our title screen code. After that, all we needed to do was compile the title screen like before, and then we'd run `exomizer` (the compressor) in VIC-20 mode with a jump address of `0x1101`. It'd take in our previously built prg file (Which contained our original code, plus the decruncher's code), and produce a new compressed prg.
-
-Finally, moving on to if it's an efficient compression method or not. Exomizer 3 had a compression ratio of 0.93. So, we saw an increase in size, which isn't what you'd want of a compression method. However, this could be due to the fact that our input data was so small. If we were to compress a larger file, we'd likely see a better compression ratio. However, it still does not appear to be the best compression method.
-
 # Byte repetition encoding (data general)
 
 **File:** bin/RLE_General/RLE_General.prg (330 bytes)
@@ -60,3 +48,29 @@ Our lookup table is hand-crafted for our specific data, and thus stores the scre
 For example, the first byte of screen data is $3d, which is 0011 1101 in binary. The top nibble is 0011, which is the lookup address for the letter `B`, and the bottom nibble is 1101, which is the lookup address for the letter `U`.  Thus, $3d will be written to screen memory as `BU`.
 
 Since we're dealing with 4-bit values (power of 2, woo!), this method is naturally intuitive to understand and implement (for a computer scientist).
+
+# Exomizer 3
+
+**File:** bin/exomizer/exomizerCompressionCompressed.prg (435 bytes)
+
+**Compression Ratio:** 0.93
+
+Exomizer 3 was pretty straightforward in regard to the implementation within our code. It took a bit of time to get functional properly, due to mistakes regarding the jump address, so the compression wasn't occurring properly.
+
+As explained above, Exomizer 3 was straightforward to implement. All that was required to get it up and running was copying the two files for Exomizer's decrunchers and importing the `main.s` file into our title screen code. After that, all we needed to do was compile the title screen like before, and then we'd run `exomizer` (the compressor) in VIC-20 mode with a jump address of `0x1101`. It'd take in our previously built prg file (Which contained our original code, plus the decruncher's code), and produce a new compressed prg.
+
+Finally, moving on to if it's an efficient compression method or not. Exomizer 3 had a compression ratio of 0.93. So, we saw an increase in size, which isn't what you'd want of a compression method. However, this could be due to the fact that our input data was so small. If we were to compress a larger file, we'd likely see a better compression ratio. However, it still does not appear to be the best compression method.
+
+# zx02 (NOT IMPLEMENTED)
+
+**File:** N/A
+
+**Compression Ratio:** N/A
+
+We attempted to implement zx02 as a compression method for our title screen, however, haven't done so successfully. 
+
+It appears as if we have properly updated `zx02/zx02-optim.s` to follow the syntax of DASM, and we attempted to do that for one of the test cases from the zx02 repository (Specifically, `test-optim.asm` from the zx02 repository) but we weren't able to get our title screen to successfully display on the screen.
+
+As zx02 has no documentation, we relied on the test examples that were within the repository. We initially got two binaries of the original title screen, one of the screen memory region and one of the user code memory region. We tested both by compressing them with zx02 into its format, and attempting to include it within `zx02/zx02.s`. However, we weren't able to see any of our data within any of the memory dumps that we downloaded from your online emulator and on the screen was just a bunch of gibberish blocks (Which didn't change no matter where we stored the data, how we included files, which is weird? I'd expect the block order or something to change, but nothing)
+
+We've finally decided that we no longer want to pursue implementing zx02, and have decided to work on another compression method. However, we'd love to know what we didn't understand in regard to implementing zx02, as we're interested in comparing its compression to Exomizer.
