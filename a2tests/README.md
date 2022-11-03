@@ -19,6 +19,10 @@ We also have a special case for the length code $00, which is the end of the str
 
 # 6-bit offset representation (data specific)
 
+**File:** 
+
+**Compression Ratio:** 
+
 For this algorithm, we noticed that the majority of the data we were writing to the screen memory were characters, ranging from $02 to $19.  Using this knowledge, we can represent the data more efficiently by using a 6-bit offset from the previously displayed character code, starting with `B` [0x02].
 
 The data is broken up into a stream of 6-bit intervals.  The first bit is indicating whether to add or subtract from the previously displayed characters' character code, with 0 being addition, and 1 being subtraction.  The rest of the 5 bits are just the offset in binary, giving us a maximum offset of 31.  This means that we can represent all the characters from $02 to $19 with this algorithm, as required, including spaces and numbers.
