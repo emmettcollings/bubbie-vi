@@ -19,9 +19,9 @@ We also have a special case for the length code $00, which is the end of the str
 
 # 5-bit char representation (data specific)
 
-**File:** bin/5-bit-char/5-bit-char.prg (149 bytes)
+**File:** bin/5-bit-char/5-bit-char.prg (163 bytes)
 
-**Compression Ratio:** 2.71
+**Compression Ratio:** 2.48
 
 The idea behind this is that we notice that we only use alphabetical characters and spaces in our title screen. Since that is a total of 27 options, we can encode each character using 5 bits. Luckily for us, the VIC-20 charset encodes the alphabetic characters with $01-1f so we can represent these by just passing in raw bits without having to input a lookup table as well, leading to lots of saved input space.
 
