@@ -51,3 +51,13 @@ mentioning that a fair amount of code improvements are due to rectifying some
 assembly coding inefficiencies that were made due to our relative unfamiliarity
 with 6502 the time of writing for our initial title screen.
 
+
+# 4-bit lookup table representation (data specific)
+
+For this algorithm notice that there are 16 unique characters for our title screen, so we can represent each character using 4 bits. We can use a lookup table to map the 4 bit values to the VIC-20 charset values. The end result is we have 4-bit chunks that directly correspond to the desired characters' screen codes, saving 4 bits off of every character.
+
+Since each byte is 8 bits, we can effectively fit 2 4-bit chunks in a single byte, which is exactly what we do; the top and bottom nibble of each stored information byte is an individual lookup address into our lookup table, which stores the character byte that is written to screen memory.
+
+For example, the first byte of screen data is $3d, which is 0011 1101 in binary. The top nibble is 0011, which is the lookup address for the letter `B`, and the bottom nibble is 1101, which is the lookup address for the letter `U`.  Thus, $3d will be written to screen memory as `BU`.
+
+Since we're dealing with 4-bit values, this method is naturally more intuitive to understand and implement (for a computer scientist) than the 5-bit method.

@@ -115,7 +115,7 @@ writeTitle:
     bpl     writeTitle
 
 justinWantsInf:
-    jmp    justinWantsInf   ; yeeehhhhawwwww!
+    bne    justinWantsInf   ; yeeehhhhawwwww!
 
 /*
  * Writes whatever is in a to 512 bytes of color mem
