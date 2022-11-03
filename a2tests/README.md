@@ -1,25 +1,25 @@
 # Original Title Screen
 
-**File: bin/originalTitleScreen/originalTitleScreen.prg  (404 bytes)**
+**File:** bin/originalTitleScreen/originalTitleScreen.prg  (404 bytes)
 
-**Compression Ratio: N/A**
+**Compression Ratio:** N/A
 
 Our original title screen test program's total size was 404B. Our input data was
 34B, which consisted of 3 strings that were written to screen memory.
 
 # Exomizer 3
 
-**File: bin/exomizer/exomizerCompressionCompressed.prg (435 bytes)**
+**File:** bin/exomizer/exomizerCompressionCompressed.prg (435 bytes)
 
-**Compression Ratio: 0.93**
+**Compression Ratio:** 0.93
 
 TODO: Write.
 
 # 5 bit char representation (data specific)
 
-**File: bin/5-bit-char/5-bit-char.prg (149 bytes)**
+**File:** bin/5-bit-char/5-bit-char.prg (149 bytes)
 
-**Compression Ratio: 2.71**
+**Compression Ratio:** 2.71
 
 The idea behind this is that we notice that we only use alphabetical characters
 and spaces in our title screen. Since that is a total of 27 options, we can
@@ -54,9 +54,9 @@ with 6502 the time of writing for our initial title screen.
 
 # 4-bit lookup table representation (data specific)
 
-**File: bin/RLE_DataSpec1/RLE_DataSpec1.prg (148 bytes)**
+**File:** bin/RLE_DataSpec1/RLE_DataSpec1.prg (148 bytes)
 
-**Compression Ratio: 2.73**
+**Compression Ratio:** 2.73
 
 For this algorithm notice that there are 16 unique characters for our title screen, so we can represent each character using 4 bits. We can use a lookup table to map the 4 bit values to the VIC-20 charset values. The end result is we have 4-bit chunks that directly correspond to the desired characters' screen codes, saving 4 bits off of every character.
 
