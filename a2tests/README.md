@@ -1,4 +1,7 @@
-# Test 1
+# Original Title Screen
+PRG Size: 404 bytes
+
+# Test 1 (Exomizer 3)
 Resuults will go here.
 
 # Test 2
