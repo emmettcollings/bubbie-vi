@@ -9,6 +9,22 @@
 */
     processor   6502        ; This informs the assembler that we are using a 6502 processor.
 
+/* 
+    Global Definitions
+*/
+SCRMEM = $1e00
+CLRMEM = $9600
+size   = $100     ; 256 byte offset to write whole scr/clr mem in one pass
+BUBBIESTART = $1e31     ; start of the line that says BUBBIE THE VI
+TEAMSTART = $1e5b
+YEARSTART = $1e76
+BITBUF  = $fb     ; use this as a buffer to hold our bitstream
+data = $10ce      ; where our mem is
+DATASIZE = $fc    ; keep track of how much data we write here
+YEAR = $1090
+LASTCHAR = $fe
+SUBMEM = $ff
+
 /*
     BASIC stub
  */
@@ -20,27 +36,12 @@
 stubend:    
     dc.w    0               ; insert null byte
 
-/* 
-    Global Definitions
-*/
-CLS    = $e55f                 ; kernal clear screen routine
-SCRMEM = $1e00
-CLRMEM = $9600
-size   = $100     ; 256 byte offset to write whole scr/clr mem in one pass
-BUBBIESTART = $1e31     ; start of the line that says BUBBIE THE VI
-TEAMSTART = $1e5b
-YEARSTART = $1e76
-BITBUF  = $fb     ; use this as a buffer to hold our bitstream
-data = $107d      ; where our mem is
-DATASIZE = $fc    ; keep track of how much data we write here
-YEAR = $1090
-
 
 /*
     Main Routine
 */
 start: 
-    jsr     CLS             ; clear screen
+    jsr     clearScreen             ; clear screen
 
     lda     #$06            ; set col val to blue for everything
     jsr     colorScreen
@@ -51,27 +52,106 @@ start:
                             ; we know we need to fetch the next byte
     sta     BITBUF
 
-    lda     #$02
+    lda     #$0d
     sta     DATASIZE
-writeTitle:
-    lda     data    ; first char of title
-    sta     BUBBIESTART
 
-.loop:
+initTitleData:
+    lda     data    ; first char of title
+
+writeTitle:
+    sta     BUBBIESTART
+    sta     LASTCHAR
+    dec     DATASIZE
+    beq     initTeamData
+
     jsr     getChunk    ; grab 6 byte chunk
-    tax                 ; save in X for now
-    and     #$30        ; check for bit 6
-    beq     .sub        ; bit 6 is not set so we sub
+
+    pha                 ; store A on stack
+    and     #$20        ; check if bit 6 is set
+    beq     .add        ; if not set then we add
+
+    pla
+    and     #$1f        ; mask out first 3 bits
+    sta     SUBMEM
+    lda     LASTCHAR
+    sbc     SUBMEM      ; sub in this case
+    jmp     .loopControl
 
 .add:
-    txa     ; reload X into A
-    ora     #$1f        ; keep last 5 bits
-    jmp     .write
+    pla
+    and     #$1f
+    adc     LASTCHAR
 
-.sub:
+.loopControl
+    inc     writeTitle + 1
+    jmp     writeTitle
 
-.write:
-    
+initTeamData:
+    lda     #$11
+    sta     DATASIZE
+    lda     #$0e    ; first char of title
+
+writeTeam:
+    sta     TEAMSTART
+    sta     LASTCHAR
+    dec     DATASIZE
+    beq     initYearData
+
+    jsr     getChunk    ; grab 6 byte chunk
+
+    pha                 ; store A on stack
+    and     #$20        ; check if bit 6 is set
+    beq     .add0        ; if not set then we add
+
+    pla
+    and     #$1f        ; mask out first 3 bits
+    sta     SUBMEM
+    lda     LASTCHAR
+    sbc     SUBMEM      ; sub in this case
+    jmp     .loopControl0
+
+.add0:
+    pla
+    and     #$1f
+    adc     LASTCHAR
+
+.loopControl0:
+    inc     writeTeam + 1
+    jmp     writeTeam
+
+initYearData:
+    lda     #$04
+    sta     DATASIZE
+    lda     #$32    ; first char of title
+
+writeYear:
+    sta     YEARSTART
+    sta     LASTCHAR
+    dec     DATASIZE
+    beq     wait
+
+    jsr     getChunk    ; grab 6 byte chunk
+
+    pha                 ; store A on stack
+    and     #$20        ; check if bit 6 is set
+    beq     .add1        ; if not set then we add
+
+    pla
+    and     #$1f        ; mask out first 3 bits
+    sta     SUBMEM
+    lda     LASTCHAR
+    sbc     SUBMEM      ; sub in this case
+    jmp     .loopControl1
+
+.add1:
+    pla
+    and     #$1f
+    adc     LASTCHAR
+
+.loopControl1:
+    inc     writeYear + 1
+    jmp     writeYear
+
 
 wait:
     jmp     wait
@@ -91,7 +171,7 @@ getBit:
                     ; if this is not the case then we don't have to get data
 
 loadByte:   ; don't technically need a label here but it is more clear this way 
-    ldx     data
+    ldx     data + 1
     inc     loadByte + 1    ; sElF mOdIfYiNg CoDe avoids extra load stores
 
     stx     BITBUF  ; store our loaded byte into the buffer
@@ -131,5 +211,16 @@ colorScreen:
 /*
     Data
 */
-    dc.b    $02, $cc    ; B, then + 11001100 which says add 10011 (13) to prev 
+    dc.b    $02, $4f, $20, $07, $8d, $ba, $eb,$89, $ba, $6c
+    dc.b    $04, $53, $3a, $24, $11, $ad, $05, $8c, $a7, $20, $20, $c7
+    dc.b    $84, $20, $00
 
+clearScreen:
+    ldx     #$00    ; only have 1 byte that we can loop on
+    lda     #$20    ; clear the screen
+clearLoop:
+    sta     SCRMEM,X          ; write in first half
+    sta     SCRMEM+size,X     ; write in second half
+    inx
+    bne     clearLoop
+    rts
