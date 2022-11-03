@@ -151,6 +151,14 @@ colorScreen:
     bne     .loop
     rts
 
+/*
+    Data
+*/
+    dc.b    $0d, $02, $14, $13, $f3, $39, $3f, $54
+    dc.b    $35, $d3, $f9, $1a, $ea, $18, $ff, $61
+    dc.b    $18, $e8, $e0
+    dc.b    $32, $30, $32, $32 
+
 clearScreen:
     ldx     #$00    ; only have 1 byte that we can loop on
     lda     #$20    ; clear the screen
@@ -160,11 +168,3 @@ clearLoop:
     inx
     bne     clearLoop
     rts
-/*
-    Data
-*/
-    dc.b    $0d, $02, $14, $13, $f3, $39, $3f, $54
-    dc.b    $35, $d3, $f9, $1a, $ea, $18, $ff, $61
-    dc.b    $18, $e8, $e0
-    dc.b    $32, $30, $32, $32 
-
