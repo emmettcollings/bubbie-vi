@@ -17,6 +17,16 @@ This is a simple compression algorithm that efficiently stores repeated bytes.  
 
 We also have a special case for the length code $00, which is the end of the string.  If we encounter a $00 as the length of a byte sequence, we immediately stop reading the data.
 
+# 6-bit offset representation (data specific)
+
+For this algorithm, we noticed that the majority of the data we were writing to the screen memory were characters, ranging from $02 to $19.  Using this knowledge, we can represent the data more efficiently by using a 6-bit offset from the previously displayed character code, starting with $02 (`B`).
+
+The data is broken up into a stream of 6-bit intervals.  The first bit is indicating whether to add or subtract from the previously displayed characters' character code, with 0 being addition, and 1 being subtraction.  The rest of the 5 bits are just the offset in binary, giving us a maximum offset of 31.  This means that we can represent all the characters from $02 to $19 with this algorithm, as required, including spaces and numbers.
+
+When subtracting, we want to subtract 1 less than what we should theoretically.  An example in action is; if we display a `B` [0x02], and want to display a `U` [0x15], we would want to add 19 or [0x13] to the previous character code, giving us the bytes `10011`.  Since we are adding to `B`, the first bit is a 0, giving us 010011.  If we then wanted to display a `B` [0x02], we would normally want to subtract 19 or [0x13], but because we are subtracting, we actually want to subtract 18 or [0x12], giving us the bytes `10010`.  Since we are subtracting from `U`, the first bit is a 1, giving us 110010.
+
+Together, these bits give us the bits `01001111 0010`.  Thus, the first byte of the encoded data is `0x4F`, and the second byte is incomplete, but would be interpreted as `0x20`.
+
 # 5-bit char representation (data specific)
 
 **File:** bin/5-bit-char/5-bit-char.prg (163 bytes)
