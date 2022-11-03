@@ -2,18 +2,24 @@
 
 **File: bin/originalTitleScreen/originalTitleScreen.prg  (404 bytes)**
 
+**Compression Ratio: N/A**
+
 Our original title screen test program's total size was 404B. Our input data was
 34B, which consisted of 3 strings that were written to screen memory.
 
-# Test 1 (Exomizer 3)
+# Exomizer 3
 
 **File: bin/exomizer/exomizerCompressionCompressed.prg (435 bytes)**
+
+**Compression Ratio: 0.93**
 
 TODO: Write.
 
 # 5 bit char representation (data specific)
 
 **File: bin/5-bit-char/5-bit-char.prg (149 bytes)**
+
+**Compression Ratio: 2.71**
 
 The idea behind this is that we notice that we only use alphabetical characters
 and spaces in our title screen. Since that is a total of 27 options, we can
