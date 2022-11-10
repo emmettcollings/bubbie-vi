@@ -32,9 +32,12 @@ HALF = $100                             ; Half the screen size
 */
     org     $1010
 chr_1       .byte   $00, $3c, $26, $56, $56, $26, $3c, $24 ; sus?
-chr_1_b     .byte   $00, $00, $00, $00, $00, $00, $00, $00 ; sus_v2?
-chr_2       .byte   $00, $00, $00, $00, $00, $00, $00, $00 ; blank
-chr_2_b     .byte   $00, $00, $00, $00, $00, $00, $00, $00 ; blank
+chr_1_b     .byte   $00, $00, $00, $00, $00, $00, $00, $00 ; sus?_v2
+chr_blank   .byte   $00, $00, $00, $11, $00, $00, $00, $00 ; blank
+chr_2       .byte   $ff, $df, $ef, $fa, $ff, $fe, $cf, $fa ; wall1
+chr_2_b     .byte   $00, $00, $00, $00, $00, $00, $00, $00 ; wall1_v2
+chr_2_c     .byte   $ff, $df, $ef, $fa, $ff, $fe, $cf, $fa ; wall1_c
+chr_2_c2    .byte   $ff, $df, $ef, $fa, $ff, $fe, $cf, $fa ; wall1_c2
 
 
 /*
@@ -54,14 +57,17 @@ initializeScreen:
     inx
 
     bne     initializeScreen    ; Loop until the counter overflows back to 0, then exit the loop
-L:
+    
     lda     #$fc            
     sta     $9005               ; load custom character set
 
     lda     #$02
-    sta     $1e00
-    lda     #$00
-    ; pha
+    sta     $1efc
+    lda     #$05
+    sta     $1e02
+    lda     #$06
+    sta     $1e03
+
 P:
     lda     #$ff
     sta     $fc
@@ -78,7 +84,7 @@ P:
 loop1:
     lda     #$6a
     sta     $fb
-    lda     #$10
+    lda     #$28
     sta     $fc
     lda     #$10
     sta     $fd

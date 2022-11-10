@@ -15,7 +15,7 @@ BASE_CM = $1601
     & Location specific:    Yes
     % Alters:   None
 
-    # Notes:    Requires linked characters to be stored at $1**0 and $1**8 respectively
+    # Notes:    ---
     31 Bytes
 */           
 charShift_H:
@@ -29,7 +29,7 @@ cSH_ByteLoop:
     ldx     #$01            ; Initialize counter to cycle through both characters
 cSH_ShiftLoop:
     tya                     ; Swap y between first and second character
-    eor     #$08
+    eor     #$08            
     tay
 
     lda     ($fc),y         ; Load byte from character indicated by y
@@ -54,7 +54,7 @@ cSH_ShiftLoop:
     & Location specific:    Yes
     % Alters:   None
 
-    # Notes:    Requires linked characters to be stored at $1**0 and $1**8 respectively
+    # Notes:    ---
     33 Bytes
 */       
 charShift_V:
