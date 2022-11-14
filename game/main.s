@@ -22,5 +22,7 @@ stubend:
     Main Routine
 */
     org     $1101           ; mem location of code region
-start: 
+start:
+    ; do any initialization here, before calling the other files.
+    include "title.s"      ; include the main program file
     rts
