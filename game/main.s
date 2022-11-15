@@ -35,12 +35,12 @@ HALF_SIZE = $0100                   ; Half the screen size
 */
     org     $1101                   ; mem location of code region
 start:
-    ; do any initialization here, before calling the other files.
+    ; Initialize x to 0, and then jump to initiializeTitleScreen subroutine (titleScreen.s)
     ldx     #$00                    ; Initialize the counter
     jmp     initiializeTitleScreen
 
 gameLoop:
-    ; whatever
+    ; main game loop stuff
     rts
 
-    include "title.s"               ; include the main program file
+    include "titleScreen.s"               ; include the main program file

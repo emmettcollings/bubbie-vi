@@ -1,7 +1,3 @@
-; move title screen code here
-; wait for input
-; then move to render code
-
 initiializeTitleScreen:
     lda     #$20                        ; Load a with a space to fill the screen with
     sta     SCRMEM,X                    ; Write to the first half of the screen memory
