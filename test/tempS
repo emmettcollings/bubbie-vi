@@ -1,0 +1,112 @@
+/*
+    Processor Information
+*/
+    processor   6502        ; This informs the assembler that we are using a 6502 processor.
+
+/*
+    Memory Map
+*/
+    org     $1001           ; mem location of user region
+    dc.w    stubend
+    dc.w    1               ; arbitrary line number for BASIC syntax
+    dc.b    $9e, "4353", 0  ; allocate bytes. 4353 = 1101
+
+/* 
+    Global Definitions
+*/
+CHROUT = $ffd2              ; kernal character output routine
+
+/*
+    Utility Routines
+*/
+stubend:
+    dc.w    0               ; insert null byte
+
+/*
+    Data
+*/
+pad         .byte   $00, $00, $00 ; Padding so that next byte is on 8 byte boundary
+chr_1       .byte   $00, $3c, $26, $56, $56, $26, $3c, $24 ; sus?
+chr_1_b     .byte   $00, $00, $00, $00, $00, $00, $00, $00 ; sus_v2?
+
+/*
+    Main Routine
+*/
+    org     $1101           ; mem location of code region
+start: 
+    lda     #$fc            
+    sta     $9005           ; load custom character set
+    jsr     $e55f           ; clear screen
+    lda     #$42            ; set a to first character in new character set
+    jsr     CHROUT
+    lda     #$43            ; set a to second character in new character set
+    jsr     CHROUT
+
+loop:
+    lda     #$4f
+    sta     $1001
+    jsr     timer
+
+    lda     #$10
+    sta     $151c
+    lda     #$10
+    sta     $151b
+    lda     #$3e
+    sta     $00
+
+    jsr     charShift_H
+    jmp     loop
+
+
+/*
+    A.M.O.G.U.S. Character Horizontal Shift Routine (Advanced Movement Of Graphics Using Shift)
+    @ Author:   Justin Parker
+    
+    @ Usage:    $1501+b | high byte of character to shift's address
+                $1501+c | low byte of character to shift's address
+                $00     | Direction to shift character (3e = rol, 7e = ror)
+        
+    @ Location specific:    Yes
+
+    # Notes:    Requires linked characters to be stored at $***0 and $***8 respectively
+    35 Bytes
+*/
+    org     $1501           ; mem location of new code region
+charShift_H:
+    lda     $151c           ; Get the high address byte
+    sta     $151f           ; Store in the second ROx address byte
+    lda     $151b           ; Get the low address byte
+    ora     #$08            ; Add 8 to the low address byte (Since the linked character is stored at $***0)
+    sta     $151e           ; Store in the first ROx address byte
+    lda     $00             ; Get the instruction byte
+    sta     $151a           ; Store in the instruction byte for the first ROx
+    sta     $151d           ; Store in the instruction byte for the second ROx
+
+    ldx     #$07            ; Set x to 7 (The number of bytes needed to ROx)
+    clc                     ; Clear the carry flag
+csh_loop:
+    ror     $1234,x         ; Code to be modified (1/2)
+    rol     $8765,x         ; Code to be modified (2/2)
+    dex                     ; Decrement x
+    bne     csh_loop        ; Branch if x got underflowed
+    rts                     
+
+/*
+    The best goddamn timer that's ever existed on pure American hardware god damnit
+    @ Author:   Justin Parker
+
+    ~ Usage:    $01 | Number of ~2ms intervals you want to wait for.
+
+    & Location specific:    No
+
+    # Notes: This is a blocking timer. It will not return until the timer has expired.
+    9 Bytes
+*/
+    org     $1551           ; mem location of new code region
+timer:           
+    dec     $00             ; Decrement the timer low-bit (is not initially set, so timing may vary by up to 1 cycle)
+    bne     timer           ; If the low-bit hasn't been underflowed, keep decrementing the low-bit
+    dec     $01             ; If the low-bit has been underflowed, decrement the timer high-bit
+    bne     timer           ; If the high-bit hasn't been underflowed, keep decrementing the low-bit
+    rts                     ; If the high-bit has been underflowed, return from subroutine
+
