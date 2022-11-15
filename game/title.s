@@ -17,7 +17,7 @@ initiializeTitleScreen:
     sty     $fc                         ; indicator for which part of the screen to write to (upper or lower)
     sty     $fd
 
-mainLoop:
+mainTitleScreenLoop:
     lda     lC1101+$01,y                ; Read the length byte from the next chunk of data
     cmp     #$00                        ; If the length byte is 0, then we have reached the end of the data
 
@@ -53,7 +53,7 @@ swapScreenLowHigh:
     bne     writeToScreenLoop           ; If the length byte isn't zero, keep looping
     sty     $fc                         ; We're now done with this byte pair, so store the screen memory pointer in $fc
     ldy     $fb                         ; Load the data pointer back into Y
-    jmp     mainLoop                    ; Reset back to the beginning of the main loop
+    jmp     mainTitleScreenLoop         ; Reset back to the beginning of the main loop
 
 titleScreen:
     jmp     initiializeTitleScreen
