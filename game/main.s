@@ -37,7 +37,10 @@ HALF_SIZE = $0100                   ; Half the screen size
 start:
     ; do any initialization here, before calling the other files.
     ldx     #$00                    ; Initialize the counter
-    jsr     initiializeTitleScreen
+    jmp     initiializeTitleScreen
+
+gameLoop:
+    ; whatever
     rts
 
     include "title.s"               ; include the main program file

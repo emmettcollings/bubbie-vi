@@ -22,7 +22,7 @@ mainLoop:
     cmp     #$00                        ; If the length byte is 0, then we have reached the end of the data
 
 infLoop:
-    beq     titleScreen                    
+    beq     keyCheck                    
     tax                                 ; Copy the length byte to the X register so we can get the actual byte in a
     lda     lC1101,y                    ; Read the actual byte to be displayed
     iny                                 ; Increment the data pointer twice (since we read in two consecutive bytes at the same time)
@@ -58,13 +58,12 @@ swapScreenLowHigh:
 titleScreen:
     jmp     initiializeTitleScreen
     jsr     keyCheck
-    rts
     
 keyCheck:
     lda     $cb
     cmp     #$40
-    beq     titleScreen
-    rts
+    beq     keyCheck
+    jmp     gameLoop
 
 lC1101      .byte   $20, $31, $02, $01, $15, $01, $02, $02, $09, $01, $05, $01, $20, $01    ; BUBBIE
     dc.b    $14, $01, $08, $01, $05, $01, $20, $01                                  ; THE
