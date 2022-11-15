@@ -21,7 +21,14 @@ stubend:
 /* 
     Global Definitions
 */
+; Character Defintions
 CHROUT = $ffd2                      ; kernal character output routine
+CHRIN = $ffcf                       ; kernal character input routine
+
+; Screen Defintions
+SCRMEM = $1e00                      ; Screen memory address
+CLRMEM = $9600                      ; Colour memory address 
+HALF_SIZE = $0100                   ; Half the screen size
 
 /*
     Main Routine
@@ -30,7 +37,7 @@ CHROUT = $ffd2                      ; kernal character output routine
 start:
     ; do any initialization here, before calling the other files.
     ldx     #$00                    ; Initialize the counter
-    jmp     initiializeTitleScreen
+    jsr     initiializeTitleScreen
     rts
 
     include "title.s"               ; include the main program file

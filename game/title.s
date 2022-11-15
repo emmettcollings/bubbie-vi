@@ -2,13 +2,6 @@
 ; wait for input
 ; then move to render code
 
-/* 
-    Global Definitions
-*/
-SCRMEM = $1e00                          ; Screen memory address
-CLRMEM = $9600                          ; Colour memory address 
-HALF_SIZE = $0100                       ; Half the screen size
-
 initiializeTitleScreen:
     lda     #$20                        ; Load a with a space to fill the screen with
     sta     SCRMEM,X                    ; Write to the first half of the screen memory
@@ -29,9 +22,7 @@ mainLoop:
     cmp     #$00                        ; If the length byte is 0, then we have reached the end of the data
 
 infLoop:
-    beq     infLoop                     ; Yeeehhhhawwwww! (infinite loop, final resting place of the program)
-    ; update the inf loop to wait for input and then move to the render code
-
+    beq     titleScreen                    
     tax                                 ; Copy the length byte to the X register so we can get the actual byte in a
     lda     lC1101,y                    ; Read the actual byte to be displayed
     iny                                 ; Increment the data pointer twice (since we read in two consecutive bytes at the same time)
@@ -63,6 +54,17 @@ swapScreenLowHigh:
     sty     $fc                         ; We're now done with this byte pair, so store the screen memory pointer in $fc
     ldy     $fb                         ; Load the data pointer back into Y
     jmp     mainLoop                    ; Reset back to the beginning of the main loop
+
+titleScreen:
+    jmp     initiializeTitleScreen
+    jsr     keyCheck
+    rts
+    
+keyCheck:
+    lda     $cb
+    cmp     #$40
+    beq     titleScreen
+    rts
 
 lC1101      .byte   $20, $31, $02, $01, $15, $01, $02, $02, $09, $01, $05, $01, $20, $01    ; BUBBIE
     dc.b    $14, $01, $08, $01, $05, $01, $20, $01                                  ; THE
