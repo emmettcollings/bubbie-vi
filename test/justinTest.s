@@ -40,6 +40,9 @@ chr_wall_b  .byte   $FF, $BD, $BD, $FF, $FF, $BD, $BD, $FF ; wallCP 7
 border      .byte   $aa, $00, $aa, $00, $aa, $00, $aa, $00 ; border 8 1040
 
 
+;     org     $1090
+; frameBuffer .byte   $00, $00, $00, $00, $00, $00, $00, $00 ; 1090
+
 /*
     Main Routine
 */
