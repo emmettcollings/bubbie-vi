@@ -40,8 +40,14 @@ chr_wall_b  .byte   $FF, $BD, $BD, $FF, $FF, $BD, $BD, $FF ; wallCP 7
 border      .byte   $aa, $00, $aa, $00, $aa, $00, $aa, $00 ; border 8 1040
 
 
-;     org     $1090
-; frameBuffer .byte   $00, $00, $00, $00, $00, $00, $00, $00 ; 1090
+    org     $1090
+frameBuffer0    .byte   $04, $04, $04, $04, $04, $04, $04
+frameBuffer1    .byte   $04, $04, $04, $03, $04, $04, $04
+frameBuffer2    .byte   $04, $04, $04, $03, $04, $04, $04
+frameBuffer3    .byte   $04, $03, $03, $03, $03, $03, $04
+frameBuffer4    .byte   $04, $03, $04, $03, $04, $03, $04
+frameBuffer5    .byte   $04, $04, $04, $03, $04, $04, $04
+frameBuffer6    .byte   $04, $04, $04, $04, $04, $04, $04
 
 /*
     Main Routine
@@ -110,6 +116,46 @@ topRowWall:
     sta     $1eb7+$6+$58
     sta     $1eb7+$6+$6e
 
+    ldx     #$4
+LPO1:
+    lda     frameBuffer1+$1,x
+    sta     $1ece,x
+    dex
+    bpl     LPO1
+
+    ldx     #$4
+LPO2:
+    lda     frameBuffer2+$1,x
+    sta     $1ece+$16,x
+    dex
+    bpl     LPO2
+
+    ldx     #$4
+LPO3:
+    cpx     #$2
+    bne     LPO3_A
+    dex
+    jmp     LPO3
+LPO3_A:
+    lda     frameBuffer3+$1,x
+    sta     $1ece+$2c,x
+    dex
+    bpl     LPO3
+
+    ldx     #$4
+LPO4:
+    lda     frameBuffer4+$1,x
+    sta     $1ece+$42,x
+    dex
+    bpl     LPO4
+
+    ldx     #$4
+LPO5:
+    lda     frameBuffer5+$1,x
+    sta     $1ece+$58,x
+    dex
+    bpl     LPO5
+
 P:
     lda     #$ff
     sta     $fc
@@ -119,7 +165,7 @@ P:
     cmp     #$12
     beq     initD
     cmp     #$11
-    beq     initA
+    beq     initL1
     jmp     P
 
    ; pla
@@ -146,10 +192,133 @@ loopD:
     dec     $fe
     bne     loopD
 
-
     jmp     P                   ; jump to main routine
 
-initA:
+initL1:
+    lda     frameBuffer1+$6
+    sta     $fe
+    ldx     #$04
+SL1:
+    lda     frameBuffer1+$1,x
+    cmp     $fe
+    sta     $fe
+    bne     screenShift_L_A1
+    lda     #$06
+    sta     $1eb7+$16+$1,x
+    jmp     screenShift_L_B1
+screenShift_L_A1:
+    cmp     #$03
+    bne     screenShift_L_C1
+    lda     #$05
+    sta     $1eb7+$16+$1,x
+    jmp     screenShift_L_B1
+screenShift_L_C1:
+    lda     #$04
+    sta     $1eb7+$16+$1,x
+screenShift_L_B1:
+    dex
+    bpl     SL1
+
+initL2:
+    lda     frameBuffer2+$6
+    sta     $fe
+    ldx     #$04
+SL2:
+    lda     frameBuffer2+$1,x
+    cmp     $fe
+    sta     $fe
+    bne     screenShift_L_A2
+    lda     #$06
+    sta     $1eb7+$2c+$1,x
+    jmp     screenShift_L_B2
+screenShift_L_A2:
+    cmp     #$03
+    bne     screenShift_L_C2
+    lda     #$05
+    sta     $1eb7+$2c+$1,x
+    jmp     screenShift_L_B2
+screenShift_L_C2:
+    lda     #$04
+    sta     $1eb7+$2c+$1,x
+screenShift_L_B2:
+    dex
+    bpl     SL2
+
+; initL3:
+;     lda     frameBuffer3+$6
+;     sta     $fe
+;     ldx     #$04
+; SL3:
+;     lda     frameBuffer3+$1,x
+;     cmp     $fe
+;     sta     $fe
+;     bne     screenShift_L_A3
+;     lda     #$06
+;     sta     $1eb7+$42+$1,x
+;     jmp     screenShift_L_B3
+; screenShift_L_A3:
+;     cmp     #$03
+;     bne     screenShift_L_C3
+;     lda     #$05
+;     sta     $1eb7+$42+$1,x
+;     jmp     screenShift_L_B3
+; screenShift_L_C3:
+;     lda     #$04
+;     sta     $1eb7+$42+$1,x
+; screenShift_L_B3:
+;     dex
+;     bpl     SL3
+
+initL4:
+    lda     frameBuffer4+$6
+    sta     $fe
+    ldx     #$04
+SL4:
+    lda     frameBuffer4+$1,x
+    cmp     $fe
+    sta     $fe
+    bne     screenShift_L_A4
+    lda     #$06
+    sta     $1eb7+$58+$1,x
+    jmp     screenShift_L_B4
+screenShift_L_A4:
+    cmp     #$03
+    bne     screenShift_L_C4
+    lda     #$05
+    sta     $1eb7+$58+$1,x
+    jmp     screenShift_L_B4
+screenShift_L_C4:
+    lda     #$04
+    sta     $1eb7+$58+$1,x
+screenShift_L_B4:
+    dex
+    bpl     SL4
+
+initL5:
+    lda     frameBuffer5+$6
+    sta     $fe
+    ldx     #$04
+SL5:
+    lda     frameBuffer5+$1,x
+    cmp     $fe
+    sta     $fe
+    bne     screenShift_L_A5
+    lda     #$06
+    sta     $1eb7+$6e+$1,x
+    jmp     screenShift_L_B5
+screenShift_L_A5:
+    cmp     #$03
+    bne     screenShift_L_C5
+    lda     #$05
+    sta     $1eb7+$6e+$1,x
+    jmp     screenShift_L_B5
+screenShift_L_C5:
+    lda     #$04
+    sta     $1eb7+$6e+$1,x
+screenShift_L_B5:
+    dex
+    bpl     SL5
+
     ldx     #$08
     stx     $fe
 loopA:
@@ -175,6 +344,6 @@ loopA:
 
     jmp     P                   ; jump to main routine
 
+
     include "CharacterMovement.s"
     include "Timer.s"
-    include "Decoder.s"
