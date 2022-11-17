@@ -14,13 +14,13 @@ BASE_D = $1670
 */           
 decodeByte:
     lda     $fb
-    sta     $fc
+    pha
     lsr
     lsr
     lsr
     lsr
     sta     $fb
-    lda     $fc
+    pla
     and     #%00001111
     sta     $fc
     rts
