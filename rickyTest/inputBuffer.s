@@ -40,6 +40,9 @@ readInput:
 
     ; if no key pressed, go back to readInput
     cmp     #$40
+    ; now, we need to track how long they haven't pressed a key.
+    ; if they don't press a key in 3 seconds, we'll force the previous key to be pressed again
+    ; for now, we'll just exit
     beq     readInput
 
     ; if  'Q' is pressed, exit
