@@ -52,25 +52,53 @@ readInput:
     ; compare if the input is either, w, a, s, d and call the appropriate subroutine to move the character
     ; 'W' on keyboard (hex was found in mem @ $c5)
     cmp     #$09
-    beq     quit
+    beq     moveUp
 
     ; 'A' on keyboard (hex was found in mem @ $c5)
     cmp     #$11
-    beq     quit
+    beq     moveLeft
 
     ; 'S' on keyboard (hex was found in mem @ $c5)
     cmp     #$29
-    beq     quit
+    beq     moveDown
 
     ; 'D' on keyboard (hex was found in mem @ $c5)
     cmp     #$12
-    beq     quit
+    beq     moveRight
 
     jmp     readInput
+
+/*
+    code below is kinda messy, but it works. 
+    i know there's a better way to do this, but i'm not sure how to do it yet (way to late to think of a solution for making it shorter, will do it for the final version)
+*/
+moveUp:
+    lda     #$88
+    sta     $fb
+    jsr     charShift_V
+    rts
+
+moveLeft:
+    lda     #$2a
+    sta     $fb
+    jmp     charShift_H
+    rts
+
+moveDown:
+    lda     #$c8
+    sta     $fb
+    jsr     charShift_V
+    rts
+
+moveRight:
+    lda     #$6a
+    sta     $fb
+    jmp     charShift_H
+    rts
 
 infiniteLoop:
     jmp     infiniteLoop
 
 quit:
-    ; we're done, so we'll just do nothing.
+    ; we're done, so we'll just exit
     rts
