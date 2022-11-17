@@ -1,22 +1,16 @@
 /*
-    Size: 96 bytes = 0x60
+    TODO: Document properly
+    Size: 
 */
-BASE_CM = $1661
-    org     BASE_CM          ; Memory location of new code region
+BASE_D = $1661
+    org     BASE_D          ; Memory location of new code region
 
 /*
-    A.M.O.G.U.S. Character Horizontal Shift Routine (Advanced Movement Of Graphics Using Shift)
     @ Author:   Justin Parker
     
-    ~ Usage:    -> $fb | Direction to shift character (2a = <-, 6a = ->) (OP code for ROL/ROR Indirect,y)
-                -> $fc | Character address low byte
-                -> $fd | Character address high byte
-
-    & Location specific:    Yes
-    % Alters:   None
-
-    # Notes:    ---
-    31 Bytes
+    ~ Usage:    -> $fb | Byte to be decoded
+                <- $fb | high nibble of byte
+                <- $fc | low nibble of byte
 */           
 decodeByte:
     lda     $fb
