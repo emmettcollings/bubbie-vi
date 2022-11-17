@@ -1,0 +1,32 @@
+/*
+    Size: 96 bytes = 0x60
+*/
+BASE_CM = $1661
+    org     BASE_CM          ; Memory location of new code region
+
+/*
+    A.M.O.G.U.S. Character Horizontal Shift Routine (Advanced Movement Of Graphics Using Shift)
+    @ Author:   Justin Parker
+    
+    ~ Usage:    -> $fb | Direction to shift character (2a = <-, 6a = ->) (OP code for ROL/ROR Indirect,y)
+                -> $fc | Character address low byte
+                -> $fd | Character address high byte
+
+    & Location specific:    Yes
+    % Alters:   None
+
+    # Notes:    ---
+    31 Bytes
+*/           
+decodeByte:
+    lda     $fb
+    sta     $fc
+    lsr
+    lsr
+    lsr
+    lsr
+    sta     $fc
+    lda     $fb
+    and     #%00001111
+    sta     $fb
+    rts

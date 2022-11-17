@@ -33,10 +33,11 @@ HALF = $100                             ; Half the screen size
     org     $1010
 chr_1       .byte   $00, $3c, $26, $56, $56, $26, $3c, $24 ; amongus 2 1010
 chr_blank   .byte   $00, $00, $00, $00, $00, $00, $00, $00 ; blank 3
-chr_2       .byte   $ff, $df, $ef, $fa, $ff, $fe, $cf, $fa ; wall 4 1020
+chr_2       .byte   $FF, $BD, $BD, $FF, $FF, $BD, $BD, $FF ; wall 4 1020
 chr_2_a     .byte   $00, $00, $00, $00, $00, $00, $00, $00 ; wallP 5
-chr_wall_a  .byte   $ff, $df, $ef, $fa, $ff, $fe, $cf, $fa ; wallC 6 1030
-chr_wall_b  .byte   $ff, $df, $ef, $fa, $ff, $fe, $cf, $fa ; wallCP 7
+chr_wall_a  .byte   $FF, $BD, $BD, $FF, $FF, $BD, $BD, $FF ; wallC 6 1030
+chr_wall_b  .byte   $FF, $BD, $BD, $FF, $FF, $BD, $BD, $FF ; wallCP 7
+border      .byte   $aa, $00, $aa, $00, $aa, $00, $aa, $00 ; border 8 1040
 
 
 /*
@@ -73,6 +74,39 @@ topRowWall:
     cpx     #$15
     bne     topRowWall
 
+    lda     #$08
+    ;TOP
+    sta     $1eb7               ; TOP LEFT CORNER
+    sta     $1eb7+$1
+    sta     $1eb7+$2
+    sta     $1eb7+$3
+    sta     $1eb7+$4
+    sta     $1eb7+$5
+    sta     $1eb7+$6
+
+    ;LEFT SIDE
+    sta     $1eb7+$16
+    sta     $1eb7+$2c
+    sta     $1eb7+$42
+    sta     $1eb7+$58
+    sta     $1eb7+$6e
+    sta     $1eb7+$84
+
+    ;BOTTOM
+    sta     $1eb7+$84+$1
+    sta     $1eb7+$84+$2
+    sta     $1eb7+$84+$3
+    sta     $1eb7+$84+$4
+    sta     $1eb7+$84+$5
+    sta     $1eb7+$84+$6
+
+    ;RIGHT SIDE
+    sta     $1eb7+$6+$16
+    sta     $1eb7+$6+$2c
+    sta     $1eb7+$6+$42
+    sta     $1eb7+$6+$58
+    sta     $1eb7+$6+$6e
+
 P:
     lda     #$ff
     sta     $fc
@@ -80,13 +114,16 @@ P:
 
     lda     $c5
     cmp     #$12
-    bne     P
+    beq     initD
+    cmp     #$11
+    beq     initA
+    jmp     P
 
    ; pla
-
+initD:
     ldx     #$08
     stx     $fe
-loop1:
+loopD:
     lda     #$6a
     sta     $fb
     lda     #$20
@@ -104,10 +141,37 @@ loop1:
     jsr     timer
 
     dec     $fe
-    bne     loop1
+    bne     loopD
+
+
+    jmp     P                   ; jump to main routine
+
+initA:
+    ldx     #$08
+    stx     $fe
+loopA:
+    lda     #$2a
+    sta     $fb
+    lda     #$20
+    sta     $fc
+    lda     #$10
+    sta     $fd
+    jsr     charShift_H
+
+    lda     #$30
+    sta     $fc
+    jsr     charShift_H
+
+    lda     #$40
+    sta     $fc
+    jsr     timer
+
+    dec     $fe
+    bne     loopA
 
 
     jmp     P                   ; jump to main routine
 
     include "CharacterMovement.s"
     include "Timer.s"
+    include "Decoder.s"
