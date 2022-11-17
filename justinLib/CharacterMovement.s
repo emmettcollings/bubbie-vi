@@ -28,8 +28,8 @@ cSH_ByteLoop:
     ror                     ; Shift it to put either bit 0/7 in the carry flag [SMC]
     ldx     #$01            ; Initialize counter to cycle through both characters
 cSH_ShiftLoop:
-    tya                     ; Swap y between first and second character
-    eor     #$08            
+    tya                     ; Swap y between first and second character by flipping bit 3
+    eor     #%00001000
     tay
 
     lda     ($fc),y         ; Load byte from character indicated by y

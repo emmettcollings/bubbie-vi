@@ -31,13 +31,12 @@ HALF = $100                             ; Half the screen size
     Data
 */
     org     $1010
-chr_1       .byte   $00, $3c, $26, $56, $56, $26, $3c, $24 ; sus?
-chr_1_b     .byte   $00, $00, $00, $00, $00, $00, $00, $00 ; sus?_v2
-chr_blank   .byte   $00, $00, $00, $11, $00, $00, $00, $00 ; blank
-chr_2       .byte   $ff, $df, $ef, $fa, $ff, $fe, $cf, $fa ; wall1
-chr_2_b     .byte   $00, $00, $00, $00, $00, $00, $00, $00 ; wall1_v2
-chr_2_c     .byte   $ff, $df, $ef, $fa, $ff, $fe, $cf, $fa ; wall1_c
-chr_2_c2    .byte   $ff, $df, $ef, $fa, $ff, $fe, $cf, $fa ; wall1_c2
+chr_1       .byte   $00, $3c, $26, $56, $56, $26, $3c, $24 ; amongus 2 1010
+chr_blank   .byte   $00, $00, $00, $00, $00, $00, $00, $00 ; blank 3
+chr_2       .byte   $ff, $df, $ef, $fa, $ff, $fe, $cf, $fa ; wall 4 1020
+chr_2_a     .byte   $00, $00, $00, $00, $00, $00, $00, $00 ; wallP 5
+chr_wall_a  .byte   $ff, $df, $ef, $fa, $ff, $fe, $cf, $fa ; wallC 6 1030
+chr_wall_b  .byte   $ff, $df, $ef, $fa, $ff, $fe, $cf, $fa ; wallCP 7
 
 
 /*
@@ -47,7 +46,7 @@ chr_2_c2    .byte   $ff, $df, $ef, $fa, $ff, $fe, $cf, $fa ; wall1_c2
 start: 
     ldx     #$00                ; Initialize the counter
 initializeScreen:    
-    lda     #$04                ; Load a with 'space' to fill the screen with
+    lda     #$03                ; Load a with 'space' to fill the screen with
     sta     SCRMEM,X            ; Write to the first half of the screen memory
     sta     SCRMEM+HALF,X       ; Write to the second half of the screen memory
 
@@ -62,11 +61,17 @@ initializeScreen:
     sta     $9005               ; load custom character set
 
     lda     #$02
-    sta     $1efc
-    lda     #$05
-    sta     $1e02
+    sta     $1efc               ; MIDDLE
+
+    ldx     #$00
+topRowWall:
     lda     #$06
-    sta     $1e03
+    sta     $1e00,x
+    lda     #$07
+    sta     $1e01,x
+    inx
+    cpx     #$15
+    bne     topRowWall
 
 P:
     lda     #$ff
@@ -84,10 +89,14 @@ P:
 loop1:
     lda     #$6a
     sta     $fb
-    lda     #$28
+    lda     #$20
     sta     $fc
     lda     #$10
     sta     $fd
+    jsr     charShift_H
+
+    lda     #$30
+    sta     $fc
     jsr     charShift_H
 
     lda     #$40
