@@ -36,24 +36,38 @@ loop:
 next:
     tya
     sta     DISROW  ; store for later looping
-    lda     #$08    ; initialize row counter
+    lda     #$07    ; initialize row counter
     sta     ROWCTR
     ldy     #$00    ; keep track of offset in our output buffer
 
-    ; Load rows from map mem
+; Load rows from map mem
 .rowLoop:
-    lda     #$08
+    ldx     DISROW  ; load offset to data location
+
+    ; Load first pair of tiles, need to deal with discarding one in special case
+    lda     MAPMEM, X   ; load actual data
+    sta     $fb         ; store in registor for SR 
+    jsr     decodeByte  ; call decoding SR
+
+; If our X pos is odd we need to discard first tile read
+    lda     PX
+    and     #%00000001  ; if even we save both 
+    bne     .initColLoop
+    lda     $fb         ; save first nibble
+    sta     BUF, Y
+    iny
+
+.initColLoop:
+    lda     $fc         ; second tile
+    sta     BUF, Y
+    inx                 ; move to next map mem byte
+    iny
+
+    lda     #$03    ; initialize column counter
     sta     COLCTR
 
-    ; If X pos is odd, then we need to discard first tile
-    lda     PX
-    and     #%00000001  ; if odd then we shift left
-    beq     .loop
-    dey
-
-; Decodes 8 tiles worth of map data
+; Decodes 6 tiles worth (3 bytes) of map data and writes to output buf
 .loop:
-    ldx     DISROW  ; load offset to data location
     lda     MAPMEM, X   ; load actual data
     sta     $fb         ; store in registor for SR 
     jsr     decodeByte  ; call decoding SR
@@ -69,13 +83,14 @@ next:
 ; We discard last tile in this case to keep 7 total
     lda     PX
     and     #%00000001  ; if even then we discard last
-    beq     .loopControl
-    dey
+    bne     .loopControl
+    dey                 ; will overwrite last byte with new data next time
 
 .loopControl:
     clc
-    lda     #$10
+    lda     #$10    ; 16 bytes between rows
     adc     DISROW  ; advance to next row
+    sta     DISROW
     dec     ROWCTR     ; decrement our counter mem location
     bne     .rowLoop
 
