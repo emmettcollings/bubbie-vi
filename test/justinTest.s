@@ -48,6 +48,8 @@ HALF = $100                             ; Half the screen size
 
 
     org     $1090
+/*
+; "level 1"
 frameBuffer0    .byte   $04, $04, $04, $04, $04, $04, $04
 frameBuffer1    .byte   $04, $04, $04, $04, $03, $04, $04
 frameBuffer2    .byte   $04, $04, $03, $03, $03, $04, $04
@@ -55,6 +57,27 @@ frameBuffer3    .byte   $04, $03, $03, $03, $03, $03, $04
 frameBuffer4    .byte   $04, $03, $04, $03, $04, $03, $04
 frameBuffer5    .byte   $04, $04, $04, $03, $04, $04, $04
 frameBuffer6    .byte   $04, $04, $04, $04, $04, $04, $04
+*/
+
+/*
+; "level 2"
+frameBuffer0    .byte   $04, $04, $03, $03, $03, $04, $03
+frameBuffer1    .byte   $04, $03, $04, $03, $03, $03, $04
+frameBuffer2    .byte   $04, $03, $03, $04, $03, $04, $03
+frameBuffer3    .byte   $04, $03, $03, $03, $03, $03, $04
+frameBuffer4    .byte   $04, $04, $03, $04, $04, $03, $03
+frameBuffer5    .byte   $04, $03, $03, $03, $04, $03, $04
+frameBuffer6    .byte   $04, $03, $03, $03, $04, $03, $03
+*/
+
+; "level 3"
+frameBuffer0    .byte   $04, $03, $03, $04, $03, $03, $03
+frameBuffer1    .byte   $03, $03, $03, $04, $03, $03, $04
+frameBuffer2    .byte   $04, $03, $04, $03, $04, $03, $03
+frameBuffer3    .byte   $03, $03, $03, $03, $03, $03, $04
+frameBuffer4    .byte   $04, $03, $03, $04, $03, $03, $03
+frameBuffer5    .byte   $03, $03, $04, $03, $04, $03, $04
+frameBuffer6    .byte   $04, $03, $03, $03, $03, $03, $03
 
 /*
     Main Routine
