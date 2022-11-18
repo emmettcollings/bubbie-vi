@@ -5,17 +5,17 @@
 
 
 MAPMEM = $1000  ; Don't know where this will be yet
-DISROW = $1c03  ; keep track of row we are on
-BUF = $1c04    ; start of our 7x7 mem chunk
+DISROW = $1c04  ; keep track of row we are on
+BUF = $1c05    ; start of our 7x7 mem chunk
 PX = $1c00  ; Storage locations of camera position
 PY = $1c01
-CTR = $1c02 ; need one more counter to count 7 rows
-
+ROWCTR = $1c02 ; need one more counter to count 7 rows
+COLCTR = $1c03
 /*
-    Load player position
-    Load 7x7 chunk around player position
-    Translate chunk
-    Write chunk to output location
+    Load camera position
+    Load 8 tiles and translate
+    Shift so we keep only correct 7 tiles
+    Repeat for 7 rows
 */
 
     lda     PY      ; load y position
@@ -36,40 +36,37 @@ next:
     tya
     sta     DISROW  ; store for later looping
     lda     #$08    ; initialize row counter
-    sta     CTR
+    sta     ROWCTR
+
+; Load rows from map mem
+.rowLoop:
+    lda     #$08
+    sta     COLCTR
+    ldy     #$00    ; keep track of offset in our output buffer
 
 .loop:
-    jsr     loadRow
+    ldx     DISROW  ; load offset to data location
+    lda     MAPMEM, X   ; load actual data
+    sta     $fb         ; store in registor for SR 
+    jsr     decodeByte  ; call decoding SR
+    lda     $fb         ; load first tile
+    sta     BUF, Y      ; store in output chunk
+    lda     $fc         ; second tile
+    sta     BUF+1, Y
+    inx                 ; loop control stuff
+    iny
+    dec     COLCTR
+    bne     .loop
+
+    ; check which way we shift to keep only 7 tiles
+    lda     PX
+    and     #%00000001  ; if odd then we shift left
 
     clc
     lda     #$10
     adc     DISROW  ; advance to next row
-    dec     CTR     ; decrement our counter mem location
-    bne     .loop
+    dec     ROWCTR     ; decrement our counter mem location
+    bne     .rowLoop
 
     rts
-
-
-    SUBROUTINE
-/*
-    Loads 8 character row from our map mem
-*/
-loadRow:
-    ldy     #$00    ; don't really like this 0, extra bytes
-
-.loop:
-    ldx     DISROW
-    lda     MAPMEM, X
-    sta     $fb
-    jsr     decodeByte
-    lda     $fb
-    sta     BUF, Y
-    lda     $fc 
-    sta     BUF+1, Y
-    inx
-    iny
-    cpy     #$08
-    bne     .loop
-
-    rts
-
+    
