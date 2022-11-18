@@ -2,7 +2,7 @@
     Processor Information
 */
     processor   6502        ; This informs the assembler that we are using a 6502 processor.
-
+    incdir "../justinLib"
 /*
     Memory Map
 */
@@ -22,286 +22,328 @@ CHROUT = $ffd2              ; kernal character output routine
 stubend:
     dc.w    0               ; insert null byte
 
+
+SCRMEM = $1e00                          ; Screen memory address
+CLRMEM = $9600                          ; Colour memory address 
+HALF = $100                             ; Half the screen size
+
 /*
     Data
 */
-pad         .byte   $00, $00, $00 ; Padding so that next byte is on 8 byte boundary
-    org     $1020
-chr_1       .byte   $ff, $3c, $26, $56, $56, $26, $3c, $24 ; sus?
-chr_1_b     .byte   $00, $00, $00, $00, $00, $00, $00, $00 ; sus_v2?
+    org     $1010
+chr_1       .byte   $00, $3c, $26, $56, $56, $26, $3c, $24 ; amongus 2 1010
+chr_blank   .byte   $00, $00, $00, $00, $00, $00, $00, $00 ; blank 3
+chr_2       .byte   $FF, $BD, $BD, $FF, $FF, $BD, $BD, $FF ; wall 4 1020
+chr_2_a     .byte   $00, $00, $00, $00, $00, $00, $00, $00 ; wallP 5
+chr_wall_a  .byte   $FF, $BD, $BD, $FF, $FF, $BD, $BD, $FF ; wallC 6 1030
+chr_wall_b  .byte   $FF, $BD, $BD, $FF, $FF, $BD, $BD, $FF ; wallCP 7
+border      .byte   $aa, $00, $aa, $00, $aa, $00, $aa, $00 ; border 8 1040
+
+
+    org     $1090
+frameBuffer0    .byte   $04, $04, $04, $04, $04, $04, $04
+frameBuffer1    .byte   $04, $04, $04, $03, $03, $04, $04
+frameBuffer2    .byte   $04, $04, $03, $04, $03, $04, $04
+frameBuffer3    .byte   $04, $03, $03, $03, $03, $03, $04
+frameBuffer4    .byte   $04, $03, $04, $03, $04, $03, $04
+frameBuffer5    .byte   $04, $04, $04, $03, $04, $04, $04
+frameBuffer6    .byte   $04, $04, $04, $04, $04, $04, $04
 
 /*
     Main Routine
 */
-    org     $1101           ; mem location of code region
+    org     $1101               ; mem location of code region
 start: 
+    ldx     #$00                ; Initialize the counter
+initializeScreen:    
+    lda     #$03                ; Load a with 'space' to fill the screen with
+    sta     SCRMEM,X            ; Write to the first half of the screen memory
+    sta     SCRMEM+HALF,X       ; Write to the second half of the screen memory
+
+    lda     #$06                        ; Load a with the colour of the characters to be displayed (blue)
+    sta     CLRMEM,X                    ; Write to the first half of the colour memory
+    sta     CLRMEM+HALF,X          ; Write to the second half of the colour memory
+    inx
+
+    bne     initializeScreen    ; Loop until the counter overflows back to 0, then exit the loop
+    
     lda     #$fc            
-    sta     $9005           ; load custom character set
-    jsr     $e55f           ; clear screen
-    lda     #$42+2*(2-1)    ; set a to first character in new character set
-    jsr     CHROUT
-    lda     #$43+2*(2-1)    ; set a to second character in new character set
-    jsr     CHROUT
-
-loop:
-    lda     #$7f
-    sta     $fc
-    jsr     timer
+    sta     $9005               ; load custom character set
 
     lda     #$02
-    sta     $fd
-    jsr     characterFlip
+    sta     $1efc               ; MIDDLE
 
-    lda     #$7f
-    sta     $fc
-    jsr     timer
-
-    lda     #$02
-    sta     $fd
+    ldx     #$00
+topRowWall:
+    lda     #$06
+    sta     $1e00,x
     lda     #$07
-    sta     $fb
+    sta     $1e01,x
+    inx
+    cpx     #$15
+    bne     topRowWall
 
-    jsr     charShift_V
-    
-    lda     #$02
-    sta     $fd
-    jsr     characterFlip
+    lda     #$08
+    ;TOP
+    sta     $1eb7               ; TOP LEFT CORNER
+    sta     $1eb7+$1
+    sta     $1eb7+$2
+    sta     $1eb7+$3
+    sta     $1eb7+$4
+    sta     $1eb7+$5
+    sta     $1eb7+$6
 
-    jmp     loop
+    ;LEFT SIDE
+    sta     $1eb7+$16
+    sta     $1eb7+$2c
+    sta     $1eb7+$42
+    sta     $1eb7+$58
+    sta     $1eb7+$6e
+    sta     $1eb7+$84
 
-/*
-    E.J.E.Ct. Character Identifier Decoder Routine (Efficient Juggling of Expelled Characters)
-    @ Author:   Justin Parker
-    
-    ~ Usage:    -> $fd | Character identifier byte
-                <- $fc | Character low byte
-                <- $fd | Character high byte
+    ;BOTTOM
+    sta     $1eb7+$84+$1
+    sta     $1eb7+$84+$2
+    sta     $1eb7+$84+$3
+    sta     $1eb7+$84+$4
+    sta     $1eb7+$84+$5
+    sta     $1eb7+$84+$6
 
-    & Location specific:    No
-    % Alters:   $fc, $fd
+    ;RIGHT SIDE
+    sta     $1eb7+$6+$16
+    sta     $1eb7+$6+$2c
+    sta     $1eb7+$6+$42
+    sta     $1eb7+$6+$58
+    sta     $1eb7+$6+$6e
 
-    # Notes: ---
-    19 Bytes
-*/
-    org     $1491           ; Memory location of new code region
-charMidbyte:
-    ldx     #$03            ; Initialize counter while also setting up for ror, since high nibble = 0 is all that matters
-    stx     $fc             ; Store value in $fd for ror
-    lda     $fd             ; Load identifier of first character to shift
-
-    sec                     ; Set carry flag to ensure high nibble is 1
-    ror     $fd             ; Shift high nibble of identifier
-cM_L:                       ; Perform shift 3 times     
-    ror     $fc             ; --^
-    lsr     $fd             ; --^
-    dex                     ; --^
-    bne     cM_L            ; --*
-    ror     $fc             ; Shift low nibble of identifier
-    rts
-
-/*
-    A.M.O.G.U.S. Character Horizontal Shift Routine (Advanced Movement Of Graphics Using Shift)
-    @ Author:   Justin Parker
-    
-    ~ Usage:    -> $fb | Direction to shift character (3e = <-, 7e = ->)
-                -> $fc | Identifier of first linked character to shift ($1**0)
-
-    & Location specific:    Yes
-    % Alters:   $fb, $fc, $fd
-
-    # Notes:    Requires linked characters to be stored at $1**0 and $1**8 respectively
-    34 Bytes
-*/
-    org     $1501           ; Memory location of new code region
-charShift_H:
-    jsr     charMidbyte     ; Format the identifier into low and high address bytes
-
-    ldx     #$02            ; Initialize counter for the loop to transfer the ROR/ROL instructions (3)
-cS_hA:                      ; Here we prep the two ROR/ROL instructions
-    lda     $fb,x           ; Get the op code and character address bytes from zero page
-    sta     $1501+$18,x     ; Store first instruction set into first ROR/ROL [SMC]
-    cpx     #$01            ; Check if counter is 1 indicating that we're processing the low address byte
-    bne     cS_hB           ; If not, skip the next instruction
-    ora     #$08            ; Add 8 to the low address byte, changing $1**0 into $1**8
-cS_hB:
-    sta     $1501+$1b,x     ; Store second instruction set into second ROR/ROL [SMC]
-    dex                     ; Decrement counter
-    bpl     cS_hA           ; Loop until counter underflows, indicating that we've processed all 3 bytes
-                            ; Run the two ROR instructions
-    ldx     #$07            ; Initialize counter for the number of bytes needed to ROR/ROL (8)
-cS_hC:
-    ror     $9999,x         ; Rotate out of first character [SMC]
-    ror     $9999,x         ; Rotate into second character [SMC]
-    dex                     ; Decrement counter
-    bpl     cS_hC           ; If counter hasn't underflowed, loop
-    rts                        
-
-/*
-    V.E.N.T.E.D. Character Vertical Shift Routine (Vertical Ejection of Narrowly-Tiled Entity Data)
-    @ Author:   Justin Parker
-    
-    ~ Usage:    -> $fb | Direction to shift character (07 = ^, else = v)
-                -> $fc | Identifier of first linked character to shift ($1**0)
-
-    & Location specific:    Yes
-    % Alters:   $fb, $fc, $fd
-
-    # Notes:    Requires linked characters to be stored at $1**0 and $1**8 respectively
-    75 Bytes
-*/
-    org     $1531           ; Memory location of new code region
-charShift_V:
-    jsr     charMidbyte     ; Format the identifier into low and high address bytes
-
-    lda     #$07            ; Initialize with up (A must be set to $07 for the direction to be up)
-    ldx     #$88
-    ldy     #$ff      
-
-    cmp     $fb
-    beq     cS_vA           ; $fb == $07, (Character shifts up)
-
-    lda     #$00            ; Change to down
-    ldx     #$c8
-    ldy     #$08
-cS_vA:
-    sta     $1531+$2e       ; Store value in org + #2e [SMC]
-    stx     $1531+$36       ; Store value in org + $36 [SMC]
-    sty     $1531+$38       ; Store value in org + $38 [SMC]
-
-    ldx     #$02            ; Initialize counter for the loop
-cS_vB:
-    lda     $fb,x           ; Get the op code and character address bytes from zero page
-    sta     $1531+$2f,x     ; Store value in org + $2f [SMC]
-    sta     $1531+$32,x     ; Store value in org + $32 [SMC]
-    txa                     ; Ensures A is $01 a few lines down
+    ldx     #$4
+LPO1:
+    lda     frameBuffer1+$1,x
+    sta     $1ece,x
     dex
-    bne     cS_vB           ; If not, skip the next instruction
+    bpl     LPO1
 
-    sta     $fd             ; A is $01 here
-    txa                     ; A is set to $00, since x is $00
-cS_vC:
-    ldy     #$08            ; Initialize counter for the loop [SMC]
-cS_vD:
-    ldx     $1234,y         ; Shift all the character bytes over by 1 address [SMC]
-    sta     $8765,y         ; --^ [SMC]
-    txa 
-    dey                     ; Decrement/Increment counter [SMC]
-    cpy     #$00            ; Check if counter is finished [SMC]
-    bne     cS_vD           ; If not, loop
+    ldx     #$4
+LPO2:
+    lda     frameBuffer2+$1,x
+    sta     $1ece+$16,x
+    dex
+    bpl     LPO2
 
-    lda     $fc             ; Load identifier of first character to shift
-    ora     #$08            ; Add 8 to the low address byte (Since the linked character is stored at $***0)
-    sta     $1531+$30       ; Store value in org + $30 [SMC]
-    sta     $1531+$33       ; Store value in org + $33 [SMC]
-    txa
-    dec     $fd             ; Decrement A (Indicates first or second time through loop)
-    bpl     cS_vC           ; If loop hasn't been repeated, loop
-    rts
+    ldx     #$4
+LPO3:
+    cpx     #$2
+    bne     LPO3_A
+    dex
+    jmp     LPO3
+LPO3_A:
+    lda     frameBuffer3+$1,x
+    sta     $1ece+$2c,x
+    dex
+    bpl     LPO3
 
-/*
-*/
-;     org     $1551           ; Memory location of new code region
-; transposeCharacter:
-;     lda     #$01
+    ldx     #$4
+LPO4:
+    lda     frameBuffer4+$1,x
+    sta     $1ece+$42,x
+    dex
+    bpl     LPO4
+
+    ldx     #$4
+LPO5:
+    lda     frameBuffer5+$1,x
+    sta     $1ece+$58,x
+    dex
+    bpl     LPO5
+
+P:
+    lda     #$ff
+    sta     $fc
+    jsr     timer
+
+    lda     $c5
+    cmp     #$12
+    beq     initD
+    cmp     #$11
+    beq     initL1
+    jmp     P
+
+   ; pla
+initD:
+    ldx     #$08
+    stx     $fe
+loopD:
+    lda     #$6a
+    sta     $fb
+    lda     #$20
+    sta     $fc
+    lda     #$10
+    sta     $fd
+    jsr     charShift_H
+
+    lda     #$30
+    sta     $fc
+    jsr     charShift_H
+
+    lda     #$40
+    sta     $fc
+    jsr     timer
+
+    dec     $fe
+    bne     loopD
+
+    jmp     P                   ; jump to main routine
+
+initL1:
+    lda     frameBuffer1+$6
+    sta     $fe
+    ldx     #$04
+SL1:
+    lda     frameBuffer1+$1,x
+    cmp     $fe
+    sta     $fe
+    bne     screenShift_L_A1
+    lda     #$06
+    sta     $1eb7+$16+$1,x
+    jmp     screenShift_L_B1
+screenShift_L_A1:
+    cmp     #$03
+    bne     screenShift_L_C1
+    lda     #$05
+    sta     $1eb7+$16+$1,x
+    jmp     screenShift_L_B1
+screenShift_L_C1:
+    lda     #$04
+    sta     $1eb7+$16+$1,x
+screenShift_L_B1:
+    dex
+    bpl     SL1
+
+initL2:
+    lda     frameBuffer2+$6
+    sta     $fe
+    ldx     #$04
+SL2:
+    lda     frameBuffer2+$1,x
+    cmp     $fe
+    sta     $fe
+    bne     screenShift_L_A2
+    lda     #$06
+    sta     $1eb7+$2c+$1,x
+    jmp     screenShift_L_B2
+screenShift_L_A2:
+    cmp     #$03
+    bne     screenShift_L_C2
+    lda     #$05
+    sta     $1eb7+$2c+$1,x
+    jmp     screenShift_L_B2
+screenShift_L_C2:
+    lda     #$04
+    sta     $1eb7+$2c+$1,x
+screenShift_L_B2:
+    dex
+    bpl     SL2
+
+; initL3:
+;     lda     frameBuffer3+$6
 ;     sta     $fe
-; tN1:
-;     ldx     #$01
-; t0:
-;     lda     $fc,x           ; Load low address byte
-;     ldy     $fe
-;     cpy     #$00
-;     bne     t12
-;     cpx     #$00
-;     bne     t12
-;     ora     #$08
-; t12:
-;     sta     $1551+$24,x
-;     sta     $1551+$36,x
+;     ldx     #$04
+; SL3:
+;     lda     frameBuffer3+$1,x
+;     cmp     $fe
+;     sta     $fe
+;     bne     screenShift_L_A3
+;     lda     #$06
+;     sta     $1eb7+$42+$1,x
+;     jmp     screenShift_L_B3
+; screenShift_L_A3:
+;     cmp     #$03
+;     bne     screenShift_L_C3
+;     lda     #$05
+;     sta     $1eb7+$42+$1,x
+;     jmp     screenShift_L_B3
+; screenShift_L_C3:
+;     lda     #$04
+;     sta     $1eb7+$42+$1,x
+; screenShift_L_B3:
 ;     dex
-;     bpl     t0
+;     bpl     SL3
 
-;     ldy     #$07
-; t1:
-;     ldx     #$07
-;     lda     #$00
-; t2:
-;     ror     $9999,x
-;     ror
-;     dex
-;     bpl     t2
+initL4:
+    lda     frameBuffer4+$6
+    sta     $fe
+    ldx     #$04
+SL4:
+    lda     frameBuffer4+$1,x
+    cmp     $fe
+    sta     $fe
+    bne     screenShift_L_A4
+    lda     #$06
+    sta     $1eb7+$58+$1,x
+    jmp     screenShift_L_B4
+screenShift_L_A4:
+    cmp     #$03
+    bne     screenShift_L_C4
+    lda     #$05
+    sta     $1eb7+$58+$1,x
+    jmp     screenShift_L_B4
+screenShift_L_C4:
+    lda     #$04
+    sta     $1eb7+$58+$1,x
+screenShift_L_B4:
+    dex
+    bpl     SL4
 
-;     sta     $1000,y
-;     dey
-;     bpl     t1
+initL5:
+    lda     frameBuffer5+$6
+    sta     $fe
+    ldx     #$04
+SL5:
+    lda     frameBuffer5+$1,x
+    cmp     $fe
+    sta     $fe
+    bne     screenShift_L_A5
+    lda     #$06
+    sta     $1eb7+$6e+$1,x
+    jmp     screenShift_L_B5
+screenShift_L_A5:
+    cmp     #$03
+    bne     screenShift_L_C5
+    lda     #$05
+    sta     $1eb7+$6e+$1,x
+    jmp     screenShift_L_B5
+screenShift_L_C5:
+    lda     #$04
+    sta     $1eb7+$6e+$1,x
+screenShift_L_B5:
+    dex
+    bpl     SL5
 
-;     ldx     #$07
-; t3:
-;     lda     $1000,x
-;     sta     $9999,x
-;     dex
-;     bpl     t3
-;     dec     $fe
-;     bpl     tN1
-;     rts
+    ldx     #$08
+    stx     $fe
+loopA:
+    lda     #$2a
+    sta     $fb
+    lda     #$20
+    sta     $fc
+    lda     #$10
+    sta     $fd
+    jsr     charShift_H
 
+    lda     #$30
+    sta     $fc
+    jsr     charShift_H
 
-/*
-    The best goddamn timer that's ever existed on pure American hardware god damnit
-    @ Author:   Justin Parker
+    lda     #$40
+    sta     $fc
+    jsr     timer
 
-    ~ Usage:    -> $fc | Number of ~2ms intervals you want to wait for
-
-    & Location specific:    No
-    % Alters:   $fb, $fc
-
-    # Notes: This is a blocking timer. It will not return until the timer has expired.
-    9 Bytes
-*/
-    org     $1601           ; Memory location of new code region
-timer:           
-    dec     $fb             ; Decrement the timer low-bit (is not initially set, so timing may vary by up to 1 cycle)
-    bne     timer           ; If the low-bit isn't zero, keep decrementing the low-bit
-    dec     $fc             ; If the low-bit is zero, decrement the timer high-bit
-    bne     timer           ; If the high-bit isn't zero, keep decrementing the low-bit
-    rts                     ; If the high-bit is zero, return from subroutine
-
-/*
-    I.M.P.O.S.T.O.R. Character Flip Routine (Invertion Movement of Pre-Ordered, Shifted Tables Of Rasters)
-    @ Author:   Justin Parker
-
-    ~ Usage:    -> $fc | Character identifier byte
-
-    & Location specific:    Yes
-    % Alters:   $fc, $fd
-
-    # Notes:    Requires linked characters to be stored at $1**0 and $1**8 respectively
-    38 bytes
-*/
-    org     $1621           ; Memory location of new code region
-characterFlip:
-    jsr     charMidbyte     ; Format the identifier into low and high address bytes
-
-    ldx     #$01            ; Initialize counter for the loop to transfer LDA and STA instructions
-cF_N:
-    lda     $fc,x           ; Load address bytes of character to flip
-    sta     $1621+$13,x     ; Store value in org + $13 [SMC]
-    sta     $1621+$20,x     ; Store value in org + $20 [SMC]
-    dex                     ; Decrement counter
-    bpl     cF_N            ; If counter did not underflow yet, loop
-
-    ldx     #$07            ; Set x to 7 (The number of bytes we need to flip)
-cF_M:
-    lda     $8765,x         ; Load byte to be flipped [SMC]
-    sta     $fc             ; Store copy of byte to be flipped in $fc
-    ldy     #$08            ; Set y to 8 (The number of bits we need to flip)
-cF_L:
-    lsr     $fc             ; Math stuff to get it to work
-    rol                     ; --^
-    dey                     ; --^            
-    bne     cF_L            ; --*
-    sta     $8765,x         ; Store flipped byte [SMC]
-    dex                     ; Decrement x
-    bne     cF_M            ; If x is not zero, loop
-    rts
+    dec     $fe
+    bne     loopA
 
 
+    jmp     P                   ; jump to main routine
+
+
+    include "CharacterMovement.s"
+    include "Timer.s"

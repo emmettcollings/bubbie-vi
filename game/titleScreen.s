@@ -61,13 +61,70 @@ keyCheck:
     beq     keyCheck
     jmp     gameLoop
 
-lC1101      .byte   $20, $31, $02, $01, $15, $01, $02, $02, $09, $01, $05, $01, $20, $01    ; BUBBIE
-    dc.b    $14, $01, $08, $01, $05, $01, $20, $01                                  ; THE
-    dc.b    $16, $01, $09, $01, $20, $1d                                            ; VI
+/*
+; fucked duck (very ugly)
+lC1101      .byte   $20, $38 ; first 2 lines (and start of 3rd)
+    dc.b    $64, $04, $20, $11 ; 3rd line (and start of 4th)
+    dc.b    $4E, $01, $20, $04, $65, $01, $20, $0F ; 4th line (and start of 5th)
+    dc.b    $67, $01, $20, $03, $51, $01, $20, $01, $4D, $01, $20, $0F ; 5th line (and start of 6th)
+    dc.b    $67, $01, $20, $06, $3E, $01, $20, $09 ; 6th line (and start of 7th)
+    dc.b    $64, $01, $20, $05, $4D, $01, $64, $01, $20, $02, $64, $01, $4E, $01, $20, $09 ; 7th line (and start of 8th)
+    dc.b    $67, $01, $20, $01, $4D, $01, $20, $06, $65, $01, $67, $01, $20, $0B ; 8th line (and start of 9th)
+    dc.b    $67, $01, $20, $02, $63, $06, $20, $01, $67, $01, $20, $0B ; 9th line (and start of 10th)
+    dc.b    $67, $01, $20, $0A, $4D, $01, $20, $0B ; 10th line (and start of 11th)
+    dc.b    $65, $01, $62, $01, $20, $05, $62, $01, $20, $03, $65, $01, $20, $0A ; 11th line (and start of 12th)
+    dc.b    $4D, $01, $20, $01, $62, $01, $20, $03, $62, $01, $20, $04, $65, $01, $20, $0B ; 12th line (and start of 13th)
+    dc.b    $65, $01, $20, $01, $62, $03, $20, $04, $4E, $01, $20, $0C ; 13th line (and start of 14th)
+    dc.b    $4D, $01, $20, $08, $65, $01, $20, $0D ; 14th line (and start of 15th)
+    dc.b    $63, $01, $4D, $01, $20, $04, $4E, $01, $63, $01, $20, $10 ; 15th line (and start of 16th)
+    dc.b    $63, $04, $20, $23 ; 16th line, 17th line, 18th line (and start of 19th)
 
-    dc.b    $0e, $01, $0f, $01, $14, $01, $20, $01                                  ; NOT
-    dc.b    $05, $01, $0e, $01, $0f, $01, $15, $01, $07, $01, $08, $01, $20, $01    ; ENOUGH
-    dc.b    $0d, $01, $05, $01, $0d, $01, $0f, $01, $12, $01, $19, $01, $20, $0a    ; MEMORY
+    dc.b    $02, $01, $15, $01, $02, $02, $09, $01, $05, $01, $20, $01, $14, $01, $08, $01, $05, $01, $20, $01, $16, $01, $09, $01, $20, $07 ; 19th line (and start of 20th, bubbie)
+    dc.b    $0e, $01, $0f, $01, $14, $01, $20, $01, $05, $01, $0e, $01, $0f, $01, $15, $01, $07, $01, $08, $01, $20, $01, $0d, $01, $05, $01, $0d, $01, $0f, $01, $12, $01, $19, $01, $20, $0b ; 20th line (and start of 21st, not enough memory)
+    dc.b    $32, $01, $30, $01, $32, $02 ; 21st line (and start of 22nd, 2022)
+    dc.b    $ff, $00                                                                ; End of data 66
+*/
+ 
+; duck with the blocks
+lC1101      .byte   $20, $38 ; first 2 lines (and start of 3rd)
+    dc.b    $66, $04, $20, $11 ; 3rd line (and start of 4th)
+    dc.b    $66, $01, $20, $04, $66, $01, $20, $0F ; 4th line (and start of 5th)
+    dc.b    $66, $01, $20, $03, $51, $01, $20, $01, $66, $01, $20, $0F ; 5th line (and start of 6th)
+    dc.b    $66, $01, $20, $06, $3E, $01, $20, $09 ; 6th line (and start of 7th)
+    dc.b    $66, $01, $20, $05, $66, $02, $20, $02, $66, $02, $20, $09 ; 7th line (and start of 8th)
+    dc.b    $66, $01, $20, $01, $66, $01, $20, $06, $66, $02, $20, $0B ; 8th line (and start of 9th)
+    dc.b    $66, $01, $20, $02, $66, $08, $20, $0B ; 9th line (and start of 10th)
+    dc.b    $66, $01, $20, $0A, $66, $01, $20, $0B ; 10th line (and start of 11th)
+    dc.b    $66, $01, $62, $01, $20, $05, $62, $01, $20, $03, $66, $01, $20, $0A ; 11th line (and start of 12th)
+    dc.b    $66, $01, $20, $01, $62, $01, $20, $03, $62, $01, $20, $04, $66, $01, $20, $0B ; 12th line (and start of 13th)
+    dc.b    $66, $01, $20, $01, $62, $03, $20, $04, $66, $01, $20, $0C ; 13th line (and start of 14th)
+    dc.b    $66, $01, $20, $08, $66, $01, $20, $0D ; 14th line (and start of 15th)
+    dc.b    $66, $02, $20, $04, $66, $02, $20, $10 ; 15th line (and start of 16th)
+    dc.b    $66, $04, $20, $23 ; 16th line, 17th line, 18th line (and start of 19th)
+    dc.b    $02, $01, $15, $01, $02, $02, $09, $01, $05, $01, $20, $01, $14, $01, $08, $01, $05, $01, $20, $01, $16, $01, $09, $01, $20, $07 ; 19th line (and start of 20th, bubbie)
+    dc.b    $0e, $01, $0f, $01, $14, $01, $20, $01, $05, $01, $0e, $01, $0f, $01, $15, $01, $07, $01, $08, $01, $20, $01, $0d, $01, $05, $01, $0d, $01, $0f, $01, $12, $01, $19, $01, $20, $0b ; 20th line (and start of 21st, not enough memory)
+    dc.b    $32, $01, $30, $01, $32, $02 ; 21st line (and start of 22nd, 2022)
+    dc.b    $ff, $00                                                                ; End of data 66
 
-    dc.b    $32, $01, $30, $01, $32, $02                                            ; 2022
-    dc.b    $ff, $00                                                                ; End of data           
+/*
+; bland duck
+lC1101      .byte   $20, $38 ; first 2 lines (and start of 3rd)
+    dc.b    $66, $04, $20, $11 ; 3rd line (and start of 4th)
+    dc.b    $66, $01, $20, $04, $66, $01, $20, $0F ; 4th line (and start of 5th)
+    dc.b    $66, $01, $20, $03, $51, $01, $20, $01, $66, $01, $20, $0F ; 5th line (and start of 6th)
+    dc.b    $66, $01, $20, $06, $66, $01, $20, $09 ; 6th line (and start of 7th)
+    dc.b    $66, $01, $20, $05, $66, $02, $20, $02, $66, $02, $20, $09 ; 7th line (and start of 8th)
+    dc.b    $66, $01, $20, $01, $66, $01, $20, $06, $66, $02, $20, $0B ; 8th line (and start of 9th)
+    dc.b    $66, $01, $20, $02, $66, $08, $20, $0B ; 9th line (and start of 10th)
+    dc.b    $66, $01, $20, $0A, $66, $01, $20, $0B ; 10th line (and start of 11th)
+    dc.b    $66, $01, $20, $0A, $66, $01, $20, $0A ; 11th line (and start of 12th)
+    dc.b    $66, $01, $20, $0A, $66, $01, $20, $0B ; 12th line (and start of 13th)
+    dc.b    $66, $01, $20, $08, $66, $01, $20, $0C ; 13th line (and start of 14th)
+    dc.b    $66, $01, $20, $08, $66, $01, $20, $0D ; 14th line (and start of 15th)
+    dc.b    $66, $02, $20, $04, $66, $02, $20, $10 ; 15th line (and start of 16th)
+    dc.b    $66, $04, $20, $23 ; 16th line, 17th line, 18th line (and start of 19th)
+    dc.b    $02, $01, $15, $01, $02, $02, $09, $01, $05, $01, $20, $01, $14, $01, $08, $01, $05, $01, $20, $01, $16, $01, $09, $01, $20, $07 ; 19th line (and start of 20th, bubbie)
+    dc.b    $0e, $01, $0f, $01, $14, $01, $20, $01, $05, $01, $0e, $01, $0f, $01, $15, $01, $07, $01, $08, $01, $20, $01, $0d, $01, $05, $01, $0d, $01, $0f, $01, $12, $01, $19, $01, $20, $0b ; 20th line (and start of 21st, not enough memory)
+    dc.b    $32, $01, $30, $01, $32, $02 ; 21st line (and start of 22nd, 2022)
+    dc.b    $ff, $00                                                                ; End of data 66
+*/
