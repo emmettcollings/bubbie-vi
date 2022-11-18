@@ -75,10 +75,7 @@ movementLoop:
     ; 'D' on keyboard (hex was found in mem @ $c5)
     cmp     #$12
     beq     moveRight
-
-    ldx     #$99
-    stx     $1001
-
+    
     jmp     readInput
 
 /*
