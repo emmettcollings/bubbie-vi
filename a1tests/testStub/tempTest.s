@@ -4,6 +4,9 @@
  */
     processor 6502          ; tell dasm we are writing 6502 asm
 
+    incdir "../../lib"
+    incdir "../../justinLib"
+
 /* 
  * Write some BASIC code into memory that will jump to our assembly. User
  * written BASIC gets stored at $1001 so that's where we begin
@@ -25,7 +28,8 @@ CLS = $e55f                 ; KERNAL clear screen
  */
 start: 
     lda     #$30            ; this is the VIC-20 symbol for '0'
-    jsr     CHRIN
-    jsr     CHROUT
+    jsr     loadDisplay
     rts                     ; return to caller
 
+    include "loadDisp.s"
+    include "Decoder.s"

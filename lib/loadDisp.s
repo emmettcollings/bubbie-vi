@@ -1,20 +1,23 @@
 /*
- * Loads a 7x7 block from our encoded level data centered around where our 
- * character is and writes the full byte data to some arb mem location
+ * Loads a 7x7 block from our encoded level data starting at the top left 
+ * corner indicated by PX and PY.
+ * I assumed that it would be easier to work with camera locations to load
+ * stuff and then later ensure in our logic that our character can't move in a
+ * way that breaks this.
  */
 
-
-MAPMEM = $1000  ; Don't know where this will be yet
-DISROW = $1c04  ; keep track of row we are on
-BUF = $1c06    ; start of our 7x7 mem chunk
-            ; IMPORTANT 1c05 MAY BE OVERWRITTEN, KEEP A GAP
-PX = $1c00  ; Storage locations of camera position
-PY = $1c01
-ROWCTR = $1c02 ; need one more counter to count 7 rows
-COLCTR = $1c03
+MAPMEM  = $1000 ; Don't know where this will be yet
+PX      = $1c00 ; Storage locations of camera position
+PY      = $1c01
+ROWCTR  = $1c02 ; count rows during loop
+COLCTR  = $1c03 ; count columns during loop
+DISROW  = $1c04 ; keep track of row we are on
+BUF     = $1c06 ; start of our 7x7 mem chunk
+                ; IMPORTANT 1c05 MAY BE OVERWRITTEN, KEEP A GAP
 
     SUBROUTINE
 
+loadDisplay:
 ; translate camera x/y into the compressed location first
     lda     PY      ; load y position
     asl
@@ -24,9 +27,10 @@ COLCTR = $1c03
     lda     PX      ; load x position
     lsr             ; divide by 2
     beq     next    ; if we are in first byte of row then don't have to inc
+    tax
 loop:
     iny             ; move to correct column in row
-    dec
+    dex
     bne     loop
     
 ; We have byte offset from base map memory location in Y now
@@ -42,7 +46,7 @@ next:
     ldx     DISROW  ; load row memory location offset
 
     ; Load first pair of tiles, need to deal with discarding one in special case
-    lda     MAPMEM, X   ; load actual data
+    lda     MAPMEM,x   ; load actual data
     sta     $fb         ; store in registor for SR 
     jsr     decodeByte  ; call decoding SR
 
@@ -51,12 +55,12 @@ next:
     and     #%00000001  ; if even we save both 
     beq     .initColLoop
     lda     $fb         ; save first tile
-    sta     BUF, Y
+    sta     BUF,y
     iny
 
 .initColLoop:
     lda     $fc         ; save second tile
-    sta     BUF, Y
+    sta     BUF,y
     inx                 ; move to next map mem byte
     iny
 
@@ -65,13 +69,13 @@ next:
 
 ; Decodes 6 tiles worth (3 bytes) of map data and writes to output buf
 .loop:
-    lda     MAPMEM, X   ; load actual data
+    lda     MAPMEM,x   ; load actual data
     sta     $fb         ; store in registor for SR 
     jsr     decodeByte  ; call decoding SR
     lda     $fb         ; load first tile
-    sta     BUF, Y      ; store in output chunk
+    sta     BUF,y      ; store in output chunk
     lda     $fc         ; second tile
-    sta     BUF+1, Y
+    sta     BUF+1,y
     inx                 ; loop control stuff
     iny
     dec     COLCTR
