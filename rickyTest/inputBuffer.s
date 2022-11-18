@@ -35,20 +35,30 @@ start: ; we're gonna wait for a keypress (max 3 seconds) before we start
     lda     #$93            ; clear screen code
     jsr     CHROUT          ; write character to screen
 
+noInput:
+    lda     INPUT_BUFFER
+    jsr     CHROUT
+
+    ; track that this has been called
+    ; if we're at 3 seconds since the last keypress, we'll load the last key into the accumulator and jump to the movementLoop
+
+    lda     INPUT_BUFFER
+    jmp     movementLoop
+
 readInput:
     lda     $c5             ; current key pressed
 
     ; if no key pressed, go back to readInput
     cmp     #$40
-    ; now, we need to track how long they haven't pressed a key.
-    ; if they don't press a key in 3 seconds, we'll force the previous key to be pressed again
-    ; for now, we'll just exit
-    beq     readInput
+    beq     noInput 
 
-    ; if  'Q' is pressed, exit
+    sta     INPUT_BUFFER    ; store key in buffer
+
+    ; if 'Q' is pressed, exit
     cmp     #$30
     beq     quit
 
+movementLoop:
     ; compare if the input is either, w, a, s, d and call the appropriate subroutine to move the character
     ; 'W' on keyboard (hex was found in mem @ $c5)
     cmp     #$09
@@ -66,6 +76,9 @@ readInput:
     cmp     #$12
     beq     moveRight
 
+    ldx     #$99
+    stx     $1001
+
     jmp     readInput
 
 /*
@@ -75,25 +88,25 @@ readInput:
 moveUp:
     lda     #$88
     sta     $fb
-    jsr     charShift_V
+    ; jsr     charShift_V
     rts
 
 moveLeft:
     lda     #$2a
     sta     $fb
-    jmp     charShift_H
+    ; jmp     charShift_H
     rts
 
 moveDown:
     lda     #$c8
     sta     $fb
-    jsr     charShift_V
+    ; jsr     charShift_V
     rts
 
 moveRight:
     lda     #$6a
     sta     $fb
-    jmp     charShift_H
+    ; jmp     charShift_H
     rts
 
 infiniteLoop:
@@ -102,3 +115,5 @@ infiniteLoop:
 quit:
     ; we're done, so we'll just exit
     rts
+
+    include "Timer.s"
