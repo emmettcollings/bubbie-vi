@@ -6,7 +6,8 @@
 
 MAPMEM = $1000  ; Don't know where this will be yet
 DISROW = $1c04  ; keep track of row we are on
-BUF = $1c05    ; start of our 7x7 mem chunk
+BUF = $1c06    ; start of our 7x7 mem chunk
+            ; IMPORTANT 1c05 MAY BE OVERWRITTEN, KEEP A GAP
 PX = $1c00  ; Storage locations of camera position
 PY = $1c01
 ROWCTR = $1c02 ; need one more counter to count 7 rows
@@ -37,13 +38,20 @@ next:
     sta     DISROW  ; store for later looping
     lda     #$08    ; initialize row counter
     sta     ROWCTR
+    ldy     #$00    ; keep track of offset in our output buffer
 
-; Load rows from map mem
+    ; Load rows from map mem
 .rowLoop:
     lda     #$08
     sta     COLCTR
-    ldy     #$00    ; keep track of offset in our output buffer
 
+    ; If X pos is odd, then we need to discard first tile
+    lda     PX
+    and     #%00000001  ; if odd then we shift left
+    beq     .loop
+    dey
+
+; Decodes 8 tiles worth of map data
 .loop:
     ldx     DISROW  ; load offset to data location
     lda     MAPMEM, X   ; load actual data
@@ -58,10 +66,13 @@ next:
     dec     COLCTR
     bne     .loop
 
-    ; check which way we shift to keep only 7 tiles
+; We discard last tile in this case to keep 7 total
     lda     PX
-    and     #%00000001  ; if odd then we shift left
+    and     #%00000001  ; if even then we discard last
+    beq     .loopControl
+    dey
 
+.loopControl:
     clc
     lda     #$10
     adc     DISROW  ; advance to next row
