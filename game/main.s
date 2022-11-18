@@ -41,6 +41,8 @@ HALF_SIZE = $0100                   ; Half the screen size
 */
     org     $1632                   ; mem location of code region
 start:
+    lda     #$00
+    sta     $1a01
     lda     #$10
     sta     PX
     sta     PY
@@ -61,7 +63,7 @@ gameLoop:
     include "titleScreen.s"               ; include the main program file
     include "inputBuffer.s"
 
-    org     $183f
+    org     $1860
     dc.b $34, $34, $34, $34, $34, $34, $34, $34, $34, $34, $34, $34, $34, $34, $34, $34
     dc.b $34, $34, $34, $34, $34, $34, $34, $34, $34, $34, $34, $34, $34, $34, $34, $34
     dc.b $34, $34, $34, $34, $34, $34, $34, $34, $34, $34, $34, $34, $34, $34, $34, $34

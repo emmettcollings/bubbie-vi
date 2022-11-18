@@ -57,15 +57,23 @@ movementLoop:
     jmp     readInput
 
 moveUp:
+    jsr     loadDisplay
+    dec     PY
     jmp     initSSR_U
 
 moveLeft:
+    jsr     loadDisplay
+    dec     PX
     jmp     initSSR_L
 
 moveDown:
+    jsr     loadDisplay
+    inc     PY
     jmp     initSSR_D
 
 moveRight:
+    inc     PX
+    inc     PX
     jmp     initSSR_R
 
 quit:

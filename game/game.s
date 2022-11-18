@@ -75,7 +75,7 @@ initializeScreen:
     lda     #$02
     sta     $1efc               ; MIDDLE
     lda     #$00
-    sta     $1900               ; eor #$01 every move
+    sta     $1a00               ; eor #$01 every move
     jmp     inputLoop
 
 shiftRightJMP:
