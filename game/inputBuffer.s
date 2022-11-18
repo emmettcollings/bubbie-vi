@@ -72,7 +72,7 @@ moveDown:
     jmp     initSSR_D
 
 moveRight:
-    inc     PX
+    jsr     loadDisplay
     inc     PX
     jmp     initSSR_R
 

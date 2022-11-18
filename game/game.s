@@ -113,9 +113,9 @@ loopV:
     dec     $fe
     bne     loopV
 
-    lda     $1900
+    lda     $1a00
     eor     #$01
-    sta     $1900
+    sta     $1a00
 
     jmp     inputLoop                   ; jump to main routine
 
@@ -137,9 +137,9 @@ loopH:
     dec     $fe
     bne     loopH
 
-    lda     $1900
+    lda     $1a00
     eor     #$01
-    sta     $1900
+    sta     $1a00
 
     jmp     inputLoop                   ; jump to main routine
 
