@@ -36,14 +36,15 @@ start: ; we're gonna wait for a keypress (max 3 seconds) before we start
     jsr     CHROUT          ; write character to screen
 
 noInput:
-    lda     INPUT_BUFFER
-    jsr     CHROUT
+    lda     #$00
+    sta     INPUT_BUFFER
+    ; jsr     CHROUT
 
     ; track that this has been called
     ; if we're at 3 seconds since the last keypress, we'll load the last key into the accumulator and jump to the movementLoop
 
-    lda     INPUT_BUFFER
-    jmp     movementLoop
+    ; lda     INPUT_BUFFER
+    ; jmp     movementLoop
 
 readInput:
     lda     $c5             ; current key pressed

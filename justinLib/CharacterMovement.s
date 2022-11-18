@@ -2,6 +2,7 @@
     Size: 96 bytes = 0x60
 */
 BASE_CM = $1601
+VERTICAL_TEMP = $1000
     org     BASE_CM          ; Memory location of new code region
 
 /*
@@ -64,12 +65,12 @@ charShift_V:
 
 cSV_StorageLoop:            ; Stores all bytes in the linked character set into $1000-$100f
     lda     ($fc),y         ; Load byte from character indicated by y
-    sta     $1000,y         ; Store byte in corresponding location in $1000-$100f
+    sta     VERTICAL_TEMP,y ; Store byte in corresponding location in $1000-$100f
     dey                     ; Decrement y until we've looped through all bytes
     bpl     cSV_StorageLoop ; If we've looped through all bytes, exit loop
     iny                     ; Increment y once, so that y is now #$00
 cSV_ShiftLoop:
-    lda     $1000,y         ; Load byte from $1000-$100f
+    lda     VERTICAL_TEMP,y ; Load byte from $1000-$100f
 
     iny                     ; Increment/Decrement y to get the location in the character to store the byte [SMC]
                             
