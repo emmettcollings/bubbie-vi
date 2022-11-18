@@ -6,7 +6,7 @@
  * way that breaks this.
  */
 
-MAPMEM  = $1835 ; Don't know where this will be yet
+MAPMEM  = $183f ; Don't know where this will be yet
 PX      = $1936 ; Storage locations of camera position
 PY      = $1937
 ROWCTR  = $1938 ; count rows during loop
