@@ -118,6 +118,8 @@ initializeScreen:
 
     lda     #$02
     sta     $1efc               ; MIDDLE
+    lda     #$00
+    sta     $1900               ; eor #$01 every move
 
 S:
     lda     #$ff
@@ -169,6 +171,10 @@ loopV:
     dec     $fe
     bne     loopV
 
+    lda     $1900
+    eor     #$01
+    sta     $1900
+
     jmp     S                   ; jump to main routine
 
 loopH:
@@ -188,6 +194,10 @@ loopH:
 
     dec     $fe
     bne     loopH
+
+    lda     $1900
+    eor     #$01
+    sta     $1900
 
     jmp     S                   ; jump to main routine
 
