@@ -25,6 +25,7 @@ CHROUT = $ffd2              ; kernal character output routine
 
 ; Variables
 INPUT_BUFFER = $1099        ; buffer for user input (arbitrary location)
+COUNTER_Y = $109A           ; counter for y
 
 /*
     Main Routine
@@ -35,47 +36,62 @@ start: ; we're gonna wait for a keypress (max 3 seconds) before we start
     lda     #$93            ; clear screen code
     jsr     CHROUT          ; write character to screen
 
-noInput:
-    lda     #$00
-    sta     INPUT_BUFFER
-    ; jsr     CHROUT
+    ldx     #$ff            ; set up counter
 
-    ; track that this has been called
-    ; if we're at 3 seconds since the last keypress, we'll load the last key into the accumulator and jump to the movementLoop
+    lda     #$00            ; set up counter
+    sta     COUNTER_Y       ; set up counter
 
-    ; lda     INPUT_BUFFER
-    ; jmp     movementLoop
+    jmp     readInput
+
+updateCounter:
+    ldx     #$ff            ; set up counter
+
+    inc     COUNTER_Y       ; increment counter
+    ldy     COUNTER_Y       ; check if counter is zero
+    cpy     #$ff              ; check if counter is zero
+    beq     movementLoop    ; if so, jump to movement loop
 
 readInput:
-    lda     $c5             ; current key pressed
+    dex                     ; decrement counter
+    cpx     #0              ; check if counter is zero
+    beq     updateCounter   ; if so, update counter and continue
 
-    ; if no key pressed, go back to readInput
-    cmp     #$40
-    beq     noInput 
+    lda     $c5             ; current key pressed
+    cmp     #$40            
+    beq     readInput 
 
     sta     INPUT_BUFFER    ; store key in buffer
+    jmp     readInput
+
+movementLoop:
+    lda     INPUT_BUFFER    ; load key from buffer
 
     ; if 'Q' is pressed, exit
     cmp     #$30
     beq     quit
 
-movementLoop:
     ; compare if the input is either, w, a, s, d and call the appropriate subroutine to move the character
-    ; 'W' on keyboard (hex was found in mem @ $c5)
+    ; 'W' on keyboard
     cmp     #$09
     beq     moveUp
 
-    ; 'A' on keyboard (hex was found in mem @ $c5)
+    ; 'A' on keyboard
     cmp     #$11
     beq     moveLeft
 
-    ; 'S' on keyboard (hex was found in mem @ $c5)
+    ; 'S' on keyboard
     cmp     #$29
     beq     moveDown
 
-    ; 'D' on keyboard (hex was found in mem @ $c5)
+    ; 'D' on keyboard
     cmp     #$12
     beq     moveRight
+
+reset:
+    lda     #$00            ; set up counter
+    sta     INPUT_BUFFER    ; set up counter
+    sta     COUNTER_Y       ; set up counter
+    ldx     #$ff            ; set up counter
 
     jmp     readInput
 
@@ -87,25 +103,25 @@ moveUp:
     lda     #$88
     sta     $fb
     ; jsr     charShift_V
-    rts
+    jmp     reset
 
 moveLeft:
     lda     #$2a
     sta     $fb
     ; jmp     charShift_H
-    rts
+    jmp     reset
 
 moveDown:
     lda     #$c8
     sta     $fb
     ; jsr     charShift_V
-    rts
+    jmp     reset
 
 moveRight:
     lda     #$6a
     sta     $fb
     ; jmp     charShift_H
-    rts
+    jmp     reset
 
 infiniteLoop:
     jmp     infiniteLoop
