@@ -35,30 +35,23 @@ start: ; we're gonna wait for a keypress (max 3 seconds) before we start
     lda     #$93            ; clear screen code
     jsr     CHROUT          ; write character to screen
 
-noInput:
-    lda     INPUT_BUFFER
-    jsr     CHROUT
-
-    ; track that this has been called
-    ; if we're at 3 seconds since the last keypress, we'll load the last key into the accumulator and jump to the movementLoop
-
-    lda     INPUT_BUFFER
-    jmp     movementLoop
+    ldx     #$ff            ; set up counter
+    jmp     readInput
 
 readInput:
+    dex                     ; decrement counter
+    beq     movementLoop    ; if counter is zero, perform movement
+
     lda     $c5             ; current key pressed
 
-    ; if no key pressed, go back to readInput
-    cmp     #$40
-    beq     noInput 
-
     sta     INPUT_BUFFER    ; store key in buffer
+    jmp     readInput
 
+movementLoop:
     ; if 'Q' is pressed, exit
     cmp     #$30
     beq     quit
 
-movementLoop:
     ; compare if the input is either, w, a, s, d and call the appropriate subroutine to move the character
     ; 'W' on keyboard (hex was found in mem @ $c5)
     cmp     #$09
