@@ -12,13 +12,10 @@ PX = $1c00  ; Storage locations of camera position
 PY = $1c01
 ROWCTR = $1c02 ; need one more counter to count 7 rows
 COLCTR = $1c03
-/*
-    Load camera position
-    Load 8 tiles and translate
-    Shift so we keep only correct 7 tiles
-    Repeat for 7 rows
-*/
 
+    SUBROUTINE
+
+; translate camera x/y into the compressed location first
     lda     PY      ; load y position
     asl
     asl
@@ -28,21 +25,21 @@ COLCTR = $1c03
     lsr             ; divide by 2
     beq     next    ; if we are in first byte of row then don't have to inc
 loop:
-    iny             ; move to correct column
+    iny             ; move to correct column in row
     dec
     bne     loop
     
-; We have byte offset in Y
+; We have byte offset from base map memory location in Y now
+; P nice having 32x32 map stored in 256 bytes, can use 1 byte only to index
 next:
-    tya
-    sta     DISROW  ; store for later looping
+    sty     DISROW  ; store for later looping
     lda     #$07    ; initialize row counter
     sta     ROWCTR
     ldy     #$00    ; keep track of offset in our output buffer
 
 ; Load rows from map mem
 .rowLoop:
-    ldx     DISROW  ; load offset to data location
+    ldx     DISROW  ; load row memory location offset
 
     ; Load first pair of tiles, need to deal with discarding one in special case
     lda     MAPMEM, X   ; load actual data
@@ -52,13 +49,13 @@ next:
 ; If our X pos is odd we need to discard first tile read
     lda     PX
     and     #%00000001  ; if even we save both 
-    bne     .initColLoop
-    lda     $fb         ; save first nibble
+    beq     .initColLoop
+    lda     $fb         ; save first tile
     sta     BUF, Y
     iny
 
 .initColLoop:
-    lda     $fc         ; second tile
+    lda     $fc         ; save second tile
     sta     BUF, Y
     inx                 ; move to next map mem byte
     iny
@@ -91,7 +88,7 @@ next:
     lda     #$10    ; 16 bytes between rows
     adc     DISROW  ; advance to next row
     sta     DISROW
-    dec     ROWCTR     ; decrement our counter mem location
+    dec     ROWCTR     ; decrement our row counter
     bne     .rowLoop
 
     rts
