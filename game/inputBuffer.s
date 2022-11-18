@@ -62,6 +62,16 @@ moveUp:
     jmp     initSSR_U
 
 moveLeft:
+    lda     #$10
+    sta     $fc
+    sta     $fd
+    lda     $1a01
+    cmp     #$00
+    beq     mL
+    jsr     characterFlip
+mL:
+    lda     #$00
+    sta     $1a01
     jsr     loadDisplay
     dec     PX
     jmp     initSSR_L
@@ -72,6 +82,16 @@ moveDown:
     jmp     initSSR_D
 
 moveRight:
+    lda     #$10
+    sta     $fc
+    sta     $fd
+    lda     $1a01
+    cmp     #$01
+    beq     mR
+    jsr     characterFlip
+mR:
+    lda     #$01
+    sta     $1a01
     jsr     loadDisplay
     inc     PX
     jmp     initSSR_R

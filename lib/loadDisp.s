@@ -6,12 +6,12 @@
  * way that breaks this.
  */
 
-MAPMEM  = $1860 ; Don't know where this will be yet
-PX      = $1961 ; Storage locations of camera position
-PY      = $1962
-ROWCTR  = $1963 ; count rows during loop
-COLCTR  = $1964 ; count columns during loop
-DISROW  = $1965 ; keep track of row we are on
+MAPMEM  = $1890 ; Don't know where this will be yet
+PX      = $1991 ; Storage locations of camera position
+PY      = $1992
+ROWCTR  = $1993 ; count rows during loop
+COLCTR  = $1994 ; count columns during loop
+DISROW  = $1995 ; keep track of row we are on
 BUF     = $1600 ; start of our 7x7 mem chunk
 
     SUBROUTINE
@@ -21,7 +21,8 @@ loadDisplay:
     lda     PY      ; load y position
     asl
     asl
-    asl             ; multiply by 8 
+    asl
+    asl             ; multiply by 16
     tay             ; store in y
     lda     PX      ; load x position
     lsr             ; divide by 2
