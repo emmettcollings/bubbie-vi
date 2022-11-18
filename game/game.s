@@ -16,38 +16,6 @@
     dc.b    $FF, $BD, $BD, $FF, $FF, $BD, $BD, $FF  ; Wall1B 10
     dc.b    $00, $00, $00, $00, $00, $00, $00, $00  ; Blank2B 11
 
-    org     $1090
-/*
-; "level 1"
-frameBuffer0    .byte   $04, $04, $04, $04, $04, $04, $04
-frameBuffer1    .byte   $04, $04, $04, $04, $03, $04, $04
-frameBuffer2    .byte   $04, $04, $03, $03, $03, $04, $04
-frameBuffer3    .byte   $04, $03, $03, $03, $03, $03, $04
-frameBuffer4    .byte   $04, $03, $04, $03, $04, $03, $04
-frameBuffer5    .byte   $04, $04, $04, $03, $04, $04, $04
-frameBuffer6    .byte   $04, $04, $04, $04, $04, $04, $04
-*/
-
-/*
-; "level 2"
-frameBuffer0    .byte   $04, $04, $03, $03, $03, $04, $03
-frameBuffer1    .byte   $04, $03, $04, $03, $03, $03, $04
-frameBuffer2    .byte   $04, $03, $03, $04, $03, $04, $03
-frameBuffer3    .byte   $04, $03, $03, $03, $03, $03, $04
-frameBuffer4    .byte   $04, $04, $03, $04, $04, $03, $03
-frameBuffer5    .byte   $04, $03, $03, $03, $04, $03, $04
-frameBuffer6    .byte   $04, $03, $03, $03, $04, $03, $03
-*/
-
-; "level 3"
-frameBuffer0    .byte   $04, $03, $03, $04, $03, $03, $03
-frameBuffer1    .byte   $03, $03, $03, $04, $03, $03, $04
-frameBuffer2    .byte   $04, $03, $04, $03, $04, $03, $03
-frameBuffer3    .byte   $03, $03, $03, $03, $03, $03, $04
-frameBuffer4    .byte   $04, $03, $03, $04, $03, $03, $03
-frameBuffer5    .byte   $03, $03, $04, $03, $04, $03, $04
-frameBuffer6    .byte   $04, $03, $03, $03, $03, $03, $03
-
 startRender: 
     lda     #$fc            
     sta     $9005               ; load custom character set
@@ -108,22 +76,8 @@ initializeScreen:
     sta     $1efc               ; MIDDLE
     lda     #$00
     sta     $1900               ; eor #$01 every move
+    jmp     inputLoop
 
-S:
-    lda     #$ff
-    sta     $fc
-    jsr     timer
-
-    lda     $c5
-    cmp     #$12
-    beq     shiftRightJMP
-    cmp     #$11
-    beq     shiftLeftJMP
-    cmp     #$09
-    beq     shiftUpJMP
-    cmp     #$29
-    beq     shiftDownJMP
-    jmp     S
 shiftRightJMP:
     jmp     initSSR_R
 shiftLeftJMP:
@@ -163,7 +117,7 @@ loopV:
     eor     #$01
     sta     $1900
 
-    jmp     S                   ; jump to main routine
+    jmp     inputLoop                   ; jump to main routine
 
 loopH:
     lda     #$40
@@ -187,7 +141,39 @@ loopH:
     eor     #$01
     sta     $1900
 
-    jmp     S                   ; jump to main routine
+    jmp     inputLoop                   ; jump to main routine
 
     include "CharacterMovement.s"
     include "Timer.s"
+
+    org     $1B00
+/*
+; "level 1"
+frameBuffer0    .byte   $04, $04, $04, $04, $04, $04, $04
+frameBuffer1    .byte   $04, $04, $04, $04, $03, $04, $04
+frameBuffer2    .byte   $04, $04, $03, $03, $03, $04, $04
+frameBuffer3    .byte   $04, $03, $03, $03, $03, $03, $04
+frameBuffer4    .byte   $04, $03, $04, $03, $04, $03, $04
+frameBuffer5    .byte   $04, $04, $04, $03, $04, $04, $04
+frameBuffer6    .byte   $04, $04, $04, $04, $04, $04, $04
+*/
+
+/*
+; "level 2"
+frameBuffer0    .byte   $04, $04, $03, $03, $03, $04, $03
+frameBuffer1    .byte   $04, $03, $04, $03, $03, $03, $04
+frameBuffer2    .byte   $04, $03, $03, $04, $03, $04, $03
+frameBuffer3    .byte   $04, $03, $03, $03, $03, $03, $04
+frameBuffer4    .byte   $04, $04, $03, $04, $04, $03, $03
+frameBuffer5    .byte   $04, $03, $03, $03, $04, $03, $04
+frameBuffer6    .byte   $04, $03, $03, $03, $04, $03, $03
+*/
+
+; "level 3"
+frameBuffer0    .byte   $04, $03, $03, $04, $03, $03, $03
+frameBuffer1    .byte   $03, $03, $03, $04, $03, $03, $04
+frameBuffer2    .byte   $04, $03, $04, $03, $04, $03, $03
+frameBuffer3    .byte   $03, $03, $03, $03, $03, $03, $04
+frameBuffer4    .byte   $04, $03, $03, $04, $03, $03, $03
+frameBuffer5    .byte   $03, $03, $04, $03, $04, $03, $04
+frameBuffer6    .byte   $04, $03, $03, $03, $03, $03, $03
