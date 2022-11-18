@@ -81,19 +81,19 @@ S40_L:
     ; Should never reach here
 
 S22_L:
-    lda     $1900
+    lda     $1a00
     eor     #$06
     jmp     endLoop_L
 S24_L:
-    lda     $1900
+    lda     $1a00
     eor     #$0b
     jmp     endLoop_L
 S42_L:
-    lda     $1900
+    lda     $1a00
     eor     #$0a
     jmp     endLoop_L
 S44_L:
-    lda     $1900
+    lda     $1a00
     eor     #$08
     jmp     endLoop_L
 endLoop_L:
