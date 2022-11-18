@@ -52,7 +52,7 @@ next:
 ; If our X pos is odd we need to discard first tile read
     lda     PX
     and     #%00000001  ; if even we save both 
-    beq     .initColLoop
+    bne     .initColLoop
     lda     $fb         ; save first tile
     sta     BUF,y
     iny
@@ -63,7 +63,7 @@ next:
     inx                 ; move to next map mem byte
     iny
 
-    lda     #$03    ; initialize column counter
+    lda     #$04    ; initialize column counter
     sta     COLCTR
 
 ; Decodes 6 tiles worth (3 bytes) of map data and writes to output buf
@@ -73,10 +73,11 @@ next:
     jsr     decodeByte  ; call decoding SR
     lda     $fb         ; load first tile
     sta     BUF,y      ; store in output chunk
-    lda     $fc         ; second tile
-    sta     BUF+1,y
-    inx                 ; loop control stuff
     iny
+    lda     $fc         ; second tile
+    sta     BUF,y
+    iny
+    inx                 ; loop control stuff
     dec     COLCTR
     bne     .loop
 

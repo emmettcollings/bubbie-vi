@@ -27,7 +27,7 @@ CLS = $e55f                 ; KERNAL clear screen
  * Our main!
  */
 start: 
-    lda     #$00            
+    lda     #$01            
     sta     $1c00
     lda     #$00
     sta     $1c01
