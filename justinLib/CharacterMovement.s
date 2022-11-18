@@ -1,7 +1,7 @@
 /*
     Size: 96 bytes = 0x60
 */
-BASE_CM = $1681
+BASE_CM = $1581
 VERTICAL_TEMP = $1000
     org     BASE_CM          ; Memory location of new code region
 

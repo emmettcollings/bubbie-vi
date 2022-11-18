@@ -6,13 +6,13 @@
  * way that breaks this.
  */
 
-MAPMEM  = $1000 ; Don't know where this will be yet
-PX      = $1c00 ; Storage locations of camera position
-PY      = $1c01
-ROWCTR  = $1c02 ; count rows during loop
-COLCTR  = $1c03 ; count columns during loop
-DISROW  = $1c04 ; keep track of row we are on
-BUF     = $1c05 ; start of our 7x7 mem chunk
+MAPMEM  = $1835 ; Don't know where this will be yet
+PX      = $1936 ; Storage locations of camera position
+PY      = $1937
+ROWCTR  = $1938 ; count rows during loop
+COLCTR  = $1939 ; count columns during loop
+DISROW  = $193A ; keep track of row we are on
+BUF     = $1600 ; start of our 7x7 mem chunk
 
     SUBROUTINE
 
