@@ -146,7 +146,7 @@ loopH:
     include "CharacterMovement.s"
     include "Timer.s"
 
-    org     $1B00
+    org     $1600
 /*
 ; "level 1"
 frameBuffer0    .byte   $04, $04, $04, $04, $04, $04, $04
