@@ -123,9 +123,6 @@ moveRight:
     ; jmp     charShift_H
     jmp     reset
 
-infiniteLoop:
-    jmp     infiniteLoop
-
 quit:
     ; we're done, so we'll just exit
     rts
