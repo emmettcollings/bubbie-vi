@@ -34,24 +34,23 @@ HALF = $100                             ; Half the screen size
     dc.b    $00, $3c, $26, $56, $56, $26, $3c, $24  ; Amongus 2
     dc.b    $00, $00, $00, $00, $00, $00, $00, $00  ; Blank 3
     dc.b    $FF, $BD, $BD, $FF, $FF, $BD, $BD, $FF  ; Wall 4
+    dc.b    $aa, $00, $aa, $00, $aa, $00, $aa, $00  ; Border 5
 
-    dc.b    $00, $00, $00, $00, $00, $00, $00, $00  ; Blank1 5
-    dc.b    $00, $00, $00, $00, $00, $00, $00, $00  ; Blank2 6
+    dc.b    $00, $00, $00, $00, $00, $00, $00, $00  ; Blank1 6
+    dc.b    $00, $00, $00, $00, $00, $00, $00, $00  ; Blank2 7
 
-    dc.b    $FF, $BD, $BD, $FF, $FF, $BD, $BD, $FF  ; Wall1 7
-    dc.b    $FF, $BD, $BD, $FF, $FF, $BD, $BD, $FF  ; Wall2 8
+    dc.b    $FF, $BD, $BD, $FF, $FF, $BD, $BD, $FF  ; Wall1 8
+    dc.b    $FF, $BD, $BD, $FF, $FF, $BD, $BD, $FF  ; Wall2 9
 
-    dc.b    $FF, $BD, $BD, $FF, $FF, $BD, $BD, $FF  ; Wall1B 9
-    dc.b    $00, $00, $00, $00, $00, $00, $00, $00  ; Blank2B 10
-
-    dc.b    $aa, $00, $aa, $00, $aa, $00, $aa, $00  ; Border 11
+    dc.b    $FF, $BD, $BD, $FF, $FF, $BD, $BD, $FF  ; Wall1B 10
+    dc.b    $00, $00, $00, $00, $00, $00, $00, $00  ; Blank2B 11
 
 
 
     org     $1090
 frameBuffer0    .byte   $04, $04, $04, $04, $04, $04, $04
 frameBuffer1    .byte   $04, $04, $04, $04, $03, $04, $04
-frameBuffer2    .byte   $04, $04, $03, $04, $03, $04, $04
+frameBuffer2    .byte   $04, $04, $03, $03, $03, $04, $04
 frameBuffer3    .byte   $04, $03, $03, $03, $03, $03, $04
 frameBuffer4    .byte   $04, $03, $04, $03, $04, $03, $04
 frameBuffer5    .byte   $04, $04, $04, $03, $04, $04, $04
@@ -79,7 +78,7 @@ initializeScreen:
     bne     initializeScreen    ; Loop until the counter overflows back to 0, then exit the loop
 
     ; TODO: simplify
-    lda     #$0b
+    lda     #$05
     ;TOP
     sta     $1eb7               ; TOP LEFT CORNER
     sta     $1eb7+$1
@@ -130,24 +129,56 @@ S:
     beq     shiftRightJMP
     cmp     #$11
     beq     shiftLeftJMP
+    cmp     #$09
+    beq     shiftUpJMP
+    cmp     #$29
+    beq     shiftDownJMP
     jmp     S
 shiftRightJMP:
     jmp     initSSR_R
 shiftLeftJMP:
     jmp     initSSR_L
+shiftUpJMP:
+    jmp     initSSR_U
+shiftDownJMP:
+    jmp     initSSR_D
 
     include "MoveRight.s"
-    jmp     loopD
+    jmp     loopH
     include "MoveLeft.s"
+    jmp     loopH
+    include "MoveUp.s"
+    jmp     loopV
+    include "MoveDown.s"
 
-loopD:
-    lda     #$38
+loopV:
+    lda     #$40
+    sta     $fc
+    lda     #$10
+    sta     $fd
+    jsr     charShift_V
+
+    lda     #$50
+    sta     $fc
+    jsr     charShift_V
+
+    lda     #$30
+    sta     $fd
+    jsr     timer
+
+    dec     $fe
+    bne     loopV
+
+    jmp     S                   ; jump to main routine
+
+loopH:
+    lda     #$40
     sta     $fc
     lda     #$10
     sta     $fd
     jsr     charShift_H
 
-    lda     #$48
+    lda     #$50
     sta     $fc
     jsr     charShift_H
 
@@ -156,10 +187,9 @@ loopD:
     jsr     timer
 
     dec     $fe
-    bne     loopD
+    bne     loopH
 
     jmp     S                   ; jump to main routine
-
 
     include "CharacterMovement.s"
     include "Timer.s"

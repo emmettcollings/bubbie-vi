@@ -81,16 +81,16 @@ S40_R:
     ; Should never reach here
 
 S22_R:
-    lda     #$05
+    lda     #$06
     jmp     endLoop_R
 S24_R:
-    lda     #$0a
+    lda     #$0b
     jmp     endLoop_R
 S42_R:
-    lda     #$09
+    lda     #$0a
     jmp     endLoop_R
 S44_R:
-    lda     #$07
+    lda     #$08
     jmp     endLoop_R
 endLoop_R:
     cpy     #$00
