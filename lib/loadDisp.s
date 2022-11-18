@@ -63,7 +63,7 @@ next:
     inx                 ; move to next map mem byte
     iny
 
-    lda     #$04    ; initialize column counter
+    lda     #$03    ; initialize column counter
     sta     COLCTR
 
 ; Decodes 6 tiles worth (3 bytes) of map data and writes to output buf
