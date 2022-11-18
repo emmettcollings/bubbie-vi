@@ -75,7 +75,7 @@ movementLoop:
     ; 'D' on keyboard (hex was found in mem @ $c5)
     cmp     #$12
     beq     moveRight
-    
+
     jmp     readInput
 
 /*
@@ -112,5 +112,3 @@ infiniteLoop:
 quit:
     ; we're done, so we'll just exit
     rts
-
-    include "Timer.s"
