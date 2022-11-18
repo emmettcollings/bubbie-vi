@@ -12,8 +12,7 @@ PY      = $1c01
 ROWCTR  = $1c02 ; count rows during loop
 COLCTR  = $1c03 ; count columns during loop
 DISROW  = $1c04 ; keep track of row we are on
-BUF     = $1c06 ; start of our 7x7 mem chunk
-                ; IMPORTANT 1c05 MAY BE OVERWRITTEN, KEEP A GAP
+BUF     = $1c05 ; start of our 7x7 mem chunk
 
     SUBROUTINE
 

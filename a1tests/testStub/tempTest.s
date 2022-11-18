@@ -27,7 +27,10 @@ CLS = $e55f                 ; KERNAL clear screen
  * Our main!
  */
 start: 
-    lda     #$30            ; this is the VIC-20 symbol for '0'
+    lda     #$00            
+    sta     $1c00
+    lda     #$00
+    sta     $1c01
     jsr     loadDisplay
     rts                     ; return to caller
 
