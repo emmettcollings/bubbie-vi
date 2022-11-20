@@ -77,7 +77,7 @@ cSV_ShiftLoop:
                             ; Ensure that y in in range of $00-$0f
     pha                     ; push a to the stack to preserve it
     tya                     ; Transfer y to a so we can do math on it
-    and     #$0f            ; Mask out the high nibble of y (now in a)
+    and     #%00001111      ; Mask out the high nibble of y (now in a)
     tay                     ; Store y (currently in a) back in y
     pla                     ; Restore a from the stack
 
