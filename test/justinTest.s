@@ -68,7 +68,7 @@ HALF = $100                             ; Half the screen size
     dc.b    $00, $00, $3c, $7e, $7e, $76, $66, $7e  ; Chest1 15
 
     dc.b    $00, $00, $00, $00, $00, $00, $00, $00  ; Blank 16
-    dc.b    $80, $c0, $60, $30, $18, $0c, $06, $03  ; Exit 17
+    dc.b    $00, $43, $67, $36, $18, $3c, $66, $00  ; Exit 17
 
     dc.b    $00, $7c, $7e, $2a, $2a, $3e, $3e, $2a  ; Enemy1 18
     dc.b    $00, $00, $3c, $7e, $7e, $76, $66, $7e  ; Chest1 19
@@ -134,12 +134,12 @@ INIT:
     ; UP: X = 0a, Y = 00
     ; DOWN: X = 46, Y = 8a
 
-    ldx     #$46
+    ldx     #$3d
     ldy     #$8a
     lda     #$00
     sta     $8d
 
-    jmp     MoveDown
+    jmp     MoveHorizontal
     include "Render.s"
 
 RenderFin:
@@ -149,53 +149,21 @@ RenderFin:
     lda     #$07
     sta     $fe
 Loop:
-    lda     #$c8
+    lda     #$6a
     sta     $fb
-    lda     #$20
-    sta     $fc
+ShiftEverything:
     lda     #$10
     sta     $fd
-    jsr     charShift_V
-
-    lda     #$30
-    sta     $fc
-    jsr     charShift_V
-
-    lda     #$40
-    sta     $fc
-    jsr     charShift_V
-
-    lda     #$50
-    sta     $fc
-    jsr     charShift_V
-
-    lda     #$60
-    sta     $fc
-    jsr     charShift_V
-
-    lda     #$70
-    sta     $fc
-    jsr     charShift_V
-
-    lda     #$80
-    sta     $fc
-    jsr     charShift_V
-
-    lda     #$90
-    sta     $fc
-    jsr     charShift_V
-
-    lda     #$a0
-    sta     $fc
-    jsr     charShift_V
-
-    lda     #$b0
-    sta     $fc
-    jsr     charShift_V
-
     lda     #$c0
+ShiftEverything_1:
     sta     $fc
-    jsr     charShift_V
+    jsr     charShift_H
+    lda     $fc
+    sec
+    sbc     #$10
+    cmp     #$20                ; Saves time over $10 since blank doesn't need to be shifted
+    bne     ShiftEverything_1
+
 
     lda     #$a0
     sta     $fd
