@@ -67,23 +67,23 @@ HALF = $100                             ; Half the screen size
     dc.b    $FF, $BD, $BD, $FF, $FF, $BD, $BD, $FF  ; Wall1 14
     dc.b    $00, $00, $3c, $7e, $7e, $76, $66, $7e  ; Chest1 15
 
-    dc.b    $80, $c0, $60, $30, $18, $0c, $06, $03  ; Exit 16
-    dc.b    $00, $00, $00, $00, $00, $00, $00, $00  ; Blank 17
+    dc.b    $00, $00, $00, $00, $00, $00, $00, $00  ; Blank 16
+    dc.b    $80, $c0, $60, $30, $18, $0c, $06, $03  ; Exit 17
 
     dc.b    $00, $7c, $7e, $2a, $2a, $3e, $3e, $2a  ; Enemy1 18
     dc.b    $00, $00, $3c, $7e, $7e, $76, $66, $7e  ; Chest1 19
 
 
 
-frameBuffer0    .byte   $02, $03, $02, $03, $02, $03, $02, $03, $02
+frameBuffer0    .byte   $02, $02, $02, $03, $02, $03, $02, $03, $02
 frameBuffer1    .byte   $03, $03, $02, $02, $03, $03, $02, $03, $02
 frameBuffer2    .byte   $02, $03, $02, $02, $03, $05, $02, $03, $02
-frameBuffer3    .byte   $03, $03, $04, $03, $05, $04, $02, $03, $03
-frameBuffer4    .byte   $02, $03, $02, $03, $03, $03, $02, $02, $03
-frameBuffer5    .byte   $03, $03, $02, $03, $03, $03, $02, $02, $03
-frameBuffer6    .byte   $02, $03, $02, $04, $03, $03, $02, $03, $03
-frameBuffer7    .byte   $03, $03, $02, $02, $02, $04, $02, $03, $02
-frameBuffer8    .byte   $02, $03, $02, $03, $02, $03, $02, $03, $02
+frameBuffer3    .byte   $03, $02, $04, $03, $05, $04, $02, $03, $03
+frameBuffer4    .byte   $02, $04, $02, $03, $02, $03, $02, $02, $03
+frameBuffer5    .byte   $03, $02, $02, $03, $03, $03, $02, $02, $03
+frameBuffer6    .byte   $02, $03, $02, $02, $04, $03, $02, $03, $03
+frameBuffer7    .byte   $03, $03, $02, $08, $02, $04, $02, $03, $02
+frameBuffer8    .byte   $02, $02, $02, $02, $02, $03, $02, $03, $02
 
 flagData        .byte   $00
 
@@ -130,16 +130,18 @@ DrawSides:
 
 INIT:
     ; LEFT: X = 3d, Y = 8a, $8d = 00
-    ; RIGHT: X = 1, Y = 0, $8d = 7f
+    ; RIGHT: X = 01, Y = 00, $8d = 7f
+    ; UP: X = 0a, Y = 00
+    ; DOWN: X = 46, Y = 8a
 
-    ldx     #$3d
+    ldx     #$46
     ldy     #$8a
     lda     #$00
     sta     $8d
 
-    jmp     MoveHorizontal
+    jmp     MoveDown
     include "Render.s"
-    
+
 RenderFin:
     lda     #$02
     sta     $1efc               ; MIDDLE
@@ -147,53 +149,53 @@ RenderFin:
     lda     #$07
     sta     $fe
 Loop:
-    lda     #$6a
+    lda     #$c8
     sta     $fb
     lda     #$20
     sta     $fc
     lda     #$10
     sta     $fd
-    jsr     charShift_H
+    jsr     charShift_V
 
     lda     #$30
     sta     $fc
-    jsr     charShift_H
+    jsr     charShift_V
 
     lda     #$40
     sta     $fc
-    jsr     charShift_H
+    jsr     charShift_V
 
     lda     #$50
     sta     $fc
-    jsr     charShift_H
+    jsr     charShift_V
 
     lda     #$60
     sta     $fc
-    jsr     charShift_H
+    jsr     charShift_V
 
     lda     #$70
     sta     $fc
-    jsr     charShift_H
+    jsr     charShift_V
 
     lda     #$80
     sta     $fc
-    jsr     charShift_H
+    jsr     charShift_V
 
     lda     #$90
     sta     $fc
-    jsr     charShift_H
+    jsr     charShift_V
 
     lda     #$a0
     sta     $fc
-    jsr     charShift_H
+    jsr     charShift_V
 
     lda     #$b0
     sta     $fc
-    jsr     charShift_H
+    jsr     charShift_V
 
     lda     #$c0
     sta     $fc
-    jsr     charShift_H
+    jsr     charShift_V
 
     lda     #$a0
     sta     $fd

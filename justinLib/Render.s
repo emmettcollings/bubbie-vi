@@ -104,3 +104,78 @@ MU_Init:
     lda     #$07
     sta     $8c
 MU_Loop:
+    lda     frameBuffer0,x
+    sta     $fb
+
+    txa
+    clc
+    adc     #$09 
+    tax
+
+    lda     frameBuffer0,x
+    jsr     MovementDecoder
+    sta     $1eb7,y
+
+    txa
+    sec
+    sbc     #$08 
+    tax
+
+    iny
+
+    dec     $8c
+    bne     MU_Loop
+
+    inx
+    inx
+
+    tya
+    clc
+    adc     #$0f 
+    tay
+
+    dec     $8b
+    bne     MU_Init
+    beq     RenderFin   ; shortcut 
+
+
+MoveDown:
+    lda     #$07
+    sta     $8b
+MD_Init:
+    lda     #$07
+    sta     $8c
+MD_Loop:
+    lda     frameBuffer0,x
+    sta     $fb
+
+    txa
+    sec ;
+    sbc     #$09 ;
+    tax
+
+    lda     frameBuffer0,x
+    jsr     MovementDecoder
+    sta     $1eb7,y
+
+    txa
+    clc ;
+    adc     #$08 ;
+    tax
+
+    dey ;
+
+    dec     $8c
+    bne     MD_Loop
+
+    dex ;
+    dex ;
+
+    tya
+    sec ;
+    sbc     #$0f ;
+    tay
+
+    dec     $8b
+    bne     MD_Init
+    beq     RenderFin   ; shortcut 
