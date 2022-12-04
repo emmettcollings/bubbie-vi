@@ -1,9 +1,7 @@
 /*
     Size: 9 bytes = 0x09
 */
-BASE_T = $15E2
 
-    org     BASE_T           ; Memory location of new code region
 /*
     The best goddamn timer that's ever existed on pure American hardware god damnit
     @ Author:   Justin Parker

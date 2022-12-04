@@ -96,6 +96,7 @@ frameBuffer7    .byte   $03, $03, $04, $08, $02, $04, $02, $03, $02
 frameBuffer8    .byte   $02, $02, $02, $02, $02, $03, $02, $03, $02
 
 flagData        .byte   $00
+healthData      .byte   $05
 
 /*
     Main Routine
@@ -195,8 +196,6 @@ ShiftEverything_1:
     lda     #$f0
     sta     $fc
     jsr     charShift_H
-
-
 
     lda     #$60
     sta     $fd

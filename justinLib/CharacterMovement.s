@@ -2,7 +2,6 @@
     Size: 96 bytes = 0x60
 */
 VERTICAL_TEMP = $1000
-    org     $1581           ; Memory location of new code region
 
 /*
     A.M.O.G.U.S. Character Horizontal Shift Routine (Advanced Movement Of Graphics Using Shift)

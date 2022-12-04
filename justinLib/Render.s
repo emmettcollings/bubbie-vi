@@ -95,7 +95,7 @@ MH_General3:
 
     dec     $8b
     bne     MH_Init
-    beq     RenderFin   ; shortcut 
+    rts
 
 MoveUp:
     lda     #$07
@@ -136,7 +136,7 @@ MU_Loop:
 
     dec     $8b
     bne     MU_Init
-    beq     RenderFin   ; shortcut 
+    rts 
 
 
 MoveDown:
@@ -178,4 +178,4 @@ MD_Loop:
 
     dec     $8b
     bne     MD_Init
-    beq     RenderFin   ; shortcut 
+    rts
