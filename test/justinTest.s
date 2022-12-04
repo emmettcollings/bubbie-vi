@@ -38,7 +38,7 @@ HALF = $100                             ; Half the screen size
     ; SAME:  2a
     ; COMBO: 4a+2b-2
     dc.b    $00, $3c, $26, $56, $56, $26, $3c, $24  ; AmongusL 2
-    dc.b    $bd, $42, $bd, $42, $bd, $42, $bd, $00  ; AmongusR 3
+    dc.b    $00, $3c, $64, $6a, $6a, $64, $3c, $24  ; AmongusR 3
 
     dc.b    $00, $00, $00, $00, $00, $00, $00, $00  ; Blank1 4
     dc.b    $00, $00, $00, $00, $00, $00, $00, $00  ; Blank2 5
@@ -89,7 +89,7 @@ frameBuffer0    .byte   $02, $02, $02, $03, $02, $03, $02, $03, $02
 frameBuffer1    .byte   $03, $03, $02, $02, $03, $03, $02, $03, $02
 frameBuffer2    .byte   $02, $03, $02, $02, $03, $05, $02, $03, $02
 frameBuffer3    .byte   $03, $02, $04, $03, $05, $04, $02, $03, $03
-frameBuffer4    .byte   $02, $04, $02, $03, $02, $03, $02, $02, $03
+frameBuffer4    .byte   $02, $04, $02, $02, $02, $03, $02, $02, $03
 frameBuffer5    .byte   $03, $02, $02, $03, $03, $03, $02, $02, $03
 frameBuffer6    .byte   $02, $03, $02, $02, $04, $03, $02, $03, $03
 frameBuffer7    .byte   $03, $03, $04, $08, $02, $04, $02, $03, $02
@@ -191,15 +191,19 @@ ShiftEverything_1:
     sbc     #$10
     cmp     #$20                ; Saves time over $10 since blank doesn't need to be shifted
     bne     ShiftEverything_1
+
     lda     #$f0
     sta     $fc
     jsr     charShift_H
+
+
 
     lda     #$60
     sta     $fd
     jsr     timer
     dec     $fe 
     bpl     Loop
+
     lda     flagData
     eor     #%00000001
     sta     flagData
