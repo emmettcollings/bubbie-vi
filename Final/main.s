@@ -36,14 +36,14 @@ healthData      .byte   $05
     Main Routine
 */
 start:
-    lda     #$00
-    sta     $1a01
+    ; lda     #$00
+    ; sta     $1a01
     lda     #$0d
     sta     PX
     lda     #$05
     sta     PY
 
-    jsr     loadDisplay
+    ; jsr     loadDisplay
 
     ; Initialize x to 0, and then jump to initiializeTitleScreen subroutine (titleScreen.s)
     ldx     #$00                    ; Initialize the counter
@@ -54,21 +54,22 @@ start:
     include "titleScreen.s"               ; include the main program file
     include "inputBuffer.s"
 
-gameLoop:
+gameInit:
+    ldx     #$00                ; Initialize the counter
     lda     #$fc            
     sta     $9005               ; load custom character set
-    ldx     #$00                ; Initialize the counter
-initializeScreen:    
     lda     #$04                ; Load a with 'space' to fill the screen with
+clearScreen:    
     sta     SCRMEM,X            ; Write to the first half of the screen memory
     sta     SCRMEM+HALF,X       ; Write to the second half of the screen memory
-
-    lda     #$00                        ; Load a with the colour of the characters to be displayed (blue)
+    inx
+    bne     clearScreen    ; Loop until the counter overflows back to 0, then exit the loop
+clearScreenColour:
+    lda     #$00
     sta     CLRMEM,X                    ; Write to the first half of the colour memory
     sta     CLRMEM+HALF,X          ; Write to the second half of the colour memory
     inx
-
-    bne     initializeScreen    ; Loop until the counter overflows back to 0, then exit the loop
+    bne     clearScreenColour    ; Loop until the counter overflows back to 0, then exit the loop
 
     lda     #$02
     sta     CLRMEM+$77
@@ -109,55 +110,32 @@ DrawSides:
     tax
     bne     DrawSides
 
-INIT:
     ; LEFT: X = 3d, Y = 8a, $8d = 00
     ; RIGHT: X = 01, Y = 00, $8d = 7f
     ; UP: X = 0a, Y = 00
     ; DOWN: X = 46, Y = 8a
 
-    ldx     #$3d
-    ldy     #$8a
-    lda     #$00
-    sta     $8d
+    ldx     #$0a
+    ldy     #$00
 
-    jsr     MoveHorizontal
-
-RenderFin:
+    jsr     MoveUp
     lda     #$02
     sta     $1efc               ; MIDDLE
 
-    lda     #$07
-    sta     $fe
-Loop:
-    lda     #$6a
-    sta     $fb
-ShiftEverything:
-    lda     #$10
-    sta     $fd
-    lda     #$c0
-ShiftEverything_1:
-    sta     $fc
-    jsr     charShift_H
-    lda     $fc
-    sec
-    sbc     #$10
-    cmp     #$20                ; Saves time over $10 since blank doesn't need to be shifted
-    bne     ShiftEverything_1
-
-    lda     #$f0
-    sta     $fc
-    jsr     charShift_H
-
-    lda     #$60
+    lda     #$ff
     sta     $fd
     jsr     timer
-    dec     $fe 
-    bpl     Loop
+
+gameLoop:
+    jsr     inputLoop
+CharDoneMoving:
 
     lda     flagData
     eor     #%00000001
     sta     flagData
-    jmp     INIT
+    jmp     gameLoop
+
+    include "displayHealth.s"
 
     include "CharacterMovement.s"
     include "Render.s"

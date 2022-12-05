@@ -84,41 +84,41 @@ cSV_R1:     iny             ; Increment/Decrement y to get the location in the c
     bne     cSV_ShiftLoop   ; If we have, exit loop
     rts
 
-/*
-    I.M.P.O.S.T.O.R. Character Flip Routine (Invertion Movement of Pre-Ordered, Shifted Tables Of Rasters)
-    @ Author:   Justin Parker
+; /*
+;     I.M.P.O.S.T.O.R. Character Flip Routine (Invertion Movement of Pre-Ordered, Shifted Tables Of Rasters)
+;     @ Author:   Justin Parker
 
-    ~ Usage:    -> $fc | Character address low byte
-                -> $fd | Character address high byte
+;     ~ Usage:    -> $fc | Character address low byte
+;                 -> $fd | Character address high byte
 
-    & Location specific:    Yes
-    % Alters:   $fe
+;     & Location specific:    Yes
+;     % Alters:   $fe
 
-    # Notes:    ---
-    32 bytes
-*/
-characterFlip:
-    ldx     #$01            ; Initialize counter for address bytes in ROL instruction
-cF_ByteLoop:
-    lda     $fc,x           ; Load address byte from $fc-$fd
-    sta     cF_R1+$1,x      ; Store address byte in ROL instruction [SMC]
-    dex     
-    bpl     cF_ByteLoop     ; If we've looped through both address bytes, exit loop
+;     # Notes:    ---
+;     32 bytes
+; */
+; characterFlip:
+;     ldx     #$01            ; Initialize counter for address bytes in ROL instruction
+; cF_ByteLoop:
+;     lda     $fc,x           ; Load address byte from $fc-$fd
+;     sta     cF_R1+$1,x      ; Store address byte in ROL instruction [SMC]
+;     dex     
+;     bpl     cF_ByteLoop     ; If we've looped through both address bytes, exit loop
 
-    ldy     #$07            ; Initialize counter for all bytes in character
-cF_LoadLoop:
-    lda     #$07            ; Initialize counter for all bits in byte
-    sta     $fe             ; Store counter in $fe for ROL instruction
-    tya                     ; Transfer y to x so we can use it in the ROL instruction
-    tax
-    lda     ($fc),y         ; Copy byte from character indicated by y into a
-cF_ShiftLoop:
-    ror                     ; Shift copy of byte in a to put bit 0 in the carry flag
-cF_R1:      rol     $9999,x ; Shift byte in character indicated by x to rotate the carry flag in [SMC]
+;     ldy     #$07            ; Initialize counter for all bytes in character
+; cF_LoadLoop:
+;     lda     #$07            ; Initialize counter for all bits in byte
+;     sta     $fe             ; Store counter in $fe for ROL instruction
+;     tya                     ; Transfer y to x so we can use it in the ROL instruction
+;     tax
+;     lda     ($fc),y         ; Copy byte from character indicated by y into a
+; cF_ShiftLoop:
+;     ror                     ; Shift copy of byte in a to put bit 0 in the carry flag
+; cF_R1:      rol     $9999,x ; Shift byte in character indicated by x to rotate the carry flag in [SMC]
 
-    dec     $fe             ; Decrement counter (for all bits in byte)
-    bpl     cF_ShiftLoop    ; If we've looped through all bits, exit loop
+;     dec     $fe             ; Decrement counter (for all bits in byte)
+;     bpl     cF_ShiftLoop    ; If we've looped through all bits, exit loop
 
-    dey                     ; Decrement y (for all bytes in character)
-    bpl     cF_LoadLoop     ; If we've looped through all bytes, exit loop
+;     dey                     ; Decrement y (for all bytes in character)
+;     bpl     cF_LoadLoop     ; If we've looped through all bytes, exit loop
     rts

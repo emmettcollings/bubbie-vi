@@ -95,6 +95,8 @@ MH_General3:
 
     dec     $8b
     bne     MH_Init
+    lda     #$02
+    sta     $1efc               ; MIDDLE
     rts
 
 MoveUp:
@@ -136,6 +138,8 @@ MU_Loop:
 
     dec     $8b
     bne     MU_Init
+    lda     #$02
+    sta     $1efc               ; MIDDLE
     rts 
 
 
@@ -178,4 +182,6 @@ MD_Loop:
 
     dec     $8b
     bne     MD_Init
+    lda     #$02
+    sta     $1efc               ; MIDDLE
     rts

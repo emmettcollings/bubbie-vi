@@ -59,7 +59,9 @@ keyCheck:
     lda     $cb
     cmp     #$40
     beq     keyCheck
-    jmp     gameLoop
+    cmp     #$0f
+    beq     keyCheck
+    jmp     gameInit
  
 ; duck with the blocks
 lC1101      .byte   $20, $38 ; first 2 lines (and start of 3rd)
