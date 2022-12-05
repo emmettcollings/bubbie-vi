@@ -10,7 +10,7 @@
     org     $1001           ; mem location of user region
     dc.w    stubend
     dc.w    1               ; arbitrary line number for BASIC syntax
-    dc.b    $9e, "4691", 0  ; allocate bytes.
+    dc.b    $9e, "4716", 0  ; allocate bytes.
 
 /*
     Utility Routines
@@ -31,6 +31,7 @@ HALF = $100                             ; Half the screen size
 
 flagData        .byte   $00
 healthData      .byte   $05
+levelCount      .byte   $00
 
 /*
     Main Routine
@@ -38,7 +39,7 @@ healthData      .byte   $05
 start:
     ; lda     #$00
     ; sta     $1a01
-    lda     #$0d
+    lda     #$0c
     sta     PX
     lda     #$05
     sta     PY
@@ -71,24 +72,35 @@ clearScreenColour:
     inx
     bne     clearScreenColour    ; Loop until the counter overflows back to 0, then exit the loop
 
-    lda     #$02
+    lda     #$02    ; Red 
     sta     CLRMEM+$77
     sta     CLRMEM+$78
     sta     CLRMEM+$79
 
-    lda     #$1a
-    sta     $1e77
-    lda     #$1a
-    sta     $1e78
-    lda     #$1a
-    sta     $1e79
+    lda     #$20    ; Hearts
+    sta     SCRMEM+$77
+    sta     SCRMEM+$78
+    sta     SCRMEM+$79
+
+;     ldx     #$6
+;     lda     #$20    ; Timer bar
+;     sta     $fb
+; loadTimerBar:
+;     lda     #$05
+;     sta     CLRMEM+$8b,x
+;     lda     $fb
+;     eor     #%00000001
+;     sta     $fb
+;     sta     SCRMEM+$8b,x
+;     dex
+;     bpl     loadTimerBar
 
     ldx     #$08
 DrawTopAndBottom:
     lda     #$06
     sta     CLRMEM+$a0,x
     sta     CLRMEM+$150,x
-    lda     #$1d
+    lda     #$03
     sta     $1ea0,x
     sta     $1f50,x
     dex
@@ -102,7 +114,7 @@ DrawSides:
     lda     #$06
     sta     CLRMEM+$a0,x
     sta     CLRMEM+$a8,x
-    lda     #$1d
+    lda     #$03
     sta     $1ea0,x
     sta     $1ea8,x
     txa
@@ -129,6 +141,14 @@ DrawSides:
 gameLoop:
     jsr     inputLoop
 CharDoneMoving:
+    jsr     loadDisplay
+IsOnPortal:
+    lda     frameBuffer4+$4
+    cmp     #$08
+    bne     Damage
+
+    lda     #$08
+    sta     SCRMEM
 
 Damage:
 

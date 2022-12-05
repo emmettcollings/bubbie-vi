@@ -9,7 +9,7 @@
     ; SAME:  2a
     ; COMBO: 4a+2b-2
     dc.b    $00, $3c, $26, $56, $56, $26, $3c, $24  ; AmongusL 2
-    dc.b    $00, $3c, $64, $6a, $6a, $64, $3c, $24  ; AmongusR 3
+    dc.b    $bd, $42, $bd, $42, $bd, $42, $bd, $00  ; Border 3
 
     dc.b    $00, $00, $00, $00, $00, $00, $00, $00  ; Blank1 4
     dc.b    $00, $00, $00, $00, $00, $00, $00, $00  ; Blank2 5
@@ -20,8 +20,8 @@
     dc.b    $00, $3c, $7e, $5a, $7e, $7e, $5a, $42  ; Enemy1 8
     dc.b    $00, $3c, $7e, $5a, $7e, $7e, $5a, $42  ; Enemy2 9
 
-    dc.b    $00, $00, $3c, $7e, $7e, $76, $66, $7e  ; Chest1 a
-    dc.b    $00, $00, $3c, $7e, $7e, $76, $66, $7e  ; Chest2 b
+    dc.b    $00, $00, $3c, $7e, $7e, $76, $66, $7e  ; Chest1 a || X
+    dc.b    $00, $00, $3c, $7e, $7e, $76, $66, $7e  ; Chest2 b || X
 
     dc.b    $00, $00, $00, $00, $00, $00, $00, $00  ; Blank1B c
     dc.b    $ff, $8d, $ff, $e7, $ff, $fd, $b1, $ff  ; Wall2B d
@@ -44,14 +44,19 @@
     dc.b    $00, $3c, $7e, $5a, $7e, $7e, $5a, $42  ; Enemy1 18
     dc.b    $00, $00, $3c, $7e, $7e, $76, $66, $7e  ; Chest1 19
 
-    dc.b    $00, $36, $7d, $7f, $7f, $3e, $1c, $08  ; HeartFull1 1a
-    dc.b    $00, $36, $79, $79, $71, $3a, $1c, $08  ; HeartHalf2 1b
-    dc.b    $00, $36, $49, $41, $41, $22, $14, $08  ; HeartEmpty3 1c
+    dc.b    $ff, $8d, $ff, $e7, $ff, $fd, $b1, $ff  ; Wall1 1a
+    dc.b    $00, $43, $67, $36, $18, $3c, $66, $00  ; Exit 1b
 
-    dc.b    $bd, $42, $bd, $42, $bd, $42, $bd, $00  ; Border 1d
+    dc.b    $00, $36, $49, $41, $41, $22, $14, $08  ; HeartEmpty3 1c
+    dc.b    $00, $36, $79, $79, $71, $3a, $1c, $08  ; HeartHalf2 1d
 
     dc.b    $00, $3c, $7e, $5a, $7e, $7e, $5a, $42  ; Enemy 1e
     dc.b    $00, $43, $67, $36, $18, $3c, $66, $00  ; Exit 1f
+
+    dc.b    $00, $36, $7d, $7f, $7f, $3e, $1c, $08  ; HeartFull1 20
+
+    dc.b    $00, $ff, $ff, $ff, $ff, $ff, $ff, $00  ; TimerBar 21
+    dc.b    $00, $7e, $7e, $7e, $7e, $7e, $7e, $00  ; TimerBar 22
 
 ; 1f -> 1100
 frameBuffer0    .byte   $02, $02, $02, $03, $02, $03, $02, $03, $02
