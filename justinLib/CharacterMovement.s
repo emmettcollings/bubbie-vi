@@ -98,12 +98,10 @@ cSV_R1:     iny             ; Increment/Decrement y to get the location in the c
     32 bytes
 */
 characterFlip:
-    ldx     #$01            ; Initialize counter for address bytes in ROL instruction
-cF_ByteLoop:
-    lda     $fc,x           ; Load address byte from $fc-$fd
-    sta     cF_R1+$1,x      ; Store address byte in ROL instruction [SMC]
-    dex     
-    bpl     cF_ByteLoop     ; If we've looped through both address bytes, exit loop
+    lda     $fc             ; Load address byte from $fc
+    sta     cF_R1+$1        ; Store address byte in ROL instruction [SMC]
+    lda     $fd             ; Load address byte from $fd
+    sta     cF_R1+$2        ; Store address byte in ROL instruction [SMC]
 
     ldy     #$07            ; Initialize counter for all bytes in character
 cF_LoadLoop:

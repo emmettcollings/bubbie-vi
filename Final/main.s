@@ -10,7 +10,7 @@
     org     $1001           ; mem location of user region
     dc.w    stubend
     dc.w    1               ; arbitrary line number for BASIC syntax
-    dc.b    $9e, "4716", 0  ; allocate bytes.
+    dc.b    $9e, "4725", 0  ; allocate bytes.
 
 /*
     Utility Routines
@@ -30,7 +30,8 @@ HALF = $100                             ; Half the screen size
     include "mapData.s"
 
 flagData        .byte   $00
-healthData      .byte   $05
+healthData      .byte   $06
+healthFlag      .byte   $00
 levelCount      .byte   $00
 
 /*
@@ -77,7 +78,7 @@ clearScreenColour:
     sta     CLRMEM+$78
     sta     CLRMEM+$79
 
-    lda     #$20    ; Hearts
+    lda     #$22    ; Hearts
     sta     SCRMEM+$77
     sta     SCRMEM+$78
     sta     SCRMEM+$79
@@ -100,9 +101,9 @@ DrawTopAndBottom:
     lda     #$06
     sta     CLRMEM+$a0,x
     sta     CLRMEM+$150,x
-    lda     #$03
-    sta     $1ea0,x
-    sta     $1f50,x
+    lda     #$23
+    sta     SCRMEM+$a0,x
+    sta     SCRMEM+$150,x
     dex
     bpl     DrawTopAndBottom
 
@@ -114,9 +115,9 @@ DrawSides:
     lda     #$06
     sta     CLRMEM+$a0,x
     sta     CLRMEM+$a8,x
-    lda     #$03
-    sta     $1ea0,x
-    sta     $1ea8,x
+    lda     #$23
+    sta     SCRMEM+$a0,x
+    sta     SCRMEM+$a8,x
     txa
     sbc     #$16
     tax
@@ -132,7 +133,7 @@ DrawSides:
 
     jsr     MoveUp
     lda     #$02
-    sta     $1efc               ; MIDDLE
+    sta     SCRMEM+$fc               ; MIDDLE
 
     lda     #$ff
     sta     $fd
@@ -142,23 +143,44 @@ gameLoop:
     jsr     inputLoop
 CharDoneMoving:
     jsr     loadDisplay
+Damage:
+    lda     #$01
+    sta     healthFlag
+    dec     healthData
 IsOnPortal:
     lda     frameBuffer4+$4
     cmp     #$08
-    bne     Damage
+    bne     Health
 
     lda     #$08
     sta     SCRMEM
-
-Damage:
-
+Health:
+    lda     healthFlag
+    beq     Health_F 
+    dec     healthFlag
+    lda     healthData
+    cmp     #$04
+    bmi     Health_2
+    dec     SCRMEM+$79
+    jmp     Health_F
+Health_2:
+    cmp     #$02
+    bmi     Health_3
+    dec     SCRMEM+$78
+    jmp     Health_F
+Health_3:
+    dec     SCRMEM+$77
+    lda     healthData
+    cmp     #$00
+    beq     GameOver
+Health_F:
 
     lda     flagData
     eor     #%00000001
     sta     flagData
     jmp     gameLoop
 
-    include "displayHealth.s"
+    include "gameOverScreen.s"
 
     include "CharacterMovement.s"
     include "Render.s"
