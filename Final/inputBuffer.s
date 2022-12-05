@@ -36,7 +36,7 @@ readInput:
     ; DOWN: X = 46, Y = 8a
     
 moveDown:
-    lda     frameBuffer3+$04
+    lda     frameBuffer5+$04
     cmp     #$02
     bne     CollisionReset
     ldx     #$0a
@@ -75,7 +75,7 @@ CollisionReset:
     jmp     readInput
 
 moveUp:
-    lda     frameBuffer5+$04
+    lda     frameBuffer3+$04
     cmp     #$02
     bne     CollisionReset
     ldx     #$46

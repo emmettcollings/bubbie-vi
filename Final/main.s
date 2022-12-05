@@ -43,7 +43,7 @@ start:
     lda     #$05
     sta     PY
 
-    ; jsr     loadDisplay
+    jsr     loadDisplay
 
     ; Initialize x to 0, and then jump to initiializeTitleScreen subroutine (titleScreen.s)
     ldx     #$00                    ; Initialize the counter
@@ -129,6 +129,9 @@ DrawSides:
 gameLoop:
     jsr     inputLoop
 CharDoneMoving:
+
+Damage:
+
 
     lda     flagData
     eor     #%00000001

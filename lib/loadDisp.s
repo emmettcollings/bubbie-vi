@@ -6,13 +6,13 @@
  * way that breaks this.
  */
 
-MAPMEM  = $1890 ; Don't know where this will be yet
+MAPMEM  = $1151 ; Don't know where this will be yet
 PX      = $1991 ; Storage locations of camera position
 PY      = $1992
 ROWCTR  = $1993 ; count rows during loop
 COLCTR  = $1994 ; count columns during loop
 DISROW  = $1995 ; keep track of row we are on
-BUF     = $1600 ; start of our 7x7 mem chunk
+BUF     = $1100 ; start of our 7x7 mem chunk
 
     SUBROUTINE
 
@@ -37,7 +37,7 @@ loop:
 ; P nice having 32x32 map stored in 256 bytes, can use 1 byte only to index
 next:
     sty     DISROW  ; store for later looping
-    lda     #$07    ; initialize row counter
+    lda     #$09    ; initialize row counter
     sta     ROWCTR
     ldy     #$00    ; keep track of offset in our output buffer
 
@@ -64,7 +64,7 @@ next:
     inx                 ; move to next map mem byte
     iny
 
-    lda     #$03    ; initialize column counter
+    lda     #$04    ; initialize column counter
     sta     COLCTR
 
 ; Decodes 6 tiles worth (3 bytes) of map data and writes to output buf
