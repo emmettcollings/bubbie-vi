@@ -6,13 +6,13 @@
  * way that breaks this.
  */
 
-MAPMEM  = $1171 ; Don't know where this will be yet
+MAPMEM  = Map1 ; Don't know where this will be yet
 PX      = $1991 ; Storage locations of camera position
 PY      = $1992
 ROWCTR  = $1993 ; count rows during loop
 COLCTR  = $1994 ; count columns during loop
 DISROW  = $1995 ; keep track of row we are on
-BUF     = $1120 ; start of our 9x9 mem chunk
+BUF     = frameBuffer0 ; start of our 9x9 mem chunk
 
     SUBROUTINE
 
