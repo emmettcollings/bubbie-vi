@@ -153,5 +153,15 @@ done:
     sta     MOVES
     rts
 
-; not sure where our RNG is located so this is just placeholding for now
+; Not sure where these are located or how exactly the shifts are implemented so
+; I just included these things as stubs for now
 somethingRandom:
+    rts
+doUpMove:
+    rts
+doDownMove:
+    rts
+doLeftMove:
+    rts
+doRightMove:
+    rts
