@@ -7,7 +7,8 @@ ENEMYPX   = $fd
 ENEMYPY   = $fe
 RANDOMOUT = $ff     ; I imagine our RNG outputs a bit somewhere, needs to be changed to whatever our thing actually does
 
-; loop through frame buffer and find any enemies
+; Loop through frame buffer and find any enemies. For each enemy either attempt
+; to move closer to player or move randomly
 processEnemies:
     ldx     #$51    ; 9x9 = 81 = $51
 .loop
