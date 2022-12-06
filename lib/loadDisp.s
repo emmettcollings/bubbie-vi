@@ -13,10 +13,50 @@ ROWCTR  = $1993 ; count rows during loop
 COLCTR  = $1994 ; count columns during loop
 DISROW  = $1995 ; keep track of row we are on
 BUF     = $1120 ; start of our 9x9 mem chunk
+ZPREG   = $fb   ; zero page addr we use for temp stuff
 
     SUBROUTINE
 
 loadDisplay:
+; special render cases for near edges of map
+; check if we have underflowed camera position by moving close to edge
+    ldx     PY      ; check if PY is underflowed
+    bpl     checkPX
+    lda     #0
+; count how far we've underflowed
+.yCount:
+    clc
+    sbc     #$10    ; move offset back by 16 for each underflow
+    inx
+    bne     .yCount
+    tay             ; move offset to y
+
+    lda     PX      ; check if PX is also negative
+    bmi     negPX
+    jmp     posPX   ; else jump to positive PX
+
+; if PY is positive then check if PX is negative
+checkPX:
+    ldx     PX
+    bpl     normal
+
+; process PY normally
+    lda     PY      ; load y position
+    asl
+    asl
+    asl
+    asl             ; multiply by 16
+    tay             ; store in y
+
+; decrement offset to account for negative PX
+negPX:
+    dey             ; offset is in y
+    inx
+    bne     negPX
+    jmp     next
+
+; PX PY both positive
+normal:
 ; translate camera x/y into the compressed location first
     lda     PY      ; load y position
     asl
@@ -25,6 +65,7 @@ loadDisplay:
     asl             ; multiply by 16
     tay             ; store in y
     lda     PX      ; load x position
+posPX:
     lsr             ; divide by 2
     beq     next    ; if we are in first byte of row then don't have to inc
     tax
@@ -95,6 +136,9 @@ next:
     sta     DISROW
     dec     ROWCTR     ; decrement our row counter
     bne     .rowLoop
+
+
+; check if we underflowed our X or Y position and adjust accordingly
 
     rts
     
