@@ -24,11 +24,11 @@ loadDisplay:
     bpl     checkPX
     lda     #0
 ; count how far we've underflowed
-.yCount:
+negPY:
     clc
     sbc     #$10    ; move offset back by 16 for each underflow
     inx
-    bne     .yCount
+    bne     negPY
     tay             ; move offset to y
 
     lda     PX      ; check if PX is also negative
@@ -48,11 +48,8 @@ checkPX:
     asl             ; multiply by 16
     tay             ; store in y
 
-; decrement offset to account for negative PX
+; save PX underflow so that we can write proper number of walls at beginning of rows
 negPX:
-    dey             ; offset is in y
-    inx
-    bne     negPX
     jmp     next
 
 ; PX PY both positive
@@ -88,7 +85,7 @@ next:
 
     ; Load first pair of tiles, need to deal with discarding one in special case
     lda     MAPMEM,x   ; load actual data
-    sta     $fb         ; store in registor for SR 
+    sta     $fb         ; store in register for SR 
     jsr     decodeByte  ; call decoding SR
 
 ; If our X pos is odd we need to discard first tile read
@@ -111,7 +108,7 @@ next:
 ; Decodes 6 tiles worth (3 bytes) of map data and writes to output buf
 .loop:
     lda     MAPMEM,x   ; load actual data
-    sta     $fb         ; store in registor for SR 
+    sta     $fb         ; store in register for SR 
     jsr     decodeByte  ; call decoding SR
     lda     $fb         ; load first tile
     sta     BUF,y      ; store in output chunk
