@@ -54,6 +54,9 @@ DISROW          .byte   $00
     Main Routine
 */
 start:
+    lda     #$01                        ; set the volume of the oscillators to 1
+    sta     OSCVOL
+
     lda     #$18
     sta     $900f
     ; lda     #$00
@@ -244,3 +247,5 @@ Tick:
 
     include "gameOverScreen.s"
     include "WinScreen.s"
+
+    include "music.s"

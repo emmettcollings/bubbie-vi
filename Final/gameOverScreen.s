@@ -1,13 +1,11 @@
 GameOver:
-    lda     #$60                        ; set the timer to 96 intervals of 2ms, or 192ms
-    sta     $fd                       ; store our timer value
-
     lda     #$01                        ; set the volume of the oscillators to 1
     sta     OSCVOL
 
 
     lda     #$a7                        ; F#
     sta     OSC3
+    
     stx     $fd                       ; store our timer value
     jsr     timer
 
@@ -41,6 +39,7 @@ GameOver:
     lda     #$80                        ; B
     sta     OSC1
 
+DeathSequence:
     lda     #$04
     sta     $8e
     asl
@@ -58,20 +57,14 @@ FlailLoopSink:
     sta     $8e
     lda     #$c8
     sta     $fb
-    lda     #$10
-    sta     $fd
-    sta     $fc
+    jsr     load10
     jsr     charShift_V
     dec     $8c
     beq     EndGameState
 FlailLoopFlip:
-    lda     #$60
-    sta     $fd
-    jsr     timer
-
-    lda     #$10
-    sta     $fd
-    sta     $fc
+    jsr     wait60
+    jsr     load10
+    
     jsr     characterFlip
     jmp     FlailLoopSink
 EndGameState:
