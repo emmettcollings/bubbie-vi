@@ -70,5 +70,5 @@ wait60:
 load10:
     lda     #$10
     sta     $fd
-    sta     $fc
+    sta     TEMP2
     rts

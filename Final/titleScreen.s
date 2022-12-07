@@ -10,7 +10,7 @@ initiializeTitleScreen:
     bne     initiializeTitleScreen      ; Loop until the counter overflows back to 0, then exit the loop
 
     ldy     #$00                        ; Initialize pointer to: first byte of data to read, screen memory to write, and
-    sty     $fc                         ; indicator for which part of the screen to write to (upper or lower)
+    sty     TEMP2                         ; indicator for which part of the screen to write to (upper or lower)
     sty     $fd
 
 mainTitleScreenLoop:
@@ -24,7 +24,7 @@ infLoop:
     iny                                 ; Increment the data pointer twice (since we read in two consecutive bytes at the same time)
     iny
     sty     TEMP1                       ; Store the data pointer in $fb
-    ldy     $fc                         ; Load the screen memory pointer into Y
+    ldy     TEMP2                       ; Load the screen memory pointer into Y
 
 writeToScreenLoop:
     pha                                 ; Push the byte to be displayed onto the stack, so we can first check if we are on the 
@@ -47,7 +47,7 @@ wroteToUpperScreen:
 swapScreenLowHigh:
     dex                                 ; Decrement the length byte
     bne     writeToScreenLoop           ; If the length byte isn't zero, keep looping
-    sty     $fc                         ; We're now done with this byte pair, so store the screen memory pointer in $fc
+    sty     TEMP2                       ; We're now done with this byte pair, so store the screen memory pointer in $fc
     ldy     TEMP1                       ; Load the data pointer back into Y
     jmp     mainTitleScreenLoop         ; Reset back to the beginning of the main loop
 

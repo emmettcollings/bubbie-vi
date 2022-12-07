@@ -24,7 +24,7 @@ GameOver:
     jsr     timer
 
     lda     #$02
-    sta     CLRMEM+$fc               ; MIDDLE
+    sta     CLRMEM+TEMP2                ; MIDDLE
 
     lda     #$00                        ; Reset
     sta     OSC3

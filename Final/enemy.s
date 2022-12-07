@@ -1,9 +1,9 @@
 ; ENEMYCHAR = #$04    ; Enemy char is $04
 ; WALLCHAR  = #$03    ; Wall char is $03
 MOVES     = TEMP1     ; make sure this address is somewhere suitable for temp use
-ENEMYPOS  = $fc
-ENEMYPX   = $fd
-ENEMYPY   = $fe
+ENEMYPOS  = TEMP2
+ENEMYPX   = TEMP3
+ENEMYPY   = TEMP4
 
 ; Loop through frame buffer and find any enemies. For each enemy either attempt
 ; to move closer to player or move randomly

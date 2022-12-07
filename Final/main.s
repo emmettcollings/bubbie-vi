@@ -145,7 +145,7 @@ DrawSides:
     sta     $fe
     jsr     UpdateTileShifting
     lda     #$02
-    sta     SCRMEM+$fc               ; MIDDLE
+    sta     SCRMEM+TEMP2               ; MIDDLE
 
     lda     #$ff
     sta     $fd

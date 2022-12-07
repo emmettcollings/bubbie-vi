@@ -1,6 +1,6 @@
 ; Variables
 INPUT_BUFFER = TEMP1        ; buffer for user input (arbitrary location)
-COUNTER_Y = $fc           ; counter for y
+COUNTER_Y = TEMP2           ; counter for y
 
 inputLoop: ; we're gonna wait for a keypress (max 3 seconds) before we start
     lda     #$00            ; set up counter
@@ -135,7 +135,7 @@ killEnemySound:
     sta     OSC1
     lda     #$87                        ; C
     sta     OSC2
-    stx     $fd                       ; store our timer value
+    stx     $fd                         ; store our timer value
     jsr     timer
 
     lda     #$00                        ; Reset
@@ -146,7 +146,7 @@ killEnemySound:
 
 VerticalRender:
     lda     #$02
-    sta     SCRMEM+$fc               ; MIDDLE
+    sta     SCRMEM+TEMP2                ; MIDDLE
     lda     #$07
     sta     $fe
 ShiftEverything_V1:
@@ -154,16 +154,16 @@ ShiftEverything_V1:
     sta     $fd
     lda     #$d0
 ShiftEverything_V2:
-    sta     $fc
+    sta     TEMP2
     jsr     charShift_V
-    lda     $fc
+    lda     TEMP2
     sec
     sbc     #$10
-    cmp     #$20                ; Saves time over $10 since blank doesn't need to be shifted
+    cmp     #$20                        ; Saves time over $10 since blank doesn't need to be shifted
     bne     ShiftEverything_V2
 
     lda     #$f0
-    sta     $fc
+    sta     TEMP2
     jsr     charShift_V
 
     lda     #$28
@@ -217,7 +217,7 @@ continueLeft:
 
     lda     #$10
     sta     $fd
-    sta     $fc
+    sta     TEMP2
     jsr     characterFlip
 skipFlipLeft:
     dec     PX
@@ -258,7 +258,7 @@ continueRight:
 
     lda     #$10
     sta     $fd
-    sta     $fc
+    sta     TEMP2
     jsr     characterFlip
 
 skipFlipRight:
@@ -273,7 +273,7 @@ skipFlipRight:
 
 HorizontalRender:
     lda     #$02
-    sta     SCRMEM+$fc               ; MIDDLE
+    sta     SCRMEM+TEMP2               ; MIDDLE
     lda     #$07
     sta     $fe
 ShiftEverything_H1:
@@ -281,16 +281,16 @@ ShiftEverything_H1:
     sta     $fd
     lda     #$d0
 ShiftEverything_H2:
-    sta     $fc
+    sta     TEMP2
     jsr     charShift_H
-    lda     $fc
+    lda     TEMP2
     sec
     sbc     #$10
     cmp     #$20                ; Saves time over $10 since blank doesn't need to be shifted
     bne     ShiftEverything_H2
 
     lda     #$f0
-    sta     $fc
+    sta     TEMP2
     jsr     charShift_H
 
     lda     #$28
