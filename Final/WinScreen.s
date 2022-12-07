@@ -63,12 +63,12 @@ JumpWinLoop:
 
 wait60:
     lda     #$70
-    sta     $fd
+    sta     TEMP3
     jsr     timer
     rts
 
 load10:
     lda     #$10
-    sta     $fd
+    sta     TEMP3
     sta     TEMP2
     rts

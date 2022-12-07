@@ -148,7 +148,7 @@ DrawSides:
     sta     SCRMEM+TEMP2               ; MIDDLE
 
     lda     #$ff
-    sta     $fd
+    sta     TEMP3
     jsr     timer
 
 gameLoop:
@@ -157,7 +157,7 @@ CharDoneMoving:
     jsr     loadDisplay
 ProcessEnemies_M:
     lda     #$30
-    sta     $fd
+    sta     TEMP3
     sta     $fe
     jsr     timer
     jsr     processEnemies
@@ -188,7 +188,7 @@ TakeDamage:
     sta     OSC2    
     lda     #$A7                        ; F#
     sta     OSC3
-    stx     $fd                       
+    stx     TEMP3                       
     jsr     timer
 
     lda     #$00                        ; Reset

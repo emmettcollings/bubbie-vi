@@ -6,7 +6,7 @@ GameOver:
     lda     #$a7                        ; F#
     sta     OSC3
     
-    stx     $fd                       ; store our timer value
+    stx     TEMP3                       ; store our timer value
     jsr     timer
 
     lda     #$00                        ; Reset
@@ -44,9 +44,9 @@ DeathSequence:
     sta     $8e
     asl
     sta     $8c
-    dec     $fd
+    dec     TEMP3
     jsr     timer
-    dec     $fd
+    dec     TEMP3
     jsr     timer
     lda     #$00                        ; Reset
     sta     OSC1

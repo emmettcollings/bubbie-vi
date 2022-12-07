@@ -135,7 +135,7 @@ killEnemySound:
     sta     OSC1
     lda     #$87                        ; C
     sta     OSC2
-    stx     $fd                         ; store our timer value
+    stx     TEMP3                       ; store our timer value
     jsr     timer
 
     lda     #$00                        ; Reset
@@ -151,7 +151,7 @@ VerticalRender:
     sta     $fe
 ShiftEverything_V1:
     lda     #$10
-    sta     $fd
+    sta     TEMP3
     lda     #$d0
 ShiftEverything_V2:
     sta     TEMP2
@@ -167,7 +167,7 @@ ShiftEverything_V2:
     jsr     charShift_V
 
     lda     #$28
-    sta     $fd
+    sta     TEMP3
     jsr     timer
     dec     $fe 
     bpl     ShiftEverything_V1
@@ -216,7 +216,7 @@ continueLeft:
     bcc     skipFlipLeft
 
     lda     #$10
-    sta     $fd
+    sta     TEMP3
     sta     TEMP2
     jsr     characterFlip
 skipFlipLeft:
@@ -257,7 +257,7 @@ continueRight:
     bcs     skipFlipRight
 
     lda     #$10
-    sta     $fd
+    sta     TEMP3
     sta     TEMP2
     jsr     characterFlip
 
@@ -278,7 +278,7 @@ HorizontalRender:
     sta     $fe
 ShiftEverything_H1:
     lda     #$10
-    sta     $fd
+    sta     TEMP3
     lda     #$d0
 ShiftEverything_H2:
     sta     TEMP2
@@ -294,7 +294,7 @@ ShiftEverything_H2:
     jsr     charShift_H
 
     lda     #$28
-    sta     $fd
+    sta     TEMP3
     jsr     timer
     dec     $fe 
     bpl     ShiftEverything_H1

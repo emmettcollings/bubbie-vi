@@ -11,7 +11,7 @@ initiializeTitleScreen:
 
     ldy     #$00                        ; Initialize pointer to: first byte of data to read, screen memory to write, and
     sty     TEMP2                         ; indicator for which part of the screen to write to (upper or lower)
-    sty     $fd
+    sty     TEMP3
 
 mainTitleScreenLoop:
     lda     lC1101+$01,y                ; Read the length byte from the next chunk of data
@@ -28,7 +28,7 @@ infLoop:
 
 writeToScreenLoop:
     pha                                 ; Push the byte to be displayed onto the stack, so we can first check if we are on the 
-    lda     $fd                         ; upper or lower half of the screen
+    lda     TEMP3                       ; upper or lower half of the screen
     cmp     #$00                        ; If we are on the upper half of the screen
     bne     writeToLowerScreen          ; If we aren't, jump to the lower half of the screen
     pla                                 ; But if we're here we're on the upper half, so pull the byte to be displayed off the stack
@@ -42,7 +42,7 @@ writeToLowerScreen:
 wroteToUpperScreen:
     iny                                 ; Increment the screen memory pointer
     bne     swapScreenLowHigh           ; If the screen memory pointer didn't overflow, then we're done writing to the screen
-    inc     $fd                         ; If the screen memory pointer did overflow, then we're now on the lower half of the screen
+    inc     TEMP3                       ; If the screen memory pointer did overflow, then we're now on the lower half of the screen
 
 swapScreenLowHigh:
     dex                                 ; Decrement the length byte
