@@ -41,14 +41,17 @@ moveDown:
     beq     continueDown
     cmp     #$08
     beq     continueDown
+    cmp     #$05
+    beq     GetChest_M
     jmp     CollisionReset
 
 continueDown:
     inc     PY
-    ldx     #$0a
-    ldy     #$00
 
-    jsr     MoveUp
+    ldx     #$02
+    stx     $fe
+    jsr     UpdateTileShifting
+
     lda     #$88
     sta     $fb
     jmp     VerticalRender
@@ -59,44 +62,28 @@ moveUp:
     beq     continueUp
     cmp     #$08
     beq     continueUp
+    cmp     #$05
+    beq     GetChest_M
     jmp     CollisionReset
 
 continueUp:
     dec     PY
-    ldx     #$46
-    ldy     #$8a
 
-    jsr     MoveDown
+    ldx     #$03
+    stx     $fe
+    jsr     UpdateTileShifting
     lda     #$c8
     sta     $fb
+    jmp     VerticalRender
 
-VerticalRender:
-    lda     #$02
-    sta     $1efc               ; MIDDLE
-    lda     #$07
-    sta     $fe
-ShiftEverything_V1:
-    lda     #$10
-    sta     $fd
-    lda     #$d0
-ShiftEverything_V2:
-    sta     $fc
-    jsr     charShift_V
-    lda     $fc
-    sec
-    sbc     #$10
-    cmp     #$20                ; Saves time over $10 since blank doesn't need to be shifted
-    bne     ShiftEverything_V2
-
-    lda     #$f0
-    sta     $fc
-    jsr     charShift_V
-
-    lda     #$28
-    sta     $fd
-    jsr     timer
-    dec     $fe 
-    bpl     ShiftEverything_V1
+GetChest_M:
+    lda     duckFlag
+    bne     CollisionReset
+    inc     duckFlag
+    inc     duckData
+    lda     flagData
+    eor     #%00000001
+    sta     flagData
     jmp     CharDoneMoving
 
 movementLoop:
@@ -126,12 +113,46 @@ movementLoop:
 CollisionReset:
     jmp     readInput
 
+VerticalRender:
+    lda     #$02
+    sta     SCRMEM+$fc               ; MIDDLE
+    lda     #$07
+    sta     $fe
+ShiftEverything_V1:
+    lda     #$10
+    sta     $fd
+    lda     #$d0
+ShiftEverything_V2:
+    sta     $fc
+    jsr     charShift_V
+    lda     $fc
+    sec
+    sbc     #$10
+    cmp     #$20                ; Saves time over $10 since blank doesn't need to be shifted
+    bne     ShiftEverything_V2
+
+    lda     #$f0
+    sta     $fc
+    jsr     charShift_V
+
+    lda     #$28
+    sta     $fd
+    jsr     timer
+    dec     $fe 
+    bpl     ShiftEverything_V1
+    jmp     CharDoneMoving
+
+GetChest:
+    jmp     GetChest_M
+
 moveLeft:
     lda     frameBuffer4+$03
     cmp     #$02
     beq     continueLeft
     cmp     #$08
     beq     continueLeft
+    cmp     #$05
+    beq     GetChest
     jmp     CollisionReset
 
 continueLeft:
@@ -149,12 +170,11 @@ continueLeft:
     jsr     characterFlip
 skipFlipLeft:
     dec     PX
-    ldx     #$3d
-    ldy     #$8a
-    lda     #$00
-    sta     $8d
 
-    jsr     MoveHorizontal
+    ldx     #$00
+    stx     $fe
+    jsr     UpdateTileShifting
+
     lda     #$6a
     sta     $fb
     jmp     HorizontalRender
@@ -165,6 +185,8 @@ moveRight:
     beq     continueRight
     cmp     #$08
     beq     continueRight
+    cmp     #$05
+    beq     GetChest
     jmp     CollisionReset
 
 continueRight:
@@ -183,18 +205,17 @@ continueRight:
 
 skipFlipRight:
     inc     PX
-    ldx     #$01
-    ldy     #$00
-    lda     #$7f
-    sta     $8d
 
-    jsr     MoveHorizontal
+    ldx     #$01
+    stx     $fe
+    jsr     UpdateTileShifting
+
     lda     #$2a
     sta     $fb
 
 HorizontalRender:
     lda     #$02
-    sta     $1efc               ; MIDDLE
+    sta     SCRMEM+$fc               ; MIDDLE
     lda     #$07
     sta     $fe
 ShiftEverything_H1:
@@ -220,7 +241,3 @@ ShiftEverything_H2:
     dec     $fe 
     bpl     ShiftEverything_H1
     jmp     CharDoneMoving
-
-quit:
-    ; we're done, so we'll just exit
-    rts

@@ -27,7 +27,7 @@ moveEnemy:
     beq     processEnemyContinue        ; if we have no valid moves then just do nothing
     jsr     somethingRandom     ; flip coin to decide whether to move randomly
     lda     randomData
-    and     #%00000011
+    and     #%00011111
     beq     moveRandom
 
 ; attempt to move closer to player
@@ -185,8 +185,16 @@ doUpMove:
     sta     SCRMEM+$1
     rts
 doDownMove:
-    lda     #$04
-    sta     ENEMYPOS
+    ; txa
+    ; pha
+
+    ; ldx     #$00
+    ; stx     $8d
+    ; jsr     MoveEnemies
+
+    ; pla
+    ; tax
+
     rts
 doLeftMove:
     lda     #$08 ;Enemy
@@ -195,4 +203,50 @@ doLeftMove:
 doRightMove:
     lda     #$0a ;Chest
     sta     SCRMEM+$1
+    rts
+
+MoveEnemies:
+    ldx     #$3d
+
+    lda     #$07
+    sta     $8b
+ME_Init:
+    lda     #$07
+    sta     $8c
+ME_Loop:
+    lda     frameBuffer1,x
+    cmp     #$04
+    bne     ME_Store
+
+    lda     #$02
+    sta     frameBuffer1,x
+
+    lda     #$06
+    ldy     $8d
+    cpy     #$00
+    bne     ME_Right
+    sta     frameBuffer1-$1,x
+    jmp     ME_Store
+ME_Right:
+    cmp     #$01
+    bne     ME_Down
+    sta     frameBuffer1+$1,x
+    jmp     ME_Store
+ME_Down:
+    cmp     #$02
+    bne     ME_Up
+    sta     frameBuffer1+$9,x
+    jmp     ME_Store
+ME_Up:
+    sta     frameBuffer1-$9,x
+ME_Store:
+    dex
+    dec     $8c
+    bne     ME_Loop
+
+    dex
+    dex
+    dec     $8b
+    bne     ME_Init
+
     rts

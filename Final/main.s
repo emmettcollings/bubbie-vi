@@ -10,7 +10,7 @@
     org     $1001           ; mem location of user region
     dc.w    stubend
     dc.w    1               ; arbitrary line number for BASIC syntax
-    dc.b    $9e, "4726", 0  ; allocate bytes.
+    dc.b    $9e, "4740", 0  ; allocate bytes.
 
 /*
     Utility Routines
@@ -26,6 +26,14 @@ SCRMEM = $1e00                          ; Screen memory address
 CLRMEM = $9600                          ; Colour memory address 
 HALF = $100                             ; Half the screen size
 
+; Sound registers
+OSC1 = $900a                            ; The first oscillator.
+OSC2 = $900b                            ; The second oscillator.
+OSC3 = $900c                            ; The third oscillator.
+OSCNS = $900d                           ; The noise source oscillator.
+OSCVOL = $900e                          ; The volume of the oscillators. (bits 0-3 set the volume of all sound channels, bits 4-7 are auxillary color information.)
+
+
     include "chars.s"
     include "mapData.s"
 
@@ -33,12 +41,21 @@ randomData      .byte   $00
 flagData        .byte   $00
 healthData      .byte   $06
 healthFlag      .byte   $00
-levelCount      .byte   $00
+duckData        .byte   $00
+duckFlag        .byte   $00
+
+PX              .byte   $00
+PY              .byte   $00
+ROWCTR          .byte   $00
+COLCTR          .byte   $00
+DISROW          .byte   $00
 
 /*
     Main Routine
 */
 start:
+    lda     #$18
+    sta     $900f
     ; lda     #$00
     ; sta     $1a01
     lda     #$0c
@@ -96,6 +113,13 @@ clearScreenColour:
 ;     sta     SCRMEM+$8b,x
 ;     dex
 ;     bpl     loadTimerBar
+    ldx     #$07
+loadDuckBar:
+    txa
+    sta     CLRMEM+$6,x
+    dex
+    cpx     #$01
+    bne     loadDuckBar
 
     ldx     #$08
 DrawTopAndBottom:
@@ -129,10 +153,9 @@ DrawSides:
     ; UP: X = 0a, Y = 00
     ; DOWN: X = 46, Y = 8a
 
-    ldx     #$0a
-    ldy     #$00
-
-    jsr     MoveUp
+    lda     #$00
+    sta     $fe
+    jsr     UpdateTileShifting
     lda     #$02
     sta     SCRMEM+$fc               ; MIDDLE
 
@@ -152,32 +175,57 @@ IsOnPortal:
     lda     frameBuffer4+$4
     cmp     #$08
     bne     Health
+    jsr     somethingRandom
+    jsr     somethingRandom
+    jsr     somethingRandom
 
-    lda     #$08
-    sta     SCRMEM
+    lda     randomData
+    and     #%00000111
+
+    lda     #$00
+    sta     duckFlag
+    jsr     loadDisplay
+    lda     #$04
+    sta     $fe
+    jsr     UpdateTileShifting
 Health:
     lda     healthFlag
-    beq     Health_F 
+    beq     Duck 
     dec     healthFlag
     lda     healthData
     cmp     #$04
     bmi     Health_2
     dec     SCRMEM+$79
-    jmp     Health_F
+    jmp     Duck
 Health_2:
     cmp     #$02
     bmi     Health_3
     dec     SCRMEM+$78
-    jmp     Health_F
+    jmp     Duck
 Health_3:
     dec     SCRMEM+$77
     lda     healthData
     cmp     #$00
-    bne     Health_F
-    ; include "gameOverScreen.s"
-Health_F:
+    bne     Duck
+    ; jmp     GameOver
+Duck:
+    lda     duckFlag
+    beq     Tick
+    lda     #$24
+    ldx     duckData
+    sta     SCRMEM+$06,x
 
-    jsr     processEnemies
+
+Tick:
+    lda     #$10
+    sta     $fd
+    sta     $fe
+    jsr     timer
+    ; jsr     processEnemies
+    ; lda     #$03
+    ; sta     $8d
+    ; jsr     MoveEnemies
+    ; jsr     UpdateTileShifting
 
     lda     flagData
     eor     #%00000001
@@ -185,7 +233,9 @@ Health_F:
     jmp     gameLoop
 
     include "enemy.s"
-
     include "CharacterMovement.s"
     include "Render.s"
     include "Timer.s"
+
+    include "gameOverScreen.s"
+    include "WinScreen.s"

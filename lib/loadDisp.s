@@ -7,11 +7,11 @@
  */
 
 MAPMEM  = Map1 ; Don't know where this will be yet
-PX      = $1991 ; Storage locations of camera position
-PY      = $1992
-ROWCTR  = $1993 ; count rows during loop
-COLCTR  = $1994 ; count columns during loop
-DISROW  = $1995 ; keep track of row we are on
+; PX      = $1991 ; Storage locations of camera position
+; PY      = $1992
+; ROWCTR  = $1993 ; count rows during loop
+; COLCTR  = $1994 ; count columns during loop
+; DISROW  = $1995 ; keep track of row we are on
 BUF     = frameBuffer0 ; start of our 9x9 mem chunk
 ZPREG   = $fb   ; zero page addr we use for temp stuff
 
@@ -92,13 +92,21 @@ next:
     lda     PX
     and     #%00000001  ; if even we save both 
     bne     .initColLoop
+    lda     BUF,y
+    cmp     #$04
+    beq     skipEnemy1
     lda     $fb         ; save first tile
     sta     BUF,y
+skipEnemy1:
     iny
 
 .initColLoop:
+    lda     BUF,y
+    cmp     #$04
+    beq     skipEnemy2
     lda     $fc         ; save second tile
     sta     BUF,y
+skipEnemy2:
     inx                 ; move to next map mem byte
     iny
 
@@ -110,11 +118,19 @@ next:
     lda     MAPMEM,x   ; load actual data
     sta     $fb         ; store in register for SR 
     jsr     decodeByte  ; call decoding SR
+    lda     BUF,y
+    cmp     #$04
+    beq     skipEnemy3
     lda     $fb         ; load first tile
     sta     BUF,y      ; store in output chunk
+skipEnemy3:
     iny
+    lda     BUF,y
+    cmp     #$04
+    beq     skipEnemy4
     lda     $fc         ; second tile
     sta     BUF,y
+skipEnemy4:
     iny
     inx                 ; loop control stuff
     dec     COLCTR

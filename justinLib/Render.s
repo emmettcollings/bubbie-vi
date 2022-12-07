@@ -1,4 +1,4 @@
-MovementDecoder:
+MovementDecoder:    ;fb -> tile1, a -> tile2
     pha
 
     lda     #$00
@@ -39,137 +39,59 @@ ContinueDecoding:
     sbc     #$02
     rts
 
-MoveHorizontal:
+UpdateTileShifting:
+    ldx     #$3d
+    ldy     #$8a
+
     lda     #$07
     sta     $8b
-MH_Init:
+UE_Init:
     lda     #$07
     sta     $8c
-MH_Loop:
+UE_Loop:
     lda     frameBuffer1,x
     sta     $fb
 
-    cmp     $8d
-    bmi     MH_Right1
-MH_Left1:
-    dex ;
-    bcs     MH_General1 ; shortcut branch instruction
-MH_Right1:
-    inx
-MH_General1:
-
+    lda     $fe
+    cmp     #$00
+    bne     UE_Right
+    lda     frameBuffer1-$1,x
+    jmp     UE_Store
+UE_Right:
+    cmp     #$01
+    bne     UE_Down
+    lda     frameBuffer1+$1,x
+    jmp     UE_Store
+UE_Down:
+    cmp     #$02
+    bne     UE_Up
+    lda     frameBuffer1+$9,x
+    jmp     UE_Store
+UE_Up:
+    cmp     #$03
+    bne     UE_Null
+    lda     frameBuffer1-$9,x
+    jmp     UE_Store
+UE_Null:
+    lda     frameBuffer1+$1,x
+    sta     $fb
     lda     frameBuffer1,x
-    jsr     MovementDecoder
-    sta     $1eb7,y
 
-    cmp     $8d
-    bmi     MH_Right2
-MH_Left2:
-    dey ;
-    bcs     MH_General2 ; shortcut
-MH_Right2:
-    iny
-MH_General2:
+UE_Store:
+    jsr     MovementDecoder
+    sta     SCRMEM+$b7,y
+
+    dex
+    dey
+
+    lda     #$02
+    sta     SCRMEM+$fc               ; MIDDLE
 
     dec     $8c
-    bne     MH_Loop
+    bne     UE_Loop
 
-    cmp     $8d
-    bmi     MH_Right3
-MH_Left3:
-    dex ;
-    dex ;
-    tya
-    sec ;
-    sbc     #$0f ;
-    bcs     MH_General3 ; shortcut
-MH_Right3:
-    inx ;
-    inx ;
-    tya
-    clc ;
-    adc     #$0f ;
-MH_General3:
-
-    tay
-
-    dec     $8b
-    bne     MH_Init
-    rts
-
-MoveUp:
-    lda     #$07
-    sta     $8b
-MU_Init:
-    lda     #$07
-    sta     $8c
-MU_Loop:
-    lda     frameBuffer0,x
-    sta     $fb
-
-    txa
-    clc
-    adc     #$09 
-    tax
-
-    lda     frameBuffer0,x
-    jsr     MovementDecoder
-    sta     $1eb7,y
-
-    txa
-    sec
-    sbc     #$08 
-    tax
-
-    iny
-
-    dec     $8c
-    bne     MU_Loop
-
-    inx
-    inx
-
-    tya
-    clc
-    adc     #$0f 
-    tay
-
-    dec     $8b
-    bne     MU_Init
-    rts 
-
-
-MoveDown:
-    lda     #$07
-    sta     $8b
-MD_Init:
-    lda     #$07
-    sta     $8c
-MD_Loop:
-    lda     frameBuffer0,x
-    sta     $fb
-
-    txa
-    sec ;
-    sbc     #$09 ;
-    tax
-
-    lda     frameBuffer0,x
-    jsr     MovementDecoder
-    sta     $1eb7,y
-
-    txa
-    clc ;
-    adc     #$08 ;
-    tax
-
-    dey ;
-
-    dec     $8c
-    bne     MD_Loop
-
-    dex ;
-    dex ;
+    dex
+    dex
 
     tya
     sec ;
@@ -177,5 +99,8 @@ MD_Loop:
     tay
 
     dec     $8b
-    bne     MD_Init
+    bne     UE_Init
+
     rts
+
+    
