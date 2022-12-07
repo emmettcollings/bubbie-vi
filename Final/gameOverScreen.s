@@ -1,5 +1,6 @@
 GameOver:
-    ldx     #$60                        ; set the timer to 96 intervals of 2ms, or 192ms
+    lda     #$60                        ; set the timer to 96 intervals of 2ms, or 192ms
+    sta     $fd                       ; store our timer value
 
     lda     #$01                        ; set the volume of the oscillators to 1
     sta     OSCVOL
@@ -15,7 +16,6 @@ GameOver:
 
     lda     #$97                        ; D#
     sta     OSC1
-    stx     $fd                       ; store our timer value
     jsr     timer
 
     lda     #$00                        ; Reset
@@ -23,7 +23,6 @@ GameOver:
 
     lda     #$80                        ; B
     sta     OSC3
-    stx     $fd                       ; store our timer value
     jsr     timer
 
     lda     #$02
@@ -34,7 +33,6 @@ GameOver:
 
     lda     #$97                        ; D#
     sta     OSC1
-    stx     $fd                       ; store our timer value
     jsr     timer
 
     lda     #$00                        ; Reset

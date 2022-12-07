@@ -182,6 +182,11 @@ IsOnPortal:
     lda     randomData
     and     #%00000111
 
+    lda     duckData
+    cmp     #$07
+    bne     GameDoesntEnd
+    jmp     Win
+GameDoesntEnd:
     lda     #$00
     sta     duckFlag
     jsr     loadDisplay
