@@ -1,4 +1,4 @@
-DASM = ../dasm/dasm
+DASM = ../dasm/dasm.exe
 
 all: game
 
