@@ -12,12 +12,8 @@ PY      = $1992
 ROWCTR  = $1993 ; count rows during loop
 COLCTR  = $1994 ; count columns during loop
 DISROW  = $1995 ; keep track of row we are on
-<<<<<<< lib/loadDisp.s
-BUF     = $1120 ; start of our 9x9 mem chunk
-ZPREG   = $fb   ; zero page addr we use for temp stuff
-=======
 BUF     = frameBuffer0 ; start of our 9x9 mem chunk
->>>>>>> lib/loadDisp.s
+ZPREG   = $fb   ; zero page addr we use for temp stuff
 
     SUBROUTINE
 
