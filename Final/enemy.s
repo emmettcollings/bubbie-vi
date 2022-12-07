@@ -27,7 +27,10 @@ moveEnemy:
     beq     processEnemyContinue        ; if we have no valid moves then just do nothing
     jsr     somethingRandom     ; flip coin to decide whether to move randomly
     lda     randomData
-    and     #%00000001
+    and     #%11000000
+    beq     processEnemyContinue ; 1/8 chance to skip turn
+    lda     randomData
+    and     #%00000001          ; 1/4 chance to move towards player
     beq     moveRandom
 
 ; attempt to move closer to player
@@ -184,9 +187,11 @@ doUpMove:
     txa
     tay
 
-    lda     #$03
-    sta     $8d
-    jsr     MoveEnemies
+    ldx     ENEMYPOS
+    lda     #$02
+    sta     frameBuffer0,x
+    lda     #$04
+    sta     frameBuffer0-$9,x
 
     tya
     tax
@@ -196,9 +201,11 @@ doDownMove:
     txa
     tay
 
+    ldx     ENEMYPOS
     lda     #$02
-    sta     $8d
-    jsr     MoveEnemies
+    sta     frameBuffer0,x
+    lda     #$04
+    sta     frameBuffer0+$9,x
     
     tya
     tax
@@ -208,9 +215,11 @@ doLeftMove:
     txa
     tay
 
-    lda     #$00
-    sta     $8d
-    jsr     MoveEnemies
+    ldx     ENEMYPOS
+    lda     #$02
+    sta     frameBuffer0,x
+    lda     #$04
+    sta     frameBuffer0-$1,x
     
     tya
     tax
@@ -220,9 +229,11 @@ doRightMove:
     txa
     tay
 
-    lda     #$01
-    sta     $8d
-    jsr     MoveEnemies
+    ldx     ENEMYPOS
+    lda     #$02
+    sta     frameBuffer0,x
+    lda     #$04
+    sta     frameBuffer0+$1,x
     
     tya
     tax

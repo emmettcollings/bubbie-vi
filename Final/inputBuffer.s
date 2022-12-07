@@ -11,7 +11,7 @@ inputLoop: ; we're gonna wait for a keypress (max 3 seconds) before we start
     jmp     readInput
 
 updateCounter:
-    ldx     #$4f            ; set up counter
+    ldx     #$2f            ; set up counter
 
     inc     COUNTER_Y       ; increment counter
     ldy     COUNTER_Y       ; check if counter is zero

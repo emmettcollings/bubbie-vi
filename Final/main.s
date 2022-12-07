@@ -39,7 +39,7 @@ OSCVOL = $900e                          ; The volume of the oscillators. (bits 0
 
 randomData      .byte   $00
 flagData        .byte   $00
-healthData      .byte   $06
+healthData      .byte   $0e
 healthFlag      .byte   $00
 duckData        .byte   $00
 duckFlag        .byte   $00
@@ -95,36 +95,30 @@ clearScreenColour:
     sta     CLRMEM+HALF,X          ; Write to the second half of the colour memory
     inx
     bne     clearScreenColour    ; Loop until the counter overflows back to 0, then exit the loop
+    jsr     drawHearts
+    jmp     loadDuckBar
 
+drawHearts:
+    ldx     #$06
+drawHeartsLoop:
     lda     #$02    ; Red 
-    sta     CLRMEM+$77
-    sta     CLRMEM+$78
-    sta     CLRMEM+$79
+    sta     CLRMEM+$75,x
 
     lda     #$22    ; Hearts
-    sta     SCRMEM+$77
-    sta     SCRMEM+$78
-    sta     SCRMEM+$79
+    sta     SCRMEM+$75,x
+    dex
+    bpl     drawHeartsLoop
+    rts
 
-;     ldx     #$6
-;     lda     #$20    ; Timer bar
-;     sta     $fb
-; loadTimerBar:
-;     lda     #$05
-;     sta     CLRMEM+$8b,x
-;     lda     $fb
-;     eor     #%00000001
-;     sta     $fb
-;     sta     SCRMEM+$8b,x
-;     dex
-;     bpl     loadTimerBar
-    ldx     #$07
+
 loadDuckBar:
+    ldx     #$07
+loadDuckBarLoop:
     txa
     sta     CLRMEM+$6,x
     dex
     cpx     #$01
-    bne     loadDuckBar
+    bne     loadDuckBarLoop
 
     ldx     #$08
 DrawTopAndBottom:
@@ -212,6 +206,10 @@ IsOnPortal:
     jsr     despawnChestAndPortal
     jsr     spawnChestAndPortal
 
+    jsr     drawHearts          ; refill health
+    lda     #$0e
+    sta     healthData
+
     lda     duckData
     cmp     #$07
     bne     GameDoesntEnd
@@ -228,17 +226,37 @@ Health:
     beq     Duck 
     dec     healthFlag
     lda     healthData
-    cmp     #$04
+    cmp     #$0c
+    bmi     Health_1
+    dec     SCRMEM+$7b
+    jmp     Duck
+Health_1:
+    cmp     #$0a
     bmi     Health_2
-    dec     SCRMEM+$79
+    dec     SCRMEM+$7a
     jmp     Duck
 Health_2:
-    cmp     #$02
+    cmp     #$08
     bmi     Health_3
-    dec     SCRMEM+$78
+    dec     SCRMEM+$79
     jmp     Duck
 Health_3:
+    cmp     #$06
+    bmi     Health_4
+    dec     SCRMEM+$78
+    jmp     Duck
+Health_4:
+    cmp     #$04
+    bmi     Health_5
     dec     SCRMEM+$77
+    jmp     Duck
+Health_5:
+    cmp     #$02
+    bmi     Health_6
+    dec     SCRMEM+$76
+    jmp     Duck
+Health_6:
+    dec     SCRMEM+$75
     lda     healthData
     cmp     #$00
     bne     Duck
@@ -249,6 +267,16 @@ Duck:
     lda     #$24
     ldx     duckData
     sta     SCRMEM+$06,x
+SpawnEnemies:
+    jsr     somethingRandom     ; flip coin to decide whether to move randomly
+    lda     randomData
+
+    and     #%00001111
+    bne     Tick
+
+    lda     #$04
+    sta     frameBuffer0+$04
+
 
 Tick:
 
