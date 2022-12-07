@@ -11,3 +11,7 @@ TEMP5 = $8b
 TEMP6 = $8c
 TEMP7 = $8d
 TEMP8 = $8e
+
+; System clock variables
+JIFCLOCKM = $a1
+JIFCLOCKL = $a2

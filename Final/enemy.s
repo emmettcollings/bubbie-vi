@@ -175,8 +175,8 @@ done:
 ; I just included these things as stubs for now
 somethingRandom:
     lda     randomData
-    eor     $a1
-    eor     $a2
+    eor     JIFCLOCKM
+    eor     JIFCLOCKL
     rol
     rol
     rol
