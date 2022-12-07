@@ -7,7 +7,7 @@ clearGameScreen:
     bpl     clearGameScreen
 
     lda     #$04
-    sta     $fe
+    sta     TEMP4
     jsr     UpdateTileShifting
 
 playWinMusic:

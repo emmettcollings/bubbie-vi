@@ -56,7 +56,7 @@ continueDown:
     inc     PY
 
     ldx     #$02
-    stx     $fe
+    stx     TEMP4
     jsr     UpdateTileShifting
 
     lda     #$88
@@ -84,7 +84,7 @@ continueUp:
     dec     PY
 
     ldx     #$03
-    stx     $fe
+    stx     TEMP4
     jsr     UpdateTileShifting
     lda     #$c8
     sta     TEMP1
@@ -148,7 +148,7 @@ VerticalRender:
     lda     #$02
     sta     SCRMEM+TEMP2                ; MIDDLE
     lda     #$07
-    sta     $fe
+    sta     TEMP4
 ShiftEverything_V1:
     lda     #$10
     sta     TEMP3
@@ -169,7 +169,7 @@ ShiftEverything_V2:
     lda     #$28
     sta     TEMP3
     jsr     timer
-    dec     $fe 
+    dec     TEMP4 
     bpl     ShiftEverything_V1
 
 ShiftEverything_V3:
@@ -223,7 +223,7 @@ skipFlipLeft:
     dec     PX
 
     ldx     #$00
-    stx     $fe
+    stx     TEMP4
     jsr     UpdateTileShifting
 
     lda     #$6a
@@ -265,7 +265,7 @@ skipFlipRight:
     inc     PX
 
     ldx     #$01
-    stx     $fe
+    stx     TEMP4
     jsr     UpdateTileShifting
 
     lda     #$2a
@@ -275,7 +275,7 @@ HorizontalRender:
     lda     #$02
     sta     SCRMEM+TEMP2               ; MIDDLE
     lda     #$07
-    sta     $fe
+    sta     TEMP4
 ShiftEverything_H1:
     lda     #$10
     sta     TEMP3
@@ -296,7 +296,7 @@ ShiftEverything_H2:
     lda     #$28
     sta     TEMP3
     jsr     timer
-    dec     $fe 
+    dec     TEMP4 
     bpl     ShiftEverything_H1
 
 ShiftEverything_H3:

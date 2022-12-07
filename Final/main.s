@@ -142,7 +142,7 @@ DrawSides:
     ; DOWN: X = 46, Y = 8a
 
     lda     #$00
-    sta     $fe
+    sta     TEMP4
     jsr     UpdateTileShifting
     lda     #$02
     sta     SCRMEM+TEMP2               ; MIDDLE
@@ -158,12 +158,12 @@ CharDoneMoving:
 ProcessEnemies_M:
     lda     #$30
     sta     TEMP3
-    sta     $fe
+    sta     TEMP4
     jsr     timer
     jsr     processEnemies
 
     lda     #$04
-    sta     $fe
+    sta     TEMP4
     jsr     UpdateTileShifting
 
 DamageCalc:
@@ -220,7 +220,7 @@ GameDoesntEnd:
     sta     duckFlag
     jsr     loadDisplay
     lda     #$04
-    sta     $fe
+    sta     TEMP4
     jsr     UpdateTileShifting
 Health:
     lda     healthFlag
