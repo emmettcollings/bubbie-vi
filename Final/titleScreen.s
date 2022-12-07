@@ -82,4 +82,4 @@ lC1101      .byte   $20, $38 ; first 2 lines (and start of 3rd)
     dc.b    $02, $01, $15, $01, $02, $02, $09, $01, $05, $01, $20, $01, $14, $01, $08, $01, $05, $01, $20, $01, $16, $01, $09, $01, $20, $07 ; 19th line (and start of 20th, bubbie)
     dc.b    $0e, $01, $0f, $01, $14, $01, $20, $01, $05, $01, $0e, $01, $0f, $01, $15, $01, $07, $01, $08, $01, $20, $01, $0d, $01, $05, $01, $0d, $01, $0f, $01, $12, $01, $19, $01, $20, $0b ; 20th line (and start of 21st, not enough memory)
     dc.b    $32, $01, $30, $01, $32, $02 ; 21st line (and start of 22nd, 2022)
-    dc.b    $ff, $00                                                                ; End of data 66
+    dc.b    $ff, $00 ; End of data 66
