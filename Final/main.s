@@ -180,7 +180,6 @@ IsOnPortal:
     bne     Health
     jsr     somethingRandom
     jsr     somethingRandom
-    jsr     somethingRandom
 
     lda     randomData
     and     #%00000111
