@@ -5,7 +5,7 @@ GameOver:
     lda     #$02
     sta     CLRMEM+$fc               ; MIDDLE
     asl
-    sta     $8b
+    sta     $8e
     asl
     sta     $8c
     dec     $fd
@@ -13,10 +13,10 @@ GameOver:
     dec     $fd
     jsr     timer
 FlailLoopSink:
-    dec     $8b
+    dec     $8e
     bne     FlailLoopFlip
     lda     #$04
-    sta     $8b
+    sta     $8e
     lda     #$c8
     sta     $fb
     lda     #$10

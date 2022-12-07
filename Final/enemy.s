@@ -1,23 +1,21 @@
-FRAMEBUF  = $1120
-ENEMYCHAR = #$00    ; update this when we know what our enemy tile code is
-WALLCHAR  = #$00    ; I forget this too
+; ENEMYCHAR = #$04    ; Enemy char is $04
+; WALLCHAR  = #$03    ; Wall char is $03
 MOVES     = $fb     ; make sure this address is somewhere suitable for temp use
 ENEMYPOS  = $fc
 ENEMYPX   = $fd
 ENEMYPY   = $fe
-RANDOMOUT = $ff     ; I imagine our RNG outputs a bit somewhere, needs to be changed to whatever our thing actually does
 
 ; Loop through frame buffer and find any enemies. For each enemy either attempt
 ; to move closer to player or move randomly
 processEnemies:
     ldx     #$51    ; 9x9 = 81 = $51
-.loop
-    lda     FRAMEBUF,x  ; loop through entire frame buffer and process enemies
-    cmp     ENEMYCHAR 
+processEnemyLoop:
+    lda     frameBuffer0,x  ; loop through entire frame buffer and process enemies
+    cmp     #$04 
     beq     moveEnemy
-.loopControl
+processEnemyContinue:
     dex
-    bne     .loop
+    bne     processEnemyLoop
     
     rts
 
@@ -26,64 +24,61 @@ moveEnemy:
     stx     ENEMYPOS
     jsr     validMoves          ; init list of valid moves
     lda     MOVES
-    beq     .loopControl        ; if we have no valid moves then just do nothing
+    beq     processEnemyContinue        ; if we have no valid moves then just do nothing
     jsr     somethingRandom     ; flip coin to decide whether to move randomly
-    lda     RANDOMOUT
-    and     #$01
+    lda     randomData
+    and     #%00000011
     beq     moveRandom
 
 ; attempt to move closer to player
 moveTowards:
     lda     #$00                ; initialize enemy position variables
-    sta     ENEMYPX
     sta     ENEMYPY
-findPX:
-    lda     ENEMYPOS
-    and     #$0f                ; if divisible by 16 we have PX locked in
-    beq     findPY 
-    dec     ENEMYPOS            ; translate enemy position to camera coords
-    inc     ENEMYPX
-    jmp     findPX
 ; find PY coord of enemy
-findPY:
     lda     ENEMYPOS
-    beq     pickMove
-    clc
-    sbc     #$10                ; sub 16 to move 1 row
-    sta     ENEMYPOS
+findPY:
+    sec
+    sbc     #$09                ; sub 16 to move 1 row
+    bmi     findPX
     inc     ENEMYPY
     jmp     findPY
+findPX:
+    clc
+    adc     #$09                ; add 16 to move 1 row
+    sta     ENEMYPX
+
 ; Now we have PX,PY we try to move closer
 pickMove:
     lda     MOVES
-    ldy     PY                  ; try to move vertically first
+    ldy     #$04
     cpy     ENEMYPY
-    bmi     moveUp              ; if negative then EPY > PY and enemy is below player
-moveDown:
+    beq     pickHorizontal
+    bmi     moveEnemyUp              ; if negative then EPY > PY and enemy is below player
+moveEnemyDown:
     and     #%00000100          ; see if down is valid
     beq     pickHorizontal
     jsr     doDownMove          ; otherwise shift the character
-    jmp     .loopControl        ; move has been made, we can quit
-moveUp:
+    jmp     processEnemyContinue        ; move has been made, we can quit
+moveEnemyUp:
     and     #%00001000          ; see if up is valid
     beq     pickHorizontal
     jsr     doUpMove
-    jmp     .loopControl
+    jmp     processEnemyContinue
 ; Try to move horizontally towards player
 pickHorizontal:
-    ldy     PX
+    ldy     #$04
     cpy     ENEMYPX
-    bmi     moveLeft            ; if neg then EPX > PX and enemy is right of player
-moveRight:
+    bmi     moveEnemyLeft            ; if neg then EPX > PX and enemy is right of player
+moveEnemyRight:
     and     #%00000001          ; see if right is valid
     beq     moveRandom          ; if we got here then our priority moves are invalid so we pick randomly
     jsr     doRightMove
-    jmp     .loopControl
-moveLeft:
+    jmp     processEnemyContinue
+moveEnemyLeft:
     and     #%00000010          ; see if left is valid
     beq     moveRandom          ; if we got here then our priority moves are invalid so we pick randomly
     jsr     doLeftMove
-    jmp     .loopControl
+    jmp     processEnemyContinue
 
     
 ; move in a random valid direction
@@ -91,78 +86,113 @@ moveLeft:
 ; checks. Be double sure those are bug free
 moveRandom:
     jsr     somethingRandom     ; flip coin for vertical/horizontal
-    lda     RANDOMOUT
-    and     #$01
+    lda     randomData
+    and     #%00000010
     beq     moveVertical
 moveHorizontal:
     lda     MOVES
     and     #$03                ; if neither of last 2 bits are set then we have no horizontal moves
     beq     moveVertical
     jsr     somethingRandom     ; flip coin for left/right
-    lda     RANDOMOUT
-    beq     rMoveLeft
-rMoveRight:
+    lda     randomData
+    and     #%00000100
+    beq     rmoveEnemyLeft
+rmoveEnemyRight:
+    lda     MOVES
     and     #%00000001          ; see if right is valid
-    beq     rMoveLeft           ; if not then go left
+    beq     rmoveEnemyLeft           ; if not then go left
     jsr     doRightMove         ; otherwise shift the character
-    jmp     .loopControl        ; move has been made, we can quit
-rMoveLeft:
+    jmp     processEnemyContinue        ; move has been made, we can quit
+rmoveEnemyLeft:
+    lda     MOVES
     and     #%00000010          ; see if left is valid
-    beq     rMoveRight          ; if not then go right
+    beq     rmoveEnemyRight          ; if not then go right
     jsr     doLeftMove          ; otherwise shift the character
-    jmp     .loopControl        ; move has been made, we can quit
+    jmp     processEnemyContinue        ; move has been made, we can quit
 moveVertical:
     lda     MOVES
     and     #$0c                ; if we have no vertical moves then try horizontal
     beq     moveHorizontal
     jsr     somethingRandom     ; flip coin for up/down
-    lda     RANDOMOUT
-    beq     rMoveUp
-rMoveDown:
+    lda     randomData
+    and     #%00000100
+    beq     rmoveEnemyUp
+rmoveEnemyDown:
+    lda     MOVES
     and     #%00000100          ; see if down is valid
-    beq     rMoveUp             ; if not then go up
+    beq     rmoveEnemyUp             ; if not then go up
     jsr     doDownMove          ; otherwise shift the character
-    jmp     .loopControl        ; move has been made, we can quit
-rMoveUp:
+    jmp     processEnemyContinue        ; move has been made, we can quit
+rmoveEnemyUp:
+    lda     MOVES
     and     #%00001000          ; see if up is valid
-    beq     rMoveDown           ; if not then go down
+    beq     rmoveEnemyDown           ; if not then go down
     jsr     doUpMove            ; otherwise shift the character
-    jmp     .loopControl        ; move has been made, we can quit
+    jmp     processEnemyContinue        ; move has been made, we can quit
 
 
 ; find valid moves for an enemy
 ; last 4 bits correspond to up/down/left/right
 validMoves:
     lda     #%00000000 
-    ldy     WALLCHAR
-    cpy     FRAMEBUF-9,x
+    pha;J;
+    lda     frameBuffer0-9,x;J;
+    cmp     #$02;J;
     bne     checkDown
+    pla;J;
     ora     #%00001000
+    pha
 checkDown:
-    cpy     FRAMEBUF+9,x
+    lda     frameBuffer0+9,x
+    cmp     #$02
     bne     checkLeft
+    pla
     ora     #%00000100
+    pha
 checkLeft:
-    cpy     FRAMEBUF-1
+    lda     frameBuffer0-1,x
+    cmp     #$02
     bne     checkRight
+    pla
     ora     #%00000010
+    pha
 checkRight:
-    cpy     FRAMEBUF+1,x
+    lda     frameBuffer0+1,x
+    cmp     #$02
     bne     done
+    pla
     ora     #%00000001
+    pha
 done:
+    pla
     sta     MOVES
     rts
 
 ; Not sure where these are located or how exactly the shifts are implemented so
 ; I just included these things as stubs for now
 somethingRandom:
+    lda     randomData
+    eor     $a1
+    eor     $a2
+    rol
+    rol
+    rol
+    rol
+    sta     randomData
     rts
 doUpMove:
+    lda     #$02 ;Amongus
+    sta     SCRMEM+$1
     rts
 doDownMove:
+    lda     #$04
+    sta     ENEMYPOS
     rts
 doLeftMove:
+    lda     #$08 ;Enemy
+    sta     SCRMEM+$1
     rts
 doRightMove:
+    lda     #$0a ;Chest
+    sta     SCRMEM+$1
     rts

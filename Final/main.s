@@ -10,7 +10,7 @@
     org     $1001           ; mem location of user region
     dc.w    stubend
     dc.w    1               ; arbitrary line number for BASIC syntax
-    dc.b    $9e, "4725", 0  ; allocate bytes.
+    dc.b    $9e, "4726", 0  ; allocate bytes.
 
 /*
     Utility Routines
@@ -29,6 +29,7 @@ HALF = $100                             ; Half the screen size
     include "chars.s"
     include "mapData.s"
 
+randomData      .byte   $00
 flagData        .byte   $00
 healthData      .byte   $06
 healthFlag      .byte   $00
@@ -172,15 +173,18 @@ Health_3:
     dec     SCRMEM+$77
     lda     healthData
     cmp     #$00
-    beq     GameOver
+    bne     Health_F
+    ; include "gameOverScreen.s"
 Health_F:
+
+    jsr     processEnemies
 
     lda     flagData
     eor     #%00000001
     sta     flagData
     jmp     gameLoop
 
-    include "gameOverScreen.s"
+    include "enemy.s"
 
     include "CharacterMovement.s"
     include "Render.s"
