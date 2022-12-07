@@ -305,7 +305,7 @@ Tick:
     include "Timer.s"
 
     include "gameOverScreen.s"
-    include "WinScreen.s"
+    include "winScreen.s"
 
     include "music.s"
     include "spawnChest.s"
