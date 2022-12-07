@@ -56,7 +56,7 @@ FlailLoopSink:
     lda     #$04
     sta     $8e
     lda     #$c8
-    sta     $fb
+    sta     TEMP1
     jsr     load10
     jsr     charShift_V
     dec     $8c

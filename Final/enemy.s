@@ -1,6 +1,6 @@
 ; ENEMYCHAR = #$04    ; Enemy char is $04
 ; WALLCHAR  = #$03    ; Wall char is $03
-MOVES     = $fb     ; make sure this address is somewhere suitable for temp use
+MOVES     = TEMP1     ; make sure this address is somewhere suitable for temp use
 ENEMYPOS  = $fc
 ENEMYPX   = $fd
 ENEMYPY   = $fe

@@ -1,5 +1,5 @@
 ; Variables
-INPUT_BUFFER = $fb        ; buffer for user input (arbitrary location)
+INPUT_BUFFER = TEMP1        ; buffer for user input (arbitrary location)
 COUNTER_Y = $fc           ; counter for y
 
 inputLoop: ; we're gonna wait for a keypress (max 3 seconds) before we start
@@ -60,7 +60,7 @@ continueDown:
     jsr     UpdateTileShifting
 
     lda     #$88
-    sta     $fb
+    sta     TEMP1
     jmp     VerticalRender
 
 moveUp:
@@ -87,7 +87,7 @@ continueUp:
     stx     $fe
     jsr     UpdateTileShifting
     lda     #$c8
-    sta     $fb
+    sta     TEMP1
     jmp     VerticalRender
 
 GetChest_M:
@@ -173,7 +173,7 @@ ShiftEverything_V2:
     bpl     ShiftEverything_V1
 
 ShiftEverything_V3:
-    lda     $fb
+    lda     TEMP1
     cmp     #$c8
     bne     ShiftEverything_V4
     lda     #$02
@@ -227,7 +227,7 @@ skipFlipLeft:
     jsr     UpdateTileShifting
 
     lda     #$6a
-    sta     $fb
+    sta     TEMP1
     jmp     HorizontalRender
 
 moveRight:
@@ -269,7 +269,7 @@ skipFlipRight:
     jsr     UpdateTileShifting
 
     lda     #$2a
-    sta     $fb
+    sta     TEMP1
 
 HorizontalRender:
     lda     #$02
@@ -300,7 +300,7 @@ ShiftEverything_H2:
     bpl     ShiftEverything_H1
 
 ShiftEverything_H3:
-    lda     $fb
+    lda     TEMP1
     cmp     #$2a
     bne     ShiftEverything_H4
     lda     #$00

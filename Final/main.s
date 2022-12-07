@@ -22,7 +22,7 @@ stubend:
     Definitions Imports
 */
     include "globalDefinitions.s"
-    ; include "zp.s"
+    include "zp.s"
 
     include "chars.s"
     include "mapData.s"

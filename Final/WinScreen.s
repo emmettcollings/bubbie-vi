@@ -14,34 +14,34 @@ playWinMusic:
     ldx     #$30                        ; set the timer to 96 intervals of 2ms, or 192ms
 
     lda     #$e0                        ; C
-    sta     $fb
+    sta     TEMP1
 
     jsr     playNote
 
     lda     #$e3                        ; D
-    sta     $fb
+    sta     TEMP1
 
     jsr     playNote
 
     lda     #$e7                        ; E
-    sta     $fb
+    sta     TEMP1
 
     jsr     playNote
 
-    inc     $fb                         ; F
+    inc     TEMP1                       ; F
 
     jsr     playNote
 
     lda     #$24
-    sta     SCRMEM+$fb
+    sta     SCRMEM+TEMP1
     lda     #$07
-    sta     CLRMEM+$fb
+    sta     CLRMEM+TEMP1
 
 JumpWinLoop:
     jsr     load10
 
     lda     #$88
-    sta     $fb
+    sta     TEMP1
 
     jsr     charShift_V
 
@@ -54,7 +54,7 @@ JumpWinLoop:
     jsr     load10
 
     lda     #$c8
-    sta     $fb
+    sta     TEMP1
 
     jsr     charShift_V
 

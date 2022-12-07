@@ -1,5 +1,5 @@
 playNote:
-    lda     $fb
+    lda     TEMP1
     sta     OSC2
 
     stx     $fd

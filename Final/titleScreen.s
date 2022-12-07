@@ -23,7 +23,7 @@ infLoop:
     lda     lC1101,y                    ; Read the actual byte to be displayed
     iny                                 ; Increment the data pointer twice (since we read in two consecutive bytes at the same time)
     iny
-    sty     $fb                         ; Store the data pointer in $fb
+    sty     TEMP1                       ; Store the data pointer in $fb
     ldy     $fc                         ; Load the screen memory pointer into Y
 
 writeToScreenLoop:
@@ -48,7 +48,7 @@ swapScreenLowHigh:
     dex                                 ; Decrement the length byte
     bne     writeToScreenLoop           ; If the length byte isn't zero, keep looping
     sty     $fc                         ; We're now done with this byte pair, so store the screen memory pointer in $fc
-    ldy     $fb                         ; Load the data pointer back into Y
+    ldy     TEMP1                       ; Load the data pointer back into Y
     jmp     mainTitleScreenLoop         ; Reset back to the beginning of the main loop
 
 titleScreen:
