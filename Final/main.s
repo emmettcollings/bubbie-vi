@@ -195,6 +195,9 @@ DamageCalc:
     beq     TakeDamage
     jmp     IsOnPortal
 TakeDamage:
+
+
+
     lda     #$01
     sta     healthFlag
     dec     healthData
