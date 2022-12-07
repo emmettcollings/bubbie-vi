@@ -8,5 +8,7 @@ If you'd like to view our **Assignment #2** tests, please direct yourself to the
 
 If you'd like to view our **WiP Demo**, please direct yourself to the **"game"** branch and read the README there for instructions.
 
+If you'd like to view our **Final Game**, please direct yourself to the **"MainGame"** branch and read the README there for instructions.
+
 Regards,  
 Not Enough Memory
