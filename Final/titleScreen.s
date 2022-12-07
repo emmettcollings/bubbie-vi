@@ -1,16 +1,16 @@
 initiializeTitleScreen:
     lda     #$20                        ; Load a with a space to fill the screen with
     sta     SCRMEM,X                    ; Write to the first half of the screen memory
-    sta     SCRMEM+HALF,X          ; Write to the second half of the screen memory
+    sta     SCRMEM+HALF,X               ; Write to the second half of the screen memory
 
     lda     #$06                        ; Load a with the colour of the characters to be displayed (blue)
     sta     CLRMEM,X                    ; Write to the first half of the colour memory
-    sta     CLRMEM+HALF,X          ; Write to the second half of the colour memory
+    sta     CLRMEM+HALF,X               ; Write to the second half of the colour memory
     inx
     bne     initiializeTitleScreen      ; Loop until the counter overflows back to 0, then exit the loop
 
     ldy     #$00                        ; Initialize pointer to: first byte of data to read, screen memory to write, and
-    sty     TEMP2                         ; indicator for which part of the screen to write to (upper or lower)
+    sty     TEMP2                       ; indicator for which part of the screen to write to (upper or lower)
     sty     TEMP3
 
 mainTitleScreenLoop:
@@ -37,7 +37,7 @@ writeToScreenLoop:
 
 writeToLowerScreen:
     pla                                 ; Pull the byte to be displayed off the stack
-    sta     SCRMEM+HALF,y          ; Write it to the lower half of the screen
+    sta     SCRMEM+HALF,y               ; Write it to the lower half of the screen
 
 wroteToUpperScreen:
     iny                                 ; Increment the screen memory pointer
