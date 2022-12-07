@@ -21,6 +21,8 @@ stubend:
 /* 
     Global Definitions
 */
+    ; include "globalDefinitions.s"
+    ; include "zp.s"
 CHROUT = $ffd2                          ; kernal character output routine
 SCRMEM = $1e00                          ; Screen memory address
 CLRMEM = $9600                          ; Colour memory address 
