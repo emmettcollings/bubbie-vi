@@ -1,39 +1,28 @@
 /*
     Processor Information
 */
-    processor   6502        ; This informs the assembler that we are using a 6502 processor.
+    processor   6502                    ; This informs the assembler that we are using a 6502 processor.
     incdir      "../justinLib"
     incdir      "../lib"
 /*
     Memory Map
 */
-    org     $1001           ; mem location of user region
+    org     $1001                       ; mem location of user region
     dc.w    stubend
-    dc.w    1               ; arbitrary line number for BASIC syntax
-    dc.b    $9e, "4740", 0  ; allocate bytes.
+    dc.w    1                           ; arbitrary line number for BASIC syntax
+    dc.b    $9e, "4740", 0              ; allocate bytes.
 
 /*
     Utility Routines
 */
 stubend:
-    dc.w    0               ; insert null byte
+    dc.w    0                           ; insert null byte
 
 /* 
-    Global Definitions
+    Definitions Imports
 */
-    ; include "globalDefinitions.s"
+    include "globalDefinitions.s"
     ; include "zp.s"
-CHROUT = $ffd2                          ; kernal character output routine
-SCRMEM = $1e00                          ; Screen memory address
-CLRMEM = $9600                          ; Colour memory address 
-HALF = $100                             ; Half the screen size
-
-; Sound registers
-OSC1 = $900a                            ; The first oscillator.
-OSC2 = $900b                            ; The second oscillator.
-OSC3 = $900c                            ; The third oscillator.
-OSCNS = $900d                           ; The noise source oscillator.
-OSCVOL = $900e                          ; The volume of the oscillators. (bits 0-3 set the volume of all sound channels, bits 4-7 are auxillary color information.)
 
     include "chars.s"
     include "mapData.s"
