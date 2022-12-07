@@ -2,7 +2,7 @@
     Processor Information
 */
     processor   6502        ; This informs the assembler that we are using a 6502 processor.
-    incdir "../justinLib"
+    incdir      "../justinLib"
     incdir      "../lib"
 /*
     Memory Map
@@ -32,7 +32,6 @@ OSC2 = $900b                            ; The second oscillator.
 OSC3 = $900c                            ; The third oscillator.
 OSCNS = $900d                           ; The noise source oscillator.
 OSCVOL = $900e                          ; The volume of the oscillators. (bits 0-3 set the volume of all sound channels, bits 4-7 are auxillary color information.)
-
 
     include "chars.s"
     include "mapData.s"
@@ -109,7 +108,6 @@ drawHeartsLoop:
     dex
     bpl     drawHeartsLoop
     rts
-
 
 loadDuckBar:
     ldx     #$07
@@ -195,7 +193,6 @@ DamageCalc:
     beq     TakeDamage
     jmp     IsOnPortal
 TakeDamage:
-
     lda     #$97                        ; D#
     sta     OSC2    
     lda     #$A7                        ; F#
@@ -293,7 +290,6 @@ SpawnEnemies:
 
 
 Tick:
-
     lda     flagData
     eor     #%00000001
     sta     flagData
