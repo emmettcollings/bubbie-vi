@@ -22,21 +22,32 @@ stubend:
 /* 
     Global Definitions
 */
-OSC1 = $900a                            ; The first oscillator.
-OSC2 = $900b                            ; The second oscillator.
-OSC3 = $900c                            ; The third oscillator.
+OSC1 = $900a                            ; The first oscillator. (LOW)
+OSC2 = $900b                            ; The second oscillator. (MID)
+OSC3 = $900c                            ; The third oscillator. (HIGH)
 OSCNS = $900d                           ; The noise source oscillator.
 OSCVOL = $900e                          ; The volume of the oscillators. (bits 0-3 set the volume of all sound channels, bits 4-7 are auxillary color information.)
 
 /*
     Main Routine
 */
-    org     $1101           ; mem location of code region
+    org     $1101                       ; mem location of code region
 start:
-    ; set the volume of the oscillators to 1
-    lda     #$01
+    ldx     #$0                         ; set the timer to 96 intervals of 2ms, or 192ms
+
+    lda     #$01                        ; set the volume of the oscillators to 1
     sta     OSCVOL
 
+    lda     #$97                        ; D#
+    sta     OSC2    
+    lda     #$A7                        ; F#
+    sta     OSC3
+    stx     $1001                       ; store our timer value (NOTE: Can't figure out how to lower this timer value... would prefer half of what it is now)
+    jsr     timer
+
+    lda     #$00                        ; Reset
+    sta     OSC2
+    sta     OSC3
 
 /*
     The best goddamn timer that's ever existed on pure American hardware god damnit

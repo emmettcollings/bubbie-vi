@@ -22,20 +22,34 @@ stubend:
 /* 
     Global Definitions
 */
-OSC1 = $900a                            ; The first oscillator.
-OSC2 = $900b                            ; The second oscillator.
-OSC3 = $900c                            ; The third oscillator.
+OSC1 = $900a                            ; The first oscillator. (LOW)
+OSC2 = $900b                            ; The second oscillator. (MID)
+OSC3 = $900c                            ; The third oscillator. (HIGH)
 OSCNS = $900d                           ; The noise source oscillator.
 OSCVOL = $900e                          ; The volume of the oscillators. (bits 0-3 set the volume of all sound channels, bits 4-7 are auxillary color information.)
 
 /*
     Main Routine
 */
-    org     $1101           ; mem location of code region
+    org     $1101                       ; mem location of code region
 start:
-    ; set the volume of the oscillators to 1
-    lda     #$01
+    ldx     #$0                         ; set the timer to 96 intervals of 2ms, or 192ms
+
+    lda     #$01                        ; set the volume of the oscillators to 1
     sta     OSCVOL
+
+    lda     #$80                        ; B
+    sta     OSC1
+    lda     #$87                        ; C
+    sta     OSC2
+    stx     $1001                       ; store our timer value
+    jsr     timer
+
+    lda     #$00                        ; Reset
+    sta     OSC1
+    sta     OSC2
+
+    ; jmp     start
 
 
 /*

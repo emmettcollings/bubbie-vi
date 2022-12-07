@@ -31,12 +31,57 @@ OSCVOL = $900e                          ; The volume of the oscillators. (bits 0
 /*
     Main Routine
 */
-    org     $1101           ; mem location of code region
+    org     $1101                       ; mem location of code region
 start:
-    ; set the volume of the oscillators to 1
-    lda     #$01
+    ldx     #$60                        ; set the timer to 96 intervals of 2ms, or 192ms
+
+    lda     #$01                        ; set the volume of the oscillators to 1
     sta     OSCVOL
 
+
+    lda     #$a7                        ; F#
+    sta     OSC3
+    stx     $1001                       ; store our timer value
+    jsr     timer
+
+    lda     #$00                        ; Reset
+    sta     OSC3
+
+    lda     #$97                        ; D#
+    sta     OSC1
+    stx     $1001                       ; store our timer value
+    jsr     timer
+
+    lda     #$00                        ; Reset
+    sta     OSC1
+
+    lda     #$80                        ; B
+    sta     OSC3
+    stx     $1001                       ; store our timer value
+    jsr     timer
+
+    lda     #$00                        ; Reset
+    sta     OSC3
+
+    lda     #$97                        ; D#
+    sta     OSC1
+    stx     $1001                       ; store our timer value
+    jsr     timer
+
+    lda     #$00                        ; Reset
+    sta     OSC1
+
+    lda     #$80                        ; B
+    sta     OSC1
+    ldx     #$ff                        ; set the timer to 255 intervals of 2ms, or 510ms
+    stx     $1001                       ; store our timer value
+    jsr     timer
+    ldx     #$ff                        ; set the timer to 255 intervals of 2ms, or 510ms
+    stx     $1001                       ; store our timer value
+    jsr     timer
+
+    lda     #$00                        ; Reset
+    sta     OSC1
 
 /*
     The best goddamn timer that's ever existed on pure American hardware god damnit
