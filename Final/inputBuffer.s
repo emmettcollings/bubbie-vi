@@ -16,8 +16,8 @@ updateCounter:
     inc     COUNTER_Y       ; increment counter
     ldy     COUNTER_Y       ; check if counter is zero
     cpy     #$ff              ; check if counter is zero
-    beq     movementLoop    ; if so, jump to movement loop
-
+    bne     readInput    ; if so, jump to movement loop
+    jmp     movementLoop
 readInput:
     dex                     ; decrement counter
     cpx     #0              ; check if counter is zero
@@ -43,6 +43,13 @@ moveDown:
     beq     continueDown
     cmp     #$05
     beq     GetChest_M
+    cmp     #$04
+    beq     downKill
+    jmp     CollisionReset
+downKill:
+    jsr     killEnemySound
+    lda     #$02
+    sta     frameBuffer5+$04
     jmp     CollisionReset
 
 continueDown:
@@ -64,6 +71,13 @@ moveUp:
     beq     continueUp
     cmp     #$05
     beq     GetChest_M
+    cmp     #$04
+    beq     upKill
+    jmp     CollisionReset
+upKill:
+    jsr     killEnemySound
+    lda     #$02
+    sta     frameBuffer3+$04
     jmp     CollisionReset
 
 continueUp:
@@ -104,15 +118,31 @@ movementLoop:
 
     ; 'S' on keyboard
     cmp     #$29
-    beq     moveDown
+    bne     checkD
+    jmp     moveDown
 
+checkD:
     ; 'D' on keyboard
     cmp     #$12
-    bne     readInput
+    bne     CollisionReset
     jmp     moveRight
 
 CollisionReset:
     jmp     readInput
+
+killEnemySound:
+    lda     #$80                        ; B
+    sta     OSC1
+    lda     #$87                        ; C
+    sta     OSC2
+    stx     $fd                       ; store our timer value
+    jsr     timer
+
+    lda     #$00                        ; Reset
+    sta     OSC1
+    sta     OSC2
+    rts
+
 
 VerticalRender:
     lda     #$02
@@ -167,6 +197,13 @@ moveLeft:
     beq     continueLeft
     cmp     #$05
     beq     GetChest
+    cmp     #$04
+    beq     leftKill
+    jmp     CollisionReset
+leftKill:
+    jsr     killEnemySound
+    lda     #$02
+    sta     frameBuffer4+$03
     jmp     CollisionReset
 
 continueLeft:
@@ -201,6 +238,13 @@ moveRight:
     beq     continueRight
     cmp     #$05
     beq     GetChest
+    cmp     #$04
+    beq     rightKill
+    jmp     CollisionReset
+rightKill:
+    jsr     killEnemySound
+    lda     #$02
+    sta     frameBuffer4+$05
     jmp     CollisionReset
 
 continueRight:

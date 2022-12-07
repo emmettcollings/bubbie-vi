@@ -196,6 +196,16 @@ DamageCalc:
     jmp     IsOnPortal
 TakeDamage:
 
+    lda     #$97                        ; D#
+    sta     OSC2    
+    lda     #$A7                        ; F#
+    sta     OSC3
+    stx     $fd                       
+    jsr     timer
+
+    lda     #$00                        ; Reset
+    sta     OSC2
+    sta     OSC3
 
 
     lda     #$01
@@ -266,7 +276,7 @@ Health_6:
     jmp     GameOver
 Duck:
     lda     duckFlag
-    beq     Tick
+    beq     SpawnEnemies
     lda     #$24
     ldx     duckData
     sta     SCRMEM+$06,x
@@ -279,6 +289,7 @@ SpawnEnemies:
 
     lda     #$04
     sta     frameBuffer0+$04
+    sta     frameBuffer8+$04
 
 
 Tick:
