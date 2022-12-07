@@ -62,7 +62,7 @@ JumpWinLoop:
     jmp     JumpWinLoop
 
 wait60:
-    lda     #$60
+    lda     #$70
     sta     $fd
     jsr     timer
     rts

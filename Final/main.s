@@ -50,6 +50,7 @@ ROWCTR          .byte   $00
 COLCTR          .byte   $00
 DISROW          .byte   $00
 
+
 /*
     Main Routine
 */
@@ -166,6 +167,8 @@ DrawSides:
     sta     $fd
     jsr     timer
 
+    jsr     spawnChestAndPortal
+
 gameLoop:
     jsr     inputLoop
 CharDoneMoving:
@@ -178,11 +181,9 @@ IsOnPortal:
     lda     frameBuffer4+$4
     cmp     #$08
     bne     Health
-    jsr     somethingRandom
-    jsr     somethingRandom
 
-    lda     randomData
-    and     #%00000111
+    jsr     despawnChestAndPortal
+    jsr     spawnChestAndPortal
 
     lda     duckData
     cmp     #$07
@@ -248,3 +249,4 @@ Tick:
     include "WinScreen.s"
 
     include "music.s"
+    include "spawnChest.s"

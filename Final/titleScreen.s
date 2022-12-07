@@ -56,11 +56,48 @@ titleScreen:
     jsr     keyCheck
     
 keyCheck:
+    jsr     wait60
+
+    lda     #$80                        ; B
+    sta     OSC2
+    jsr     wait60
+
+    lda     #$00                        ; Reset
+    sta     OSC2
+    jsr     wait60
+
+    lda     #$8F                        ; C#
+    sta     OSC3
+    jsr     wait60
+
+    lda     #$93                        ; D
+    sta     OSC3
+    jsr     wait60
+
+    lda     #$00                        ; Reset
+    sta     OSC3
+    jsr     wait60
+
+    lda     #$80                        ; B
+    sta     OSC3
+    jsr     wait60
+
+    lda     #$93                        ; D
+    sta     OSC3
+    jsr     wait60
+
+    lda     #$9F                        ; E
+    sta     OSC3
+
     lda     $cb
     cmp     #$40
     beq     keyCheck
     cmp     #$0f
     beq     keyCheck
+
+    lda     #$00                        ; Reset
+    sta     OSC3
+
     jmp     gameInit
  
 ; duck with the blocks
