@@ -27,7 +27,7 @@ moveEnemy:
     beq     processEnemyContinue        ; if we have no valid moves then just do nothing
     jsr     somethingRandom     ; flip coin to decide whether to move randomly
     lda     randomData
-    and     #%00011111
+    and     #%00000001
     beq     moveRandom
 
 ; attempt to move closer to player
@@ -181,29 +181,54 @@ somethingRandom:
     sta     randomData
     rts
 doUpMove:
-    lda     #$02 ;Amongus
-    sta     SCRMEM+$1
+    txa
+    tay
+
+    lda     #$03
+    sta     $8d
+    jsr     MoveEnemies
+
+    tya
+    tax
+
     rts
 doDownMove:
-    ; txa
-    ; pha
+    txa
+    tay
 
-    ; ldx     #$00
-    ; stx     $8d
-    ; jsr     MoveEnemies
-
-    ; pla
-    ; tax
+    lda     #$02
+    sta     $8d
+    jsr     MoveEnemies
+    
+    tya
+    tax
 
     rts
 doLeftMove:
-    lda     #$08 ;Enemy
-    sta     SCRMEM+$1
+    txa
+    tay
+
+    lda     #$00
+    sta     $8d
+    jsr     MoveEnemies
+    
+    tya
+    tax
+
     rts
 doRightMove:
-    lda     #$0a ;Chest
-    sta     SCRMEM+$1
+    txa
+    tay
+
+    lda     #$01
+    sta     $8d
+    jsr     MoveEnemies
+    
+    tya
+    tax
+
     rts
+
 
 MoveEnemies:
     ldx     #$3d
@@ -228,12 +253,12 @@ ME_Loop:
     sta     frameBuffer1-$1,x
     jmp     ME_Store
 ME_Right:
-    cmp     #$01
+    cpy     #$01
     bne     ME_Down
     sta     frameBuffer1+$1,x
     jmp     ME_Store
 ME_Down:
-    cmp     #$02
+    cpy     #$02
     bne     ME_Up
     sta     frameBuffer1+$9,x
     jmp     ME_Store
@@ -248,5 +273,16 @@ ME_Store:
     dex
     dec     $8b
     bne     ME_Init
+
+    ldx     #$50
+ME_Revert:
+    lda     frameBuffer0,x
+    cmp     #$06
+    bne     ME_Revert2
+    lda     #$04
+    sta     frameBuffer0,x
+ME_Revert2:
+    dex
+    bpl     ME_Revert
 
     rts

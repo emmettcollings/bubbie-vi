@@ -108,7 +108,8 @@ movementLoop:
 
     ; 'D' on keyboard
     cmp     #$12
-    beq     moveRight
+    bne     readInput
+    jmp     moveRight
 
 CollisionReset:
     jmp     readInput
@@ -140,6 +141,19 @@ ShiftEverything_V2:
     jsr     timer
     dec     $fe 
     bpl     ShiftEverything_V1
+
+ShiftEverything_V3:
+    lda     $fb
+    cmp     #$c8
+    bne     ShiftEverything_V4
+    lda     #$02
+    sta     $8d
+    jsr     MoveEnemies
+    jmp     CharDoneMoving
+ShiftEverything_V4:
+    lda     #$03
+    sta     $8d
+    jsr     MoveEnemies
     jmp     CharDoneMoving
 
 GetChest:
@@ -240,4 +254,17 @@ ShiftEverything_H2:
     jsr     timer
     dec     $fe 
     bpl     ShiftEverything_H1
+
+ShiftEverything_H3:
+    lda     $fb
+    cmp     #$2a
+    bne     ShiftEverything_H4
+    lda     #$00
+    sta     $8d
+    jsr     MoveEnemies
+    jmp     CharDoneMoving
+ShiftEverything_H4:
+    lda     #$01
+    sta     $8d
+    jsr     MoveEnemies
     jmp     CharDoneMoving

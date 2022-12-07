@@ -67,6 +67,7 @@ start:
     lda     #$05
     sta     PY
 
+    jsr     spawnChestAndPortal
     jsr     loadDisplay
 
     ; Initialize x to 0, and then jump to initiializeTitleScreen subroutine (titleScreen.s)
@@ -167,13 +168,39 @@ DrawSides:
     sta     $fd
     jsr     timer
 
-    jsr     spawnChestAndPortal
-
 gameLoop:
     jsr     inputLoop
 CharDoneMoving:
     jsr     loadDisplay
-Damage:
+ProcessEnemies_M:
+    lda     #$30
+    sta     $fd
+    sta     $fe
+    jsr     timer
+    jsr     processEnemies
+
+    lda     #$04
+    sta     $fe
+    jsr     UpdateTileShifting
+
+DamageCalc:
+    lda     frameBuffer3+$04
+    cmp     #$04
+    beq     TakeDamage
+
+    lda     frameBuffer5+$04
+    cmp     #$04
+    beq     TakeDamage
+
+    lda     frameBuffer4+$03
+    cmp     #$04
+    beq     TakeDamage
+
+    lda     frameBuffer4+$05
+    cmp     #$04
+    beq     TakeDamage
+    jmp     IsOnPortal
+TakeDamage:
     lda     #$01
     sta     healthFlag
     dec     healthData
@@ -215,7 +242,7 @@ Health_3:
     lda     healthData
     cmp     #$00
     bne     Duck
-    ; jmp     GameOver
+    jmp     GameOver
 Duck:
     lda     duckFlag
     beq     Tick
@@ -223,17 +250,7 @@ Duck:
     ldx     duckData
     sta     SCRMEM+$06,x
 
-
 Tick:
-    lda     #$10
-    sta     $fd
-    sta     $fe
-    jsr     timer
-    ; jsr     processEnemies
-    ; lda     #$03
-    ; sta     $8d
-    ; jsr     MoveEnemies
-    ; jsr     UpdateTileShifting
 
     lda     flagData
     eor     #%00000001
