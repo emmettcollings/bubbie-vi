@@ -245,10 +245,10 @@ MoveEnemies:
     ldx     #$3d
 
     lda     #$07
-    sta     $8b
+    sta     TEMP5
 ME_Init:
     lda     #$07
-    sta     $8c
+    sta     TEMP6
 ME_Loop:
     lda     frameBuffer1,x
     cmp     #$04
@@ -258,7 +258,7 @@ ME_Loop:
     sta     frameBuffer1,x
 
     lda     #$06
-    ldy     $8d
+    ldy     TEMP7
     cpy     #$00
     bne     ME_Right
     sta     frameBuffer1-$1,x
@@ -277,12 +277,12 @@ ME_Up:
     sta     frameBuffer1-$9,x
 ME_Store:
     dex
-    dec     $8c
+    dec     TEMP6
     bne     ME_Loop
 
     dex
     dex
-    dec     $8b
+    dec     TEMP5
     bne     ME_Init
 
     ldx     #$50

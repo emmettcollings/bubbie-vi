@@ -30,8 +30,8 @@ readInput:
     sta     INPUT_BUFFER    ; store key in buffer
     jmp     readInput
 
-    ; LEFT: X = 3d, Y = 8a, $8d = 00
-    ; RIGHT: X = 01, Y = 00, $8d = 7f
+    ; LEFT: X = 3d, Y = 8a, TEMP7 = 00
+    ; RIGHT: X = 01, Y = 00, TEMP7 = 7f
     ; UP: X = 0a, Y = 00
     ; DOWN: X = 46, Y = 8a
     
@@ -177,12 +177,12 @@ ShiftEverything_V3:
     cmp     #$c8
     bne     ShiftEverything_V4
     lda     #$02
-    sta     $8d
+    sta     TEMP7
     jsr     MoveEnemies
     jmp     CharDoneMoving
 ShiftEverything_V4:
     lda     #$03
-    sta     $8d
+    sta     TEMP7
     jsr     MoveEnemies
     jmp     CharDoneMoving
 
@@ -304,11 +304,11 @@ ShiftEverything_H3:
     cmp     #$2a
     bne     ShiftEverything_H4
     lda     #$00
-    sta     $8d
+    sta     TEMP7
     jsr     MoveEnemies
     jmp     CharDoneMoving
 ShiftEverything_H4:
     lda     #$01
-    sta     $8d
+    sta     TEMP7
     jsr     MoveEnemies
     jmp     CharDoneMoving

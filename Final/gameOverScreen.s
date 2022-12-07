@@ -41,9 +41,9 @@ GameOver:
 
 DeathSequence:
     lda     #$04
-    sta     $8e
+    sta     TEMP8
     asl
-    sta     $8c
+    sta     TEMP6
     dec     TEMP3
     jsr     timer
     dec     TEMP3
@@ -51,15 +51,15 @@ DeathSequence:
     lda     #$00                        ; Reset
     sta     OSC1
 FlailLoopSink:
-    dec     $8e
+    dec     TEMP8
     bne     FlailLoopFlip
     lda     #$04
-    sta     $8e
+    sta     TEMP8
     lda     #$c8
     sta     TEMP1
     jsr     load10
     jsr     charShift_V
-    dec     $8c
+    dec     TEMP6
     beq     EndGameState
 FlailLoopFlip:
     jsr     wait60
