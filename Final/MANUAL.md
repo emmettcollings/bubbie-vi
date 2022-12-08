@@ -10,6 +10,10 @@ Note: You will need to change the compiler path in the Makefile to match your se
 ## Game Objective
 
 ## Game Controls
+* **W** - Move Up
+* **A** - Move Left
+* **S** - Move Down
+* **D** - Move Right
 
 ## Known Bugs
 
