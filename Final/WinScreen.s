@@ -15,21 +15,17 @@ playWinMusic:
 
     lda     #$e0                        ; C
     sta     TEMP1
-
     jsr     playNote
 
     lda     #$e3                        ; D
     sta     TEMP1
-
     jsr     playNote
 
     lda     #$e7                        ; E
     sta     TEMP1
-
     jsr     playNote
 
     inc     TEMP1                       ; F
-
     jsr     playNote
 
     lda     #$24

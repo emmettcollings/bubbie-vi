@@ -1,6 +1,4 @@
-; ENEMYCHAR = #$04    ; Enemy char is $04
-; WALLCHAR  = #$03    ; Wall char is $03
-MOVES     = TEMP1     ; make sure this address is somewhere suitable for temp use
+MOVES     = TEMP1                       ; make sure this address is somewhere suitable for temp use
 ENEMYPOS  = TEMP2
 ENEMYPX   = TEMP3
 ENEMYPY   = TEMP4
@@ -10,7 +8,7 @@ ENEMYPY   = TEMP4
 processEnemies:
     ldx     #$51    ; 9x9 = 81 = $51
 processEnemyLoop:
-    lda     frameBuffer0,x  ; loop through entire frame buffer and process enemies
+    lda     frameBuffer0,x              ; loop through entire frame buffer and process enemies
     cmp     #$04 
     beq     moveEnemy
 processEnemyContinue:
@@ -22,32 +20,32 @@ processEnemyContinue:
 ; move an enemy either randomly or towards player
 moveEnemy:
     stx     ENEMYPOS
-    jsr     validMoves          ; init list of valid moves
+    jsr     validMoves                  ; init list of valid moves
     lda     MOVES
     beq     processEnemyContinue        ; if we have no valid moves then just do nothing
-    jsr     somethingRandom     ; flip coin to decide whether to move randomly
+    jsr     somethingRandom             ; flip coin to decide whether to move randomly
     lda     randomData
     and     #%11000000
-    beq     processEnemyContinue ; 1/8 chance to skip turn
+    beq     processEnemyContinue        ; 1/8 chance to skip turn
     lda     randomData
-    and     #%00000001          ; 1/4 chance to move towards player
+    and     #%00000001                  ; 1/4 chance to move towards player
     beq     moveRandom
 
 ; attempt to move closer to player
 moveTowards:
-    lda     #$00                ; initialize enemy position variables
+    lda     #$00                        ; initialize enemy position variables
     sta     ENEMYPY
 ; find PY coord of enemy
     lda     ENEMYPOS
 findPY:
     sec
-    sbc     #$09                ; sub 16 to move 1 row
+    sbc     #$09                        ; sub 16 to move 1 row
     bmi     findPX
     inc     ENEMYPY
     jmp     findPY
 findPX:
     clc
-    adc     #$09                ; add 16 to move 1 row
+    adc     #$09                        ; add 16 to move 1 row
     sta     ENEMYPX
 
 ; Now we have PX,PY we try to move closer
@@ -56,14 +54,14 @@ pickMove:
     ldy     #$04
     cpy     ENEMYPY
     beq     pickHorizontal
-    bmi     moveEnemyUp              ; if negative then EPY > PY and enemy is below player
+    bmi     moveEnemyUp                 ; if negative then EPY > PY and enemy is below player
 moveEnemyDown:
-    and     #%00000100          ; see if down is valid
+    and     #%00000100                  ; see if down is valid
     beq     pickHorizontal
-    jsr     doDownMove          ; otherwise shift the character
+    jsr     doDownMove                  ; otherwise shift the character
     jmp     processEnemyContinue        ; move has been made, we can quit
 moveEnemyUp:
-    and     #%00001000          ; see if up is valid
+    and     #%00001000                  ; see if up is valid
     beq     pickHorizontal
     jsr     doUpMove
     jmp     processEnemyContinue
@@ -71,15 +69,15 @@ moveEnemyUp:
 pickHorizontal:
     ldy     #$04
     cpy     ENEMYPX
-    bmi     moveEnemyLeft            ; if neg then EPX > PX and enemy is right of player
+    bmi     moveEnemyLeft               ; if neg then EPX > PX and enemy is right of player
 moveEnemyRight:
-    and     #%00000001          ; see if right is valid
-    beq     moveRandom          ; if we got here then our priority moves are invalid so we pick randomly
+    and     #%00000001                  ; see if right is valid
+    beq     moveRandom                  ; if we got here then our priority moves are invalid so we pick randomly
     jsr     doRightMove
     jmp     processEnemyContinue
 moveEnemyLeft:
-    and     #%00000010          ; see if left is valid
-    beq     moveRandom          ; if we got here then our priority moves are invalid so we pick randomly
+    and     #%00000010                  ; see if left is valid
+    beq     moveRandom                  ; if we got here then our priority moves are invalid so we pick randomly
     jsr     doLeftMove
     jmp     processEnemyContinue
 
@@ -88,29 +86,29 @@ moveEnemyLeft:
 ; IMPORTANT this can infinite loop if something goes wrong with our valid move
 ; checks. Be double sure those are bug free
 moveRandom:
-    jsr     somethingRandom     ; flip coin for vertical/horizontal
+    jsr     somethingRandom             ; flip coin for vertical/horizontal
     lda     randomData
     and     #%00000010
     beq     moveVertical
 moveHorizontal:
     lda     MOVES
-    and     #$03                ; if neither of last 2 bits are set then we have no horizontal moves
+    and     #$03                        ; if neither of last 2 bits are set then we have no horizontal moves
     beq     moveVertical
-    jsr     somethingRandom     ; flip coin for left/right
+    jsr     somethingRandom             ; flip coin for left/right
     lda     randomData
     and     #%00000100
     beq     rmoveEnemyLeft
 rmoveEnemyRight:
     lda     MOVES
-    and     #%00000001          ; see if right is valid
-    beq     rmoveEnemyLeft           ; if not then go left
-    jsr     doRightMove         ; otherwise shift the character
+    and     #%00000001                  ; see if right is valid
+    beq     rmoveEnemyLeft              ; if not then go left
+    jsr     doRightMove                 ; otherwise shift the character
     jmp     processEnemyContinue        ; move has been made, we can quit
 rmoveEnemyLeft:
     lda     MOVES
-    and     #%00000010          ; see if left is valid
-    beq     rmoveEnemyRight          ; if not then go right
-    jsr     doLeftMove          ; otherwise shift the character
+    and     #%00000010                  ; see if left is valid
+    beq     rmoveEnemyRight             ; if not then go right
+    jsr     doLeftMove                  ; otherwise shift the character
     jmp     processEnemyContinue        ; move has been made, we can quit
 moveVertical:
     lda     MOVES

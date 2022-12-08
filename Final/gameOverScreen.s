@@ -1,7 +1,9 @@
-GameOver:
+/*
+    Game Over Screen
+*/
+GameOver: ; Play the game over music.
     lda     #$01                        ; set the volume of the oscillators to 1
     sta     OSCVOL
-
 
     lda     #$a7                        ; F#
     sta     OSC3
@@ -39,7 +41,7 @@ GameOver:
     lda     #$80                        ; B
     sta     OSC1
 
-DeathSequence:
+DeathSequence: ; Play the death sequence (The tombstone crushing the player)
     lda     #$04
     sta     TEMP8
     asl
@@ -50,6 +52,7 @@ DeathSequence:
     jsr     timer
     lda     #$00                        ; Reset
     sta     OSC1
+
 FlailLoopSink:
     dec     TEMP8
     bne     FlailLoopFlip
@@ -61,11 +64,13 @@ FlailLoopSink:
     jsr     charShift_V
     dec     TEMP6
     beq     EndGameState
+
 FlailLoopFlip:
     jsr     wait60
     jsr     load10
     
     jsr     characterFlip
     jmp     FlailLoopSink
+
 EndGameState:
     jmp     EndGameState

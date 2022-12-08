@@ -2,10 +2,10 @@
     Data
 */
     org     $1010   
-    ; Blank-2
-    ; Wall-3
-    ; Enemy-4
-    ; Chest-5    
+    ; Blank - 2
+    ; Wall - 3
+    ; Enemy - 4
+    ; Chest - 5    
     ; SAME:  2a
     ; COMBO: 4a+2b-2
 
@@ -60,9 +60,11 @@
     dc.b    $bd, $42, $bd, $42, $bd, $42, $bd, $00  ; Border 23
     dc.b    $00, $1c, $14, $3f, $3c, $7c, $78, $10  ; Bubbies 24
     
-
-; 1f -> 1100
-frameBuffer0    .byte   $00, $00, $00, $00, $00, $00, $00, $00, $00
+/* 
+    Frame Buffer
+    1f -> 1100
+*/
+frameBuffer0    .byte   $00, $00, $00, $00, $00, $00, $00, $00, $00 ; Initialize the frame buffer to all 0's
 frameBuffer1    .byte   $00, $00, $00 ,$00, $00, $00, $00, $00, $00
 frameBuffer2    .byte   $00, $00, $00, $00, $00, $00, $00, $00, $00
 frameBuffer3    .byte   $00, $00, $00, $00, $00, $00, $04, $00, $00

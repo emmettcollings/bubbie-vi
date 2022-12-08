@@ -1,39 +1,34 @@
 ; Variables
-INPUT_BUFFER = TEMP1        ; buffer for user input (arbitrary location)
-COUNTER_Y = TEMP2           ; counter for y
+INPUT_BUFFER = TEMP1                    ; buffer for user input (arbitrary location)
+COUNTER_Y = TEMP2                       ; counter for y
 
 inputLoop: ; we're gonna wait for a keypress (max 3 seconds) before we start
-    lda     #$00            ; set up counter
-    sta     INPUT_BUFFER    ; set up counter
-    sta     COUNTER_Y       ; set up counter
-    ldx     #$ff            ; set up counter
+    lda     #$00                        ; set up counter
+    sta     INPUT_BUFFER                ; set up counter
+    sta     COUNTER_Y                   ; set up counter
+    ldx     #$ff                        ; set up counter
 
     jmp     readInput
 
 updateCounter:
-    ldx     #$2f            ; set up counter
+    ldx     #$2f                        ; set up counter
 
-    inc     COUNTER_Y       ; increment counter
-    ldy     COUNTER_Y       ; check if counter is zero
-    cpy     #$ff              ; check if counter is zero
-    bne     readInput    ; if so, jump to movement loop
+    inc     COUNTER_Y                   ; increment counter
+    ldy     COUNTER_Y                   ; check if counter is zero
+    cpy     #$ff                        ; check if counter is zero
+    bne     readInput                   ; if so, jump to movement loop
     jmp     movementLoop
 readInput:
-    dex                     ; decrement counter
-    cpx     #0              ; check if counter is zero
-    beq     updateCounter   ; if so, update counter and continue
+    dex                                 ; decrement counter
+    cpx     #0                          ; check if counter is zero
+    beq     updateCounter               ; if so, update counter and continue
 
-    lda     $c5             ; current key pressed
+    lda     $c5                         ; current key pressed
     cmp     #$40            
     beq     readInput 
 
-    sta     INPUT_BUFFER    ; store key in buffer
+    sta     INPUT_BUFFER                ; store key in buffer
     jmp     readInput
-
-    ; LEFT: X = 3d, Y = 8a, TEMP7 = 00
-    ; RIGHT: X = 01, Y = 00, TEMP7 = 7f
-    ; UP: X = 0a, Y = 00
-    ; DOWN: X = 46, Y = 8a
     
 moveDown:
     lda     frameBuffer5+$04
@@ -101,11 +96,7 @@ GetChest_M:
     jmp     CharDoneMoving
 
 movementLoop:
-    lda     INPUT_BUFFER    ; load key from buffer
-
-    ; ; if 'Q' is pressed, exit
-    ; cmp     #$30
-    ; beq     quit
+    lda     INPUT_BUFFER                ; load key from buffer
 
     ; compare if the input is either, w, a, s, d and call the appropriate subroutine to move the character
     ; 'W' on keyboard
@@ -142,7 +133,6 @@ killEnemySound:
     sta     OSC1
     sta     OSC2
     rts
-
 
 VerticalRender:
     lda     #$02
@@ -286,7 +276,7 @@ ShiftEverything_H2:
     lda     TEMP2
     sec
     sbc     #$10
-    cmp     #$20                ; Saves time over $10 since blank doesn't need to be shifted
+    cmp     #$20                        ; Saves time over $10 since blank doesn't need to be shifted
     bne     ShiftEverything_H2
 
     lda     #$f0

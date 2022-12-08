@@ -1,8 +1,8 @@
-chestLocs   .byte   $42, $4e, $e8, $f2
-portalLocs   .byte   $5d, $9f, $b2, $c8
-chestReplacement_N .byte   $52, $35, $53, $52
+chestLocs           .byte   $42, $4e, $e8, $f2
+portalLocs          .byte   $5d, $9f, $b2, $c8
+chestReplacement_N  .byte   $52, $35, $53, $52
 portalReplacement_N .byte   $82, $28, $82, $83
-chestReplacement_O .byte   $22, $32, $23, $22
+chestReplacement_O  .byte   $22, $32, $23, $22
 portalReplacement_O .byte   $22, $22, $22, $23
 
 spawnChestAndPortal:

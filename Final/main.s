@@ -50,8 +50,6 @@ start:
 
     lda     #$18
     sta     $900f
-    ; lda     #$00
-    ; sta     $1a01
     lda     #$0c
     sta     PX
     lda     #$05
@@ -61,30 +59,30 @@ start:
     jsr     loadDisplay
 
     ; Initialize x to 0, and then jump to initiializeTitleScreen subroutine (titleScreen.s)
-    ldx     #$00                    ; Initialize the counter
+    ldx     #$00                        ; Initialize the counter
     jmp     initiializeTitleScreen
 
-    include "Decoder.s"
-    include "loadDisp.s"
-    include "titleScreen.s"               ; include the main program file
-    include "inputBuffer.s"
+    include "Decoder.s"                 ; include the decoder routine
+    include "loadDisp.s"                ; include the load display routine
+    include "titleScreen.s"             ; include the main program file
+    include "inputBuffer.s"             ; include the input buffer routine
 
 gameInit:
-    ldx     #$00                ; Initialize the counter
+    ldx     #$00                        ; Initialize the counter
     lda     #$fc            
-    sta     $9005               ; load custom character set
-    lda     #$04                ; Load a with 'space' to fill the screen with
+    sta     $9005                       ; load custom character set
+    lda     #$04                        ; Load a with 'space' to fill the screen with
 clearScreen:    
-    sta     SCRMEM,X            ; Write to the first half of the screen memory
-    sta     SCRMEM+HALF,X       ; Write to the second half of the screen memory
+    sta     SCRMEM,X                    ; Write to the first half of the screen memory
+    sta     SCRMEM+HALF,X               ; Write to the second half of the screen memory
     inx
-    bne     clearScreen    ; Loop until the counter overflows back to 0, then exit the loop
+    bne     clearScreen                 ; Loop until the counter overflows back to 0, then exit the loop
 clearScreenColour:
     lda     #$00
     sta     CLRMEM,X                    ; Write to the first half of the colour memory
-    sta     CLRMEM+HALF,X          ; Write to the second half of the colour memory
+    sta     CLRMEM+HALF,X               ; Write to the second half of the colour memory
     inx
-    bne     clearScreenColour    ; Loop until the counter overflows back to 0, then exit the loop
+    bne     clearScreenColour           ; Loop until the counter overflows back to 0, then exit the loop
     jsr     drawHearts
     jmp     loadDuckBar
 
@@ -135,11 +133,6 @@ DrawSides:
     sbc     #$16
     tax
     bne     DrawSides
-
-    ; LEFT: X = 3d, Y = 8a, TEMP7 = 00
-    ; RIGHT: X = 01, Y = 00, TEMP7 = 7f
-    ; UP: X = 0a, Y = 00
-    ; DOWN: X = 46, Y = 8a
 
     lda     #$00
     sta     TEMP4
@@ -195,7 +188,6 @@ TakeDamage:
     sta     OSC2
     sta     OSC3
 
-
     lda     #$01
     sta     healthFlag
     dec     healthData
@@ -207,7 +199,7 @@ IsOnPortal:
     jsr     despawnChestAndPortal
     jsr     spawnChestAndPortal
 
-    jsr     drawHearts          ; refill health
+    jsr     drawHearts                  ; refill health
     lda     #$0e
     sta     healthData
 
@@ -269,7 +261,7 @@ Duck:
     ldx     duckData
     sta     SCRMEM+$06,x
 SpawnEnemies:
-    jsr     somethingRandom     ; flip coin to decide whether to move randomly
+    jsr     somethingRandom             ; flip coin to decide whether to move randomly
     lda     randomData
 
     and     #%00001111
