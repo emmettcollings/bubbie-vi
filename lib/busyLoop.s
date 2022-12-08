@@ -5,13 +5,13 @@
  */
 
 busyLoop:
-    tax     ; transfer input to x
+    tax             ; transfer input to x
 
 .loop:
     nop             ; waste time
     dex             ; decrement counter
     cpx     #0
-    bne     .loop    ; keep looping if we haven't reached the end
+    bne     .loop   ; keep looping if we haven't reached the end
     rts
 
 

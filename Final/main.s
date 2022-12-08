@@ -40,11 +40,11 @@ healthFlag      .byte   $00
 duckData        .byte   $00
 duckFlag        .byte   $00
 
-PX              .byte   $00
+PX              .byte   $00             ; Storage locations of camera position
 PY              .byte   $00
-ROWCTR          .byte   $00
-COLCTR          .byte   $00
-DISROW          .byte   $00
+ROWCTR          .byte   $00             ; count rows during loop
+COLCTR          .byte   $00             ; count columns during loop
+DISROW          .byte   $00             ; keep track of row we are on
 
 /*
     Main Routine
