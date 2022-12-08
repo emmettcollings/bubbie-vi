@@ -13,8 +13,8 @@ Once the game is compiled, you can run it in your favorite emulator.
 When you start the game, you will be presented with a title screen. Press any key to start the game (Due to how the input loop is designed, to allow us to play music on the title screen, you'll need to hold the key down for ~0.2 second before the game will start).
 
 ## Game Objective
-The objective is to find and collect 7 duckies, a duck will appear right above the health of the main character.
-There are ladders spawn randomly around where you move to them you can go underground and move to the next level.
+The objective of the game is to find and collect 7 ducks. Each "level" contains 1 duck that can be collected. The game ends when you have collected all 7 ducks.  
+You can go further down the sewers by finding ladders, which will spawn randomly around the map. When you find a ladder, you can go down to the next level. You can only go down, not up. Each "level" will randomly place the ladder, and the duck, and the enemies.
 
 ## Game Controls
 * **W** - Move Up
@@ -24,6 +24,20 @@ There are ladders spawn randomly around where you move to them you can go underg
 
 ## Game Actions
 * **Attack** - To attack the enemey you must face the direction the enemy is in and move towards them.
+
+## In-Game Images
+![Screen #1](./manualImgs/pic1.png)
+* **1** - The main character, Bubbie the VIth, alive. (Start of game)
+* **2** - The enemy, a rat, which will attack the main character if they are in the same location.
+* **3** - The health bar, which will decrease when the main character is attacked by an enemy. The health bar will reset when they go through a ladder.
+* **4** - The score, which will increase by 1 when the main character collects a duck.
+* **5** - The duck, which is the objective of the game. 
+
+![Screen #2](./manualImgs/pic2.png)
+* **1** - The main character, Bubbie the VIth, dead. (End of game)
+
+![Screen #3](./manualImgs/pic3.png)
+* **1** - The ladder, which acts as "portal" to the next level.
 
 ## Known Bugs
 The enemy will damage you before you can attack them as they parallelly move based on your direction.
