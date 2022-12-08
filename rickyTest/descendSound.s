@@ -38,22 +38,17 @@ start:
     lda     #$01                        ; set the volume of the oscillators to 1
     sta     OSCVOL
 
-    lda     #$9F                        ; E
+    lda     #$a7                        ; F#
     sta     OSC2    
     stx     $1001                       ; store our timer value (NOTE: Can't figure out how to lower this timer value... would prefer half of what it is now)
     jsr     timer
 
-    lda     #$87                        ; C
+    lda     #$9f                        ; E
     sta     OSC2    
     stx     $1001                       ; store our timer value (NOTE: Can't figure out how to lower this timer value... would prefer half of what it is now)
     jsr     timer
 
-    lda     #$9F                        ; E
-    sta     OSC2    
-    stx     $1001                       ; store our timer value (NOTE: Can't figure out how to lower this timer value... would prefer half of what it is now)
-    jsr     timer
-
-    lda     #$87                        ; C
+    lda     #$80                        ; B
     sta     OSC2    
     stx     $1001                       ; store our timer value (NOTE: Can't figure out how to lower this timer value... would prefer half of what it is now)
     jsr     timer
