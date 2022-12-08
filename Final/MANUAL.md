@@ -1,4 +1,12 @@
-# Bubbie the VIth
+<p align="center">
+  <img src="./manualImgs/duck.jpg", alt="Bubbie the VIth", height="240" width="240"/>
+</p>
+
+# <div align="center">Bubbie the VIth</div>
+<div align="center">
+  <strong>Duck down into the depths!</strong>
+</div>
+
 You are a former adventurer who, after cashing in big on a previous adventure, has settled down to live a peaceful life. However, you're starting to feel lonely and unfulfilled as you realize that you haven't spent any time developing social skills and that money can't buy you the excitement of adventure. One day, your cute neighbour, Besty, comes to you looking for help! Her pet duck, Bubbie, has wandered off into the sewers by accident! Motivated by your post-retirement crisis and desire for a connection with Besty, you agree to look for Bubbie, leading you into the sewers which spiral down into the depths of the earth far further than you anticipated. As the dangers grow, the deeper you track Bubbie, the question burns in your mind: "How the hell did that damn duck make it this far?"
 
 ## Game Compilation
@@ -39,6 +47,13 @@ You can go further down the sewers by finding ladders, which will spawn randomly
 ![Screen #3](./manualImgs/pic3.png)
 * **1** - The ladder, which acts as a "portal" to the next level.
 
+## Paratext 
+![Logo](./manualImgs/duck.jpg)
+* The logo for the game, Bubbie the VIth.
+
+![News Article](./manualImgs/newspaper.jpg)
+* News article discussing the disappearance of a local adventurer in the sewers, and the subsequent search for him by the local police.
+
 ## Known Bugs
 * The enemy will damage you before you can attack them as they parallelly move based on your direction.
 * An enemy spawns sometimes when we move and the main character overlaps them.
@@ -48,3 +63,5 @@ You can go further down the sewers by finding ladders, which will spawn randomly
 ## Credits
 Not Enough Memory, 2022  
 Justin Parker, Emmett Collings, Ricky Bhatti, Abdelhak Khalfallah
+
+DALL-E 2 - Bubbie the VIth Logo (License: https://labs.openai.com/policies/content-policy)
