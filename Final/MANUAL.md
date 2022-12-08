@@ -19,6 +19,7 @@ The objective is to find and collect 7 duckies, a duck will appear right above t
 There are ladders spawn randomly around where you move to them you can go underground and move to the next level 
 ## Game Controls
 <<<<<<< HEAD
+<<<<<<< HEAD
 Press and hold any key to run the game from the title screen. 
 
 The W,A,S,D keybaord keys are used for directed movment
@@ -38,6 +39,15 @@ An enemy spawns sometimes when we move and the main character overlaps them.
 * **A** - Move Left
 * **S** - Move Down
 * **D** - Move Right
+=======
+* **W** - Move Up
+* **A** - Move Left
+* **S** - Move Down
+* **D** - Move Right
+
+## Known Bugs
+* todo
+>>>>>>> 513234c8caa81ed6e226b8ca74bda3ff3b20c645
 
 ## Known Bugs
 * todo
