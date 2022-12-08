@@ -4,5 +4,5 @@
  * store them here so they can be included everywhere.
  */
 
-CHROUT = $ffd2
-SM = $fb
+; CHROUT = $ffd2
+; SM = $fb

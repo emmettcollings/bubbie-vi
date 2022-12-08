@@ -40,11 +40,11 @@ healthFlag      .byte   $00
 duckData        .byte   $00
 duckFlag        .byte   $00
 
-PX              .byte   $00
+PX              .byte   $00             ; Storage locations of camera position
 PY              .byte   $00
-ROWCTR          .byte   $00
-COLCTR          .byte   $00
-DISROW          .byte   $00
+ROWCTR          .byte   $00             ; count rows during loop
+COLCTR          .byte   $00             ; count columns during loop
+DISROW          .byte   $00             ; keep track of row we are on
 
 /*
     Main Routine
@@ -201,6 +201,26 @@ IsOnPortal:
     cmp     #$08
     bne     Health
 
+    ; Decend sound --------------------------------
+    lda     #$c0
+    sta     OSC1
+
+    jsr     wait60
+
+    lda     #$b2
+    sta     OSC1
+
+    jsr     wait60
+
+    lda     #$90
+    sta     OSC1
+
+    jsr     wait60
+    
+    lda     #$00                        ; Reset
+    sta     OSC1
+    ; Decend sound --------------------------------
+    
     jsr     despawnChestAndPortal
     jsr     spawnChestAndPortal
 
@@ -281,6 +301,19 @@ Tick:
     lda     flagData
     eor     #%00000001
     sta     flagData
+
+    ; Walking sound ---------------------------------
+    lda     #$80
+    sta     OSC3
+
+    lda     #$20
+    sta     TEMP3
+    jsr     timer
+
+    lda     #$00                        ; Reset
+    sta     OSC3
+    ; Walking sound ---------------------------------
+
     jmp     gameLoop
 
     include "enemy.s"

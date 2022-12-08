@@ -88,11 +88,28 @@ continueUp:
 GetChest_M:
     lda     duckFlag
     bne     CollisionReset
+    lda     #$a0
+    sta     OSC3
+
+    lda     #$20
+    sta     TEMP3
+    jsr     timer
+
+    lda     #$b2
+    sta     OSC3
+
+    lda     #$20
+    sta     TEMP3
+    jsr     timer
+    
+    lda     #$00                        ; Reset
+    sta     OSC3
     inc     duckFlag
     inc     duckData
     lda     flagData
     eor     #%00000001
     sta     flagData
+
     jmp     CharDoneMoving
 
 movementLoop:

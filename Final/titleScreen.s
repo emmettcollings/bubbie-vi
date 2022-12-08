@@ -52,8 +52,8 @@ swapScreenLowHigh:
     jmp     mainTitleScreenLoop         ; Reset back to the beginning of the main loop
 
 titleScreen:
-    jmp     initiializeTitleScreen
-    jsr     keyCheck
+    jmp     initiializeTitleScreen      ; Render the title screen
+    jsr     keyCheck                    ; Wait for a keypress
     
 keyCheck:
     jsr     wait60

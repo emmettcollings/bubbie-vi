@@ -112,23 +112,23 @@ rmoveEnemyLeft:
     jmp     processEnemyContinue        ; move has been made, we can quit
 moveVertical:
     lda     MOVES
-    and     #$0c                ; if we have no vertical moves then try horizontal
+    and     #$0c                        ; if we have no vertical moves then try horizontal
     beq     moveHorizontal
-    jsr     somethingRandom     ; flip coin for up/down
+    jsr     somethingRandom             ; flip coin for up/down
     lda     randomData
     and     #%00000100
     beq     rmoveEnemyUp
 rmoveEnemyDown:
     lda     MOVES
-    and     #%00000100          ; see if down is valid
-    beq     rmoveEnemyUp             ; if not then go up
-    jsr     doDownMove          ; otherwise shift the character
+    and     #%00000100                  ; see if down is valid
+    beq     rmoveEnemyUp                ; if not then go up
+    jsr     doDownMove                  ; otherwise shift the character
     jmp     processEnemyContinue        ; move has been made, we can quit
 rmoveEnemyUp:
     lda     MOVES
-    and     #%00001000          ; see if up is valid
-    beq     rmoveEnemyDown           ; if not then go down
-    jsr     doUpMove            ; otherwise shift the character
+    and     #%00001000                  ; see if up is valid
+    beq     rmoveEnemyDown              ; if not then go down
+    jsr     doUpMove                    ; otherwise shift the character
     jmp     processEnemyContinue        ; move has been made, we can quit
 
 

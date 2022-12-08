@@ -1,11 +1,4 @@
 /*
-    TODO: Document properly
-    Size: 
-*/
-; BASE_D = $1670
-;    org     BASE_D          ; Memory location of new code region
-
-/*
     @ Author:   Justin Parker
     
     ~ Usage:    -> $fb | Byte to be decoded
