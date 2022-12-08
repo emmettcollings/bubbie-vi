@@ -5,7 +5,9 @@ once you die, you need to reload the game prg.
 
 ## Game Compilation
 Execute the command `make` in this directory to compile the game. The game will be generated in bin/ as 'bubbie.prg'  
-Note: You will need to change the compiler path in the Makefile to match your setup.
+Note: You will need to change the compiler path in the Makefile to match your setup.  
+
+**Important: Three directories are required to compile the game, this current directory, 'justinLib/', and 'lib/'.** (I'd assume this won't be a problem, as you've pulled the entire repository.)
 
 ## Game Objective
 
