@@ -55,6 +55,9 @@ You can go further down the sewers by finding ladders, which will spawn randomly
 ![News Article](./manualImgs/newspaper.jpg)
 * News article discussing the disappearance of a local adventurer in the sewers, and the subsequent search for him by the local police.
 
+![Journal Entry](./manualImgs/journalentry.jpg)
+* Journal entry by the adventurer, a few hours after entering the sewers.
+
 ## Known Bugs
 * The enemy will damage you before you can attack them as they parallelly move based on your direction.
 * An enemy spawns sometimes when we move and the main character overlaps them.
