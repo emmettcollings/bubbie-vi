@@ -16,7 +16,8 @@ When you start the game, you will be presented with a title screen. Press any ke
 
 ## Game Objective
 The objective of the game is to find and collect 7 ducks. Each "level" contains 1 duck that can be collected. The game ends when you have collected all 7 ducks.  
-You can go further down the sewers by finding ladders, which will spawn randomly around the map. When you find a ladder, you can go down to the next level. You can only go down, not up. Each "level" will randomly place the ladder, the duck, and the enemies.
+You can go further down the sewers by finding ladders, which will spawn randomly around the map. When you find a ladder, you can go down to the next level. You can only go down, not up. Each "level" will randomly place the ladder, the duck, and the enemies.  
+Once you've collected all 7 ducks, you will need to find the ladder to finish the game. Once you find the ladder, you will be taken to the win screen.
 
 ## Game Controls
 * **W** - Move Up
