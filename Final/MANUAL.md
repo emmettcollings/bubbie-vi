@@ -1,6 +1,6 @@
-<p align="center">
+<div align="center">
   <img src="./manualImgs/duck.jpg", alt="Bubbie the VIth", height="240" width="240"/>
-</p>
+</div>
 
 # <div align="center">Bubbie the VIth</div>
 <div align="center">
