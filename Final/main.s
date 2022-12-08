@@ -281,6 +281,17 @@ Tick:
     lda     flagData
     eor     #%00000001
     sta     flagData
+
+    lda     #$80                        ; B
+    sta     OSC3
+
+    lda     #$20
+    sta     TEMP3
+    jsr     timer
+
+    lda     #$00                        ; Reset
+    sta     OSC3
+
     jmp     gameLoop
 
     include "enemy.s"
