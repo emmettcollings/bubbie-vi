@@ -48,9 +48,10 @@ You can go further down the sewers by finding ladders, which will spawn randomly
 * **1** - The ladder, which acts as a "portal" to the next level.
 
 ## Paratext 
+### Logo
 ![Logo](./manualImgs/duck.jpg)
-* The logo for the game, Bubbie the VIth.
 
+### News Article
 ![News Article](./manualImgs/newspaper.jpg)
 * News article discussing the disappearance of a local adventurer in the sewers, and the subsequent search for him by the local police.
 
