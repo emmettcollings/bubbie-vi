@@ -202,23 +202,20 @@ IsOnPortal:
     bne     Health
 
     ; Decend sound --------------------------------
-    lda     #$c0
-    sta     OSC1
-
+    lda     #$a7                        ; F#
+    sta     OSC3   
     jsr     wait60
 
-    lda     #$b2
-    sta     OSC1
-
+    lda     #$9f                        ; E
+    sta     OSC3    
     jsr     wait60
 
-    lda     #$90
-    sta     OSC1
-
+    lda     #$80                        ; B
+    sta     OSC3    
     jsr     wait60
-    
+
     lda     #$00                        ; Reset
-    sta     OSC1
+    sta     OSC3
     ; Decend sound --------------------------------
     
     jsr     despawnChestAndPortal
@@ -227,6 +224,8 @@ IsOnPortal:
     jsr     drawHearts                  ; refill health
     lda     #$0e
     sta     healthData
+    lda     #$00
+    sta     healthFlag
 
     lda     duckData
     cmp     #$07
