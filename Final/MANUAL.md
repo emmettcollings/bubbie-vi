@@ -12,7 +12,7 @@ Note: You will need to change the compiler path in the Makefile to match your se
 ## Playing the Game
 Once the game is compiled, you can run it in your favorite emulator.  
 
-When you start the game, you will be presented with a title screen. Press any key to start the game (Due to how the game loop is designed, you'll need to hold the key down for ~1 second before the game will start).
+When you start the game, you will be presented with a title screen. Press any key to start the game (Due to how the input loop is designed, to allow us to play music on the title screen, you'll need to hold the key down for ~0.2 second before the game will start).
 
 ## Game Objective
 
