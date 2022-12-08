@@ -25,6 +25,8 @@ to attack the enemey you must face the direction the enemy is in and move toward
 ## Known Bugs
 The enemy will damage you before you can attack them as they parallelly move based on your direction.
 An enemy spawns sometimes when we move and the main character overlaps them.
+Enemy sometimes move into main character location but doesnt attack.
+Enemy can phase through the map walls and for a single iteration second the wall block they moved through disappears and returns at the beginning of the next iteration.
 
 ## Credits
 Not Enough Memory, 2022  
