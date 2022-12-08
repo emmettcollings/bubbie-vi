@@ -1,4 +1,4 @@
-MovementDecoder:    ;fb -> tile1, a -> tile2
+MovementDecoder:                        ; fb -> tile1, a -> tile2
     pha
 
     lda     #$00
@@ -16,7 +16,7 @@ DifferentTile:
 SwapTileCodes:
     pha
 
-    lda     #$01        ; Flag to carry on next add
+    lda     #$01                        ; Flag to carry on next add
     sta     $fd
 
     lda     $fb
@@ -85,7 +85,7 @@ UE_Store:
     dey
 
     lda     #$02
-    sta     SCRMEM+$fc               ; MIDDLE
+    sta     SCRMEM+$fc                  ; MIDDLE
 
     dec     $8c
     bne     UE_Loop
@@ -95,7 +95,7 @@ UE_Store:
 
     tya
     sec ;
-    sbc     #$0f ;
+    sbc     #$0f
     tay
 
     dec     $8b

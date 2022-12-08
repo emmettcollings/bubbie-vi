@@ -1,8 +1,4 @@
 /*
-    Size: 9 bytes = 0x09
-*/
-
-/*
     The best goddamn timer that's ever existed on pure American hardware god damnit
     @ Author:   Justin Parker
 
