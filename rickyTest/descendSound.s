@@ -62,18 +62,6 @@ start:
     sta     OSC2
 
 /*
-REST = 0x00
-B = 0x80
-C = 0x87
-C# = 0x8F
-D = 0x93
-D# = 0x97
-E = 0x9F
-F = 0xA3
-F# = 0xA7
-*/
-
-/*
     The best goddamn timer that's ever existed on pure American hardware god damnit
     @Author Justin Parker
     
