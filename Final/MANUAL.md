@@ -9,6 +9,11 @@ Note: You will need to change the compiler path in the Makefile to match your se
 
 **Important: Three directories are required to compile the game, this current directory, 'justinLib/', and 'lib/'.** (I'd assume this won't be a problem, as you've pulled the entire repository.)
 
+## Playing the Game
+Once the game is compiled, you can run it in your favorite emulator.  
+
+When you start the game, you will be presented with a title screen. Press any key to start the game (Due to how the game loop is designed, you'll need to hold the key down for ~1 second before the game will start).
+
 ## Game Objective
 
 ## Game Controls
