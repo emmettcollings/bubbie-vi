@@ -13,6 +13,7 @@ clearGameScreen:
 playWinMusic:
     ldx     #$30                        ; set the timer to 96 intervals of 2ms, or 192ms
 
+    ; win music (not the best, but it works)
     lda     #$87                        ; C
     sta     OSC2
     stx     $1001                       ; store our timer value
@@ -84,6 +85,7 @@ playWinMusic:
 
     lda     #$00                        ; Reset
     sta     OSC3
+    ; end win music
 
     lda     #$24
     sta     SCRMEM+TEMP1
