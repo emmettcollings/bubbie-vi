@@ -9,12 +9,6 @@
 
 You are a former adventurer who, after cashing in big on a previous adventure, has settled down to live a peaceful life. However, you're starting to feel lonely and unfulfilled as you realize that you haven't spent any time developing social skills and that money can't buy you the excitement of adventure. One day, your cute neighbour, Besty, comes to you looking for help! Her pet duck, Bubbie, has wandered off into the sewers by accident! Motivated by your post-retirement crisis and desire for a connection with Besty, you agree to look for Bubbie, leading you into the sewers which spiral down into the depths of the earth far further than you anticipated. As the dangers grow, the deeper you track Bubbie, the question burns in your mind: "How the hell did that damn duck make it this far?"
 
-## Game Compilation
-Execute the command `make` in this directory to compile the game. The game will be generated in bin/ as 'bubbie.prg'  
-Note: You will need to change the compiler path in the Makefile to match your setup.  
-
-**Important: Three directories are required to compile the game, this current directory, 'justinLib/', and 'lib/'.** (I'd assume this won't be a problem, as you've pulled the entire repository.)
-
 ## Playing the Game
 Once the game is compiled, you can run it in your favourite emulator.  
 
