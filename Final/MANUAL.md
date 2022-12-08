@@ -16,6 +16,7 @@ Note: You will need to change the compiler path in the Makefile to match your se
 * **D** - Move Right
 
 ## Known Bugs
+* todo
 
 ## Credits
 Not Enough Memory, 2022  
