@@ -24,9 +24,15 @@ stubend:
     include "globalDefinitions.s"
     include "zpDefinitions.s"
 
+/*
+    Data Imports
+*/
     include "chars.s"
     include "mapData.s"
 
+/*
+    Global Variables
+*/
 randomData      .byte   $00
 flagData        .byte   $00
 healthData      .byte   $0e
@@ -39,7 +45,6 @@ PY              .byte   $00
 ROWCTR          .byte   $00
 COLCTR          .byte   $00
 DISROW          .byte   $00
-
 
 /*
     Main Routine
@@ -89,10 +94,10 @@ clearScreenColour:
 drawHearts:
     ldx     #$06
 drawHeartsLoop:
-    lda     #$02    ; Red 
+    lda     #$02                        ; Set the colour to red 
     sta     CLRMEM+$75,x
 
-    lda     #$22    ; Hearts
+    lda     #$22                        ; Set the character to a heart
     sta     SCRMEM+$75,x
     dex
     bpl     drawHeartsLoop
@@ -138,7 +143,7 @@ DrawSides:
     sta     TEMP4
     jsr     UpdateTileShifting
     lda     #$02
-    sta     SCRMEM+TEMP2               ; MIDDLE
+    sta     SCRMEM+TEMP2                ; MIDDLE
 
     lda     #$ff
     sta     TEMP3

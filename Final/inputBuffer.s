@@ -31,14 +31,14 @@ readInput:
     jmp     readInput
     
 moveDown:
-    lda     frameBuffer5+$04
+    lda     frameBuffer5+$04            ; adjust our frame buffer
     cmp     #$02
     beq     continueDown
-    cmp     #$08
+    cmp     #$08                        ; check if we're colliding with a wall
     beq     continueDown
-    cmp     #$05
+    cmp     #$05                        ; check if we're colliding with a chest
     beq     GetChest_M
-    cmp     #$04
+    cmp     #$04                        ; check if we're colliding with an enemy
     beq     downKill
     jmp     CollisionReset
 downKill:
@@ -99,29 +99,25 @@ movementLoop:
     lda     INPUT_BUFFER                ; load key from buffer
 
     ; compare if the input is either, w, a, s, d and call the appropriate subroutine to move the character
-    ; 'W' on keyboard
-    cmp     #$09
+    cmp     #$09                        ; 'W' on keyboard
     beq     moveUp
 
-    ; 'A' on keyboard
-    cmp     #$11
+    cmp     #$11                        ; 'A' on keyboard
     beq     moveLeft
 
-    ; 'S' on keyboard
-    cmp     #$29
+    cmp     #$29                        ; 'S' on keyboard
     bne     checkD
     jmp     moveDown
 
 checkD:
-    ; 'D' on keyboard
-    cmp     #$12
+    cmp     #$12                        ; 'D' on keyboard
     bne     CollisionReset
     jmp     moveRight
 
 CollisionReset:
     jmp     readInput
 
-killEnemySound:
+killEnemySound: ; Play our kill sound. 
     lda     #$80                        ; B
     sta     OSC1
     lda     #$87                        ; C
