@@ -78,7 +78,7 @@ playWinMusic:
 
     lda     #$a7                        ; F#
     sta     OSC3
-    ldx     #$ff
+    ldx     #$7f
     stx     $1001                       ; store our timer value
     jsr     timer
 
