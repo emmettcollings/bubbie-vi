@@ -8,13 +8,13 @@ Note: You will need to change the compiler path in the Makefile to match your se
 **Important: Three directories are required to compile the game, this current directory, 'justinLib/', and 'lib/'.** (I'd assume this won't be a problem, as you've pulled the entire repository.)
 
 ## Playing the Game
-Once the game is compiled, you can run it in your favorite emulator.  
+Once the game is compiled, you can run it in your favourite emulator.  
 
-When you start the game, you will be presented with a title screen. Press any key to start the game (Due to how the input loop is designed, to allow us to play music on the title screen, you'll need to hold the key down for ~0.2 second before the game will start).
+When you start the game, you will be presented with a title screen. Press any key to start the game (Due to how the input loop is designed, to allow us to play music on the title screen, you'll need to hold the key down for ~0.2 seconds before the game will start).
 
 ## Game Objective
 The objective of the game is to find and collect 7 ducks. Each "level" contains 1 duck that can be collected. The game ends when you have collected all 7 ducks.  
-You can go further down the sewers by finding ladders, which will spawn randomly around the map. When you find a ladder, you can go down to the next level. You can only go down, not up. Each "level" will randomly place the ladder, and the duck, and the enemies.
+You can go further down the sewers by finding ladders, which will spawn randomly around the map. When you find a ladder, you can go down to the next level. You can only go down, not up. Each "level" will randomly place the ladder, the duck, and the enemies.
 
 ## Game Controls
 * **W** - Move Up
@@ -23,27 +23,27 @@ You can go further down the sewers by finding ladders, which will spawn randomly
 * **D** - Move Right
 
 ## Game Actions
-* **Attack** - To attack the enemey you must face the direction the enemy is in and move towards them.
+* **Attack** - To attack the enemy you must face the direction the enemy is in and move towards them.
 
 ## In-Game Images
 ![Screen #1](./manualImgs/pic1.png)
-* **1** - The main character, Bubbie the VIth, alive. (Start of game)
+* **1** - The main character, Bubbie the VIth, is alive. (Start of the game)
 * **2** - The enemy, a rat, which will attack the main character if they are in the same location.
 * **3** - The health bar, which will decrease when the main character is attacked by an enemy. The health bar will reset when they go through a ladder.
-* **4** - The score, which will increase by 1 when the main character collects a duck.
+* **4** - The score, will increase by 1 when the main character collects a duck.
 * **5** - The duck, which is the objective of the game. 
 
 ![Screen #2](./manualImgs/pic2.png)
-* **1** - The main character, Bubbie the VIth, dead. (End of game)
+* **1** - The main character, Bubbie the VIth, is dead. (End of game)
 
 ![Screen #3](./manualImgs/pic3.png)
-* **1** - The ladder, which acts as "portal" to the next level.
+* **1** - The ladder, which acts as a "portal" to the next level.
 
 ## Known Bugs
-The enemy will damage you before you can attack them as they parallelly move based on your direction.
-An enemy spawns sometimes when we move and the main character overlaps them.
-Enemy sometimes move into main character location but doesnt attack.
-Enemy can phase through the map walls and for a single iteration second the wall block they moved through disappears and returns at the beginning of the next iteration.
+* The enemy will damage you before you can attack them as they parallelly move based on your direction.
+* An enemy spawns sometimes when we move and the main character overlaps them.
+* Enemy sometimes moves into the main character's location but doesn't attack.
+* Enemy can phase through the map walls and for a single iteration second the wall block they moved through disappears and returns at the beginning of the next iteration.
 
 ## Credits
 Not Enough Memory, 2022  
