@@ -42,6 +42,9 @@ Once you've collected all 7 ducks, you will need to find the ladder to finish th
 ![Screen #3](./manualImgs/pic3.png)
 * **1** - The ladder, which acts as a "portal" to the next level.
 
+![Win Screen](./manualImgs/win.png)
+* The win screen, which is displayed when the player has collected all 7 ducks. (End of game, represented by the gold duck)
+
 ## Paratext 
 ### Logo
 ![Logo](./manualImgs/duck.jpg)
