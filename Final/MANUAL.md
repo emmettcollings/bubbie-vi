@@ -13,14 +13,16 @@ When you start the game, you will be presented with a title screen. Press any ke
 
 ## Game Objective
 The objective is to find and collect 7 duckies, a duck will appear right above the health of the main character.
-There are ladders spawn randomly around where you move to them you can go underground and move to the next level 
+There are ladders spawn randomly around where you move to them you can go underground and move to the next level.
+
 ## Game Controls
 * **W** - Move Up
 * **A** - Move Left
 * **S** - Move Down
 * **D** - Move Right
 
-to attack the enemey you must face the direction the enemy is in and move towards them.
+## Game Actions
+* **Attack** - To attack the enemey you must face the direction the enemy is in and move towards them.
 
 ## Known Bugs
 The enemy will damage you before you can attack them as they parallelly move based on your direction.
