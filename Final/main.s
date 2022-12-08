@@ -201,6 +201,26 @@ IsOnPortal:
     cmp     #$08
     bne     Health
 
+    ; Decend sound --------------------------------
+    lda     #$c0
+    sta     OSC1
+
+    jsr     wait60
+
+    lda     #$b2
+    sta     OSC1
+
+    jsr     wait60
+
+    lda     #$90
+    sta     OSC1
+
+    jsr     wait60
+    
+    lda     #$00                        ; Reset
+    sta     OSC1
+    ; Decend sound --------------------------------
+    
     jsr     despawnChestAndPortal
     jsr     spawnChestAndPortal
 
@@ -282,7 +302,8 @@ Tick:
     eor     #%00000001
     sta     flagData
 
-    lda     #$80                        ; B
+    ; Walking sound ---------------------------------
+    lda     #$80
     sta     OSC3
 
     lda     #$20
@@ -291,6 +312,7 @@ Tick:
 
     lda     #$00                        ; Reset
     sta     OSC3
+    ; Walking sound ---------------------------------
 
     jmp     gameLoop
 
