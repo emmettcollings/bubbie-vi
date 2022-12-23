@@ -1,4 +1,2 @@
-# CPSC 599.82
-
-To run our game, cd into Final/ and run the command 'make'  
-The game will be generated in bin/ as 'bubbie.prg'
+# Bubbie-VI
+A game created for the course CPSC 599.82: Retrogames taught at the University of Calgary in Fall 2022.
